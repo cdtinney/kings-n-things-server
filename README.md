@@ -1,4 +1,4 @@
-knt
+kings-n-things
 ===
 
-COMP3004 - Kings N Things
+COMP3004 - team 25 - Kings N Things
