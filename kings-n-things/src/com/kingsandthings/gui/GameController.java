@@ -2,26 +2,42 @@ package com.kingsandthings.gui;
 
 import java.util.logging.Logger;
 
-import javafx.event.ActionEvent;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
+import com.kingsandthings.gui.board.BoardController;
 
-import com.kingsandthings.gui.util.WindowUtils;
+import javafx.event.ActionEvent;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class GameController extends Controller {
 	
 	private static Logger LOGGER = Logger.getLogger(GameController.class.getName());
 	
-	private final String MAIN_MENU_VIEW = "/resources/MainMenu.fxml";
+	// View
+	private GameView view = new GameView();
 	
-	public BorderPane rootPane;
-
+	// Sub-controllers
+	private BoardController boardController = new BoardController();
+	
 	public void initialize(Stage stage) {
 		
-		addMenuBar(rootPane);
+		Scene scene = view.initialize().getScene();
+		
+		// Initialize sub-controllers
+		boardController.initialize(scene);
+		
+		stage.setScene(scene);
+		stage.centerOnScreen();
+		
+		setupHandlers();
+	}
+	
+	public void setupHandlers() {
+		
+		Parent parent = view.getScene().getRoot();
+		
+		addEventHandler(parent, "aboutMenuItem", "setOnAction", "handleAboutMenuItemAction");
+		addEventHandler(parent, "quitGameMenuItem", "setOnAction", "handleQuitGameMenuItemAction");
 		
 	}
 	
@@ -29,35 +45,8 @@ public class GameController extends Controller {
 		LOGGER.info("TODO: Open about dialog (version, authors, last date modified");
 	}
 	
-	public void handleCloseMenuItemAction(ActionEvent event) {
-		WindowUtils.changeScene(rootPane, true, MAIN_MENU_VIEW, 600, 400);
-	}
-	
-	private void addMenuBar(BorderPane pane) {
-		
-		MenuBar menuBar = new MenuBar();
-		
-		// Game menu
-		Menu gameMenu = new Menu("Game");
-		
-		MenuItem closeItem = new MenuItem("Quit Game");
-		addEventHandler(closeItem, "setOnAction", "handleCloseMenuItemAction");
-		
-		gameMenu.getItems().addAll(closeItem);
-		
-		// Help menu
-		Menu helpMenu = new Menu("Help");
-		
-		MenuItem aboutItem = new MenuItem("About");
-		addEventHandler(aboutItem, "setOnAction", "handleAboutMenuItemAction");
-		
-		helpMenu.getItems().addAll(aboutItem);
-		
-		// Add all menus to bar
-		menuBar.getMenus().addAll(gameMenu, helpMenu);
-		
-		pane.setTop(menuBar);
-		
+	public void handleQuitGameMenuItemAction(ActionEvent event) {
+		LOGGER.info("TODO: Close menu item action");
 	}
 
 }
