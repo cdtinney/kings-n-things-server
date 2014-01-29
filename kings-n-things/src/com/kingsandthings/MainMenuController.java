@@ -1,11 +1,15 @@
 package com.kingsandthings;
 
+import java.util.Arrays;
+
 import javafx.event.ActionEvent;
 import javafx.scene.Parent;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import com.kingsandthings.gui.Controller;
-import com.kingsandthings.gui.GameController;
+import com.kingsandthings.game.GameController;
+import com.kingsandthings.game.GameSettings;
 
 public class MainMenuController extends Controller {
 	
@@ -13,7 +17,7 @@ public class MainMenuController extends Controller {
 	private Stage stage;
 	
 	// View
-	private MainMenuView view = new MainMenuView();
+	private MainMenuView view;
 	
 	// Sub-controller
 	private GameController gameController = new GameController();
@@ -21,7 +25,11 @@ public class MainMenuController extends Controller {
 	public void initialize(Stage stage) {
 		
 		this.stage = stage;
-		stage.setScene(view.initialize().getScene());
+		
+		view = new MainMenuView();
+		
+		stage.setScene(view.initialize());
+		stage.centerOnScreen();
 		
 		setupHandlers();
 		
@@ -29,7 +37,7 @@ public class MainMenuController extends Controller {
 	
 	private void setupHandlers() {
 		
-		Parent root = view.getScene().getRoot();
+		Parent root = view.getRoot();
 		
 		addEventHandler(root, "newGameButton", "setOnAction", "handleNewGameButtonAction");
 		addEventHandler(root, "exitButton", "setOnAction", "handleExitButtonAction");
@@ -37,15 +45,21 @@ public class MainMenuController extends Controller {
 	}
 	
 	public void handleStartButtonAction(ActionEvent event) {
-		gameController.initialize(stage);
+		
+		int numPlayers = (int) ((Slider) view.lookup("#playerNum")).getValue();
+		String playerName = ((TextField) view.lookup("#playerName")).getText();
+		
+		GameSettings settings = new GameSettings(numPlayers, Arrays.asList(playerName));
+		
+		gameController.initialize(stage, settings, this);
 	}
 	
 	public void handleNewGameButtonAction(ActionEvent event) {
 		
 		view.displayGameSettings();
 		
-		addEventHandler(view.getScene().getRoot(), "startButton", "setOnAction", "handleStartButtonAction");
-		addEventHandler(view.getScene().getRoot(), "backButton", "setOnAction", "handleBackButtonAction");
+		addEventHandler(view.getRoot(), "startButton", "setOnAction", "handleStartButtonAction");
+		addEventHandler(view.getRoot(), "backButton", "setOnAction", "handleBackButtonAction");
 		
 	}
 	

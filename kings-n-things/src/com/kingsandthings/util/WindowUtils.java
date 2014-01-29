@@ -1,4 +1,4 @@
-package com.kingsandthings.gui.util;
+package com.kingsandthings.util;
 
 import java.util.logging.Logger;
 
@@ -14,7 +14,7 @@ public class WindowUtils {
 	private static Logger LOGGER = Logger.getLogger(WindowUtils.class.getName());
 	
 	@SuppressWarnings("unchecked")
-	public static <T> T findChildById(Parent parent, String id) {
+	public static <T> T lookup(Parent parent, String id) {
 		
 		String nodeId;
 		
@@ -29,7 +29,8 @@ public class WindowUtils {
 					}
 				}
 			}
-		}
+			
+		} 
 		
 		for (Node node : parent.getChildrenUnmodifiable()) {
 			nodeId = node.getId();
@@ -38,7 +39,7 @@ public class WindowUtils {
 				return (T) node;
 			} else if (node instanceof Parent) {
 				
-				T child = findChildById((Parent) node, id);
+				T child = lookup((Parent) node, id);
 				
 				if (child != null) {
 					return child;
@@ -48,6 +49,5 @@ public class WindowUtils {
 		
 		return null;
 	}
-	
 
 }

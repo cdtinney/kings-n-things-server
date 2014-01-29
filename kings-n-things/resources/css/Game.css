@@ -1,0 +1,10 @@
+.pane {
+	-fx-border-color: #000000;
+	-fx-border-width: 2px;
+}
+
+.board {
+	-fx-background-image: url("../images/background.jpg");
+   	-fx-background-position: center center; 
+   	-fx-background-repeat: repeat;
+}

@@ -1,9 +1,9 @@
-package com.kingsandthings.gui;
+package com.kingsandthings;
 
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
-import com.kingsandthings.gui.util.WindowUtils;
+import com.kingsandthings.util.WindowUtils;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,10 +15,10 @@ public abstract class Controller {
 	
 	protected void addEventHandler(Parent parent, String childId, String elementProperty, String handlerMethodName) {
 		
-		Object target = WindowUtils.findChildById(parent, childId);
+		Object target = WindowUtils.lookup(parent, childId);
 		
 		if (target == null) {
-			LOGGER.warning("No child found with id - " + childId + " of parent id- " + parent.getId());
+			LOGGER.warning("No child found with id - #" + childId);
 			return;
 		}
 		
@@ -26,7 +26,7 @@ public abstract class Controller {
 		
 	}
 	
-	// TODO - comment this method
+	// TODO - comment this method and add more specific catch statements
 	protected void addEventHandler(Object target, String elementProperty, final String handlerMethodName) {
 		
 		if (target == null) {

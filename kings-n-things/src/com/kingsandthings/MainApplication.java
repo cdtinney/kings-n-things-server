@@ -3,6 +3,7 @@ package com.kingsandthings;
 import java.util.logging.Logger;
 
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class MainApplication extends Application {
@@ -18,6 +19,7 @@ public class MainApplication extends Application {
 		
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("Kings & Things v" + VERSION);
+		primaryStage.getIcons().add(new Image("/images/icon.png"));
 		
 		mainMenuController.initialize(primaryStage);
 		
