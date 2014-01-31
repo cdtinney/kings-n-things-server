@@ -4,26 +4,18 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
 import com.kingsandthings.game.View;
-import com.kingsandthings.model.Board;
+import com.kingsandthings.model.board.Tile;
 
 public class BoardView extends Pane implements View<Node> {
-	
-	// Model
-	private Board board;
 	
 	// View elements
 	private TileView[][] tiles = new TileView[10][10];
 	
 	public BoardView(int numPlayers) {
 		
-		board = new Board(numPlayers);
-		
-		// get tiles from board
-		// loop through tiles, get (x,y)
-		// create new tile view with (x,y) and image from tile
 		
 	}
-
+	
 	@Override
 	public Node initialize() {
 		
@@ -32,15 +24,37 @@ public class BoardView extends Pane implements View<Node> {
 		int initialX = 50;
 		int initialY = 150;
 		
-		int xOffset = 72;
-		int yOffset = 82;
+		int xOffset = 74;
+		int yOffset = 84;
 		
 		int columnOffset = 40;
 		
 		tiles = generateTiles(initialX, initialY, xOffset, yOffset, columnOffset, 10);
+		
 		addTiles(tiles);
 		
 		return this;
+	}
+	
+	public void setTiles(Tile[][] modelTiles) {
+		
+		for (int i=0; i<modelTiles.length; ++i) {
+			for (int j=0; j<modelTiles[i].length; ++j) {
+				
+				Tile tile = modelTiles[i][j];
+				TileView view = tiles[i][j];
+				
+				if (tile != null && view != null) {
+					view.setTileImage(tile.getImage());
+				}
+				
+			}
+		}
+		
+	}
+
+	public TileView[][] getTiles() {
+		return tiles;
 	}
 	
 	private TileView[][] generateTiles(int initialX, int initialY, int xOffset, int yOffset, int columnOffset, int size) {
@@ -48,10 +62,10 @@ public class BoardView extends Pane implements View<Node> {
 		TileView[][] tiles = new TileView[size][size];
 		
 		// column 0
-		tiles[0][0] = new TileView("0, 0", initialX, initialY);
-		tiles[1][0] = new TileView("1 0", initialX, initialY + yOffset);
-		tiles[2][0] = new TileView("2 0", initialX, initialY + yOffset*2);
-		tiles[3][0] = new TileView("3 0", initialX, initialY + yOffset*3);
+		tiles[0][0] = new TileView(null, initialX, initialY);
+		tiles[1][0] = new TileView(null, initialX, initialY + yOffset);
+		tiles[2][0] = new TileView(null, initialX, initialY + yOffset*2);
+		tiles[3][0] = new TileView(null, initialX, initialY + yOffset*3);
 		
 		// column 1
 		tiles[0][1] = new TileView(null, initialX + xOffset, initialY - columnOffset);
@@ -69,13 +83,11 @@ public class BoardView extends Pane implements View<Node> {
 		tiles[5][2] = new TileView(null, initialX + xOffset*2, initialY + yOffset*5 - columnOffset*2);
 		
 		// column 4 (center)
-		tiles[0][3] = new TileView("0 3", initialX + xOffset*3, initialY - columnOffset*3);
-		tiles[1][3] = new TileView("1 3", initialX + xOffset*3, initialY + yOffset - columnOffset*3);
+		tiles[0][3] = new TileView(null, initialX + xOffset*3, initialY - columnOffset*3);
+		tiles[1][3] = new TileView(null, initialX + xOffset*3, initialY + yOffset - columnOffset*3);
 		tiles[2][3] = new TileView(null, initialX + xOffset*3, initialY + yOffset*2 - columnOffset*3);
 		tiles[3][3] = new TileView(null, initialX + xOffset*3, initialY + yOffset*3 - columnOffset*3);
 		tiles[4][3] = new TileView(null, initialX + xOffset*3, initialY + yOffset*4 - columnOffset*3);
-		tiles[5][3] = new TileView(null, initialX + xOffset*3, initialY + yOffset*5 - columnOffset*3);
-		tiles[5][3] = new TileView(null, initialX + xOffset*3, initialY + yOffset*5 - columnOffset*3);
 		tiles[5][3] = new TileView(null, initialX + xOffset*3, initialY + yOffset*5 - columnOffset*3);
 		tiles[6][3] = new TileView(null, initialX + xOffset*3, initialY + yOffset*6 - columnOffset*3);
 		

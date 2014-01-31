@@ -37,7 +37,7 @@ public class GameController extends Controller {
 		// TODO - use settings.playernames with some controller to display them all
 		
 		// Add sub-views
-		view.addToBorderPane(boardController.getView().initialize(), "center");
+		view.addToBorderPane(boardController.getView(), "center");
 		
 		stage.setScene(view);
 		stage.centerOnScreen();

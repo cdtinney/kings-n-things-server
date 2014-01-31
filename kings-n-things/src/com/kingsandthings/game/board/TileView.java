@@ -1,5 +1,8 @@
 package com.kingsandthings.game.board;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -10,16 +13,20 @@ public class TileView extends ImageView {
 	
 	private static final int WIDTH = 100;
 	
-	private static Image tileImg = new Image("/images/tile.png");
-	private static Image tileHoverImg = new Image("/images/tile_hover.png");
+	private static Image defaultImg = new Image("/images/hex/tile_default.png");
+	private Image tileImg;
+	
+	private List<TileView> neighbours;
 	
 	public TileView (String id, int x, int y) {
+		
+		neighbours = new ArrayList<TileView>();
 		
 		if (id != null) {
 			setId(id);
 		}
 		
-		setImage(tileImg);
+		setImage(defaultImg);
 
 		setPreserveRatio(true);
 		setCache(true);
@@ -34,7 +41,7 @@ public class TileView extends ImageView {
 			public void handle(MouseEvent event) {
 				
 				ImageView image = (ImageView) event.getSource();
-				image.setImage(tileHoverImg);				
+				image.setImage(defaultImg);				
 				
 			};
 		
@@ -46,7 +53,7 @@ public class TileView extends ImageView {
 			public void handle(MouseEvent event) {
 				
 				ImageView image = (ImageView) event.getSource();
-				image.setImage(tileImg);				
+				image.setImage(tileImg == null? defaultImg : tileImg);
 				
 			};
 		
@@ -61,6 +68,23 @@ public class TileView extends ImageView {
 			
 		});
 	
+	}
+
+	public void setTileImage(Image image) {
+		
+		if (image != null) {
+			setImage(image);
+		}
+		
+		tileImg = image;
+	}
+	
+	public List<TileView> getNeighbours() {
+		return neighbours;
+	}
+	
+	public void addNeighbour(TileView tileView) {
+		neighbours.add(tileView);
 	}
 
 }
