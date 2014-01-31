@@ -11,8 +11,8 @@ import javafx.scene.layout.BorderPane;
 
 public class GameView extends Scene implements View<Scene> {
 	
-	private final static int WIDTH = 1024;
-	private final static int HEIGHT = 768;
+	private final static int WIDTH = 1280;
+	private final static int HEIGHT = 960;
 	
 	private BorderPane root;
 	

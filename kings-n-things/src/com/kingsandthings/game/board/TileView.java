@@ -8,6 +8,8 @@ import javafx.scene.input.MouseEvent;
 
 public class TileView extends ImageView {
 	
+	private static final int WIDTH = 100;
+	
 	private static Image tileImg = new Image("/images/tile.png");
 	private static Image tileHoverImg = new Image("/images/tile_hover.png");
 	
@@ -22,7 +24,7 @@ public class TileView extends ImageView {
 		setPreserveRatio(true);
 		setCache(true);
 		
-		setFitWidth(75);
+		setFitWidth(WIDTH);
 		setX(x);
 		setY(y);
 		
