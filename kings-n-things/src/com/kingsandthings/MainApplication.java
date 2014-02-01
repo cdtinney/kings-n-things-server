@@ -1,10 +1,14 @@
 package com.kingsandthings;
 	
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
+import com.kingsandthings.util.CustomFormatter;
 
 public class MainApplication extends Application {
 	
@@ -32,7 +36,25 @@ public class MainApplication extends Application {
 		LOGGER.info("Application has stopped.");
 	}
 	
+	private static void setupLogging() {
+		
+		Logger parent = LOGGER.getParent();
+		
+		for (Handler handler: parent.getHandlers()) {
+			parent.removeHandler(handler);
+		}
+		
+		ConsoleHandler consoleHandler = new ConsoleHandler();
+		consoleHandler.setFormatter(new CustomFormatter());
+		
+		parent.addHandler(consoleHandler);
+		
+	}
+	
 	public static void main(String[] args) {
+		
+		setupLogging();
+		
 		launch(args);
 	}
 }

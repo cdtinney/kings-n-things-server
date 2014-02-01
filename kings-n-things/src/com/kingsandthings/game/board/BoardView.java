@@ -1,18 +1,23 @@
 package com.kingsandthings.game.board;
 
+import java.util.logging.Logger;
+
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 import com.kingsandthings.game.View;
+import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Tile;
 
 public class BoardView extends Pane implements View<Node> {
 	
-	// View elements
+	private static Logger LOGGER = Logger.getLogger(BoardView.class.getName());
+	
 	private TileView[][] tiles = new TileView[10][10];
 	
 	public BoardView(int numPlayers) {
-		
 		
 	}
 	
@@ -24,37 +29,73 @@ public class BoardView extends Pane implements View<Node> {
 		int initialX = 50;
 		int initialY = 150;
 		
-		int xOffset = 74;
-		int yOffset = 84;
+		int xOffset = 79;
+		int yOffset = 91;
 		
-		int columnOffset = 40;
+		int columnOffset = 45;
 		
 		tiles = generateTiles(initialX, initialY, xOffset, yOffset, columnOffset, 10);
 		
-		addTiles(tiles);
+		addTilesToView(tiles);
 		
 		return this;
 	}
 	
-	public void setTiles(Tile[][] modelTiles) {
+	public void toggleControlMarker(TileView tileView) {
+		
+		Player owner = tileView.getTile().getOwner();
+		
+		if (owner == null) {
+			getChildren().remove(tileView.getControlMarkerView());
+			return;
+		} else {
+			addControlMarker(tileView, owner.getControlMarker());
+		}
+		
+	}
+	
+	private void addControlMarker(TileView tileView, Image image) {
+		
+		double x = tileView.getX();
+		double y = tileView.getY();
+		
+		ImageView imgView = new ImageView(image);
+		imgView.setPreserveRatio(true);
+		imgView.setFitWidth(30);
+		imgView.setX(x + 42);
+		imgView.setY(y + 3);
+		
+		tileView.setControlMarkerView(imgView);
+		
+		getChildren().add(imgView);	
+		
+	}
+	
+	public TileView[][] getTiles() {
+		return tiles;
+	}
+	
+	public void setTileImages(Tile[][] modelTiles) {
 		
 		for (int i=0; i<modelTiles.length; ++i) {
 			for (int j=0; j<modelTiles[i].length; ++j) {
 				
 				Tile tile = modelTiles[i][j];
-				TileView view = tiles[i][j];
 				
-				if (tile != null && view != null) {
-					view.setTileImage(tile.getImage());
+				try {
+					
+					TileView view = tiles[i][j];
+					if (tile != null && view != null) {
+						view.setTile(tile);
+					}
+					
+				} catch (IndexOutOfBoundsException e) {
+					LOGGER.warning("Model and view tile array size mismatch - " + e.getMessage());
 				}
 				
 			}
 		}
 		
-	}
-
-	public TileView[][] getTiles() {
-		return tiles;
 	}
 	
 	private TileView[][] generateTiles(int initialX, int initialY, int xOffset, int yOffset, int columnOffset, int size) {
@@ -116,13 +157,15 @@ public class BoardView extends Pane implements View<Node> {
 		
 	}
 	
-	private void addTiles(TileView[][] tiles) {
+	private void addTilesToView(TileView[][] tiles) {
 		
 		for (int i=0; i<tiles.length; ++i) {
 			for (int j=0; j<tiles[i].length; ++j) {
+				
 				if (tiles[i][j] != null) {
 					getChildren().add(tiles[i][j]);
 				}
+				
 			}
 		}
 		

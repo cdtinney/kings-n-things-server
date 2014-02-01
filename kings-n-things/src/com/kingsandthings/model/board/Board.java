@@ -1,6 +1,7 @@
 package com.kingsandthings.model.board;
 
 import com.kingsandthings.model.enums.Terrain;
+import com.kingsandthings.model.things.CreatureThing;
 
 public class Board {
 	
@@ -21,6 +22,9 @@ public class Board {
 		
 		// column 0
 		tiles[0][0] = new Tile(Terrain.DESERT);
+		
+		tiles[0][0].addThing(new CreatureThing());
+		
 		tiles[1][0] = new Tile(Terrain.FROZEN_WASTE);
 		tiles[2][0] = new Tile(Terrain.FOREST);
 		tiles[3][0] = new Tile(Terrain.MOUNTAIN);
@@ -77,13 +81,5 @@ public class Board {
 	public Tile[][] getTiles() {
 		return tiles;
 	}
-	
-	
-	
-	//private List<Tile> getNeighbours(int x, int y);
-	//private List<Tile> getTiles();
-	//private Tile getTile(int x, int y);
-	
-	//public void setTile(Tile tile, int x, int y);
 	
 }

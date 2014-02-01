@@ -1,26 +1,27 @@
 package com.kingsandthings.game.board;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javafx.event.EventHandler;
-import javafx.scene.Node;
+import javafx.geometry.Side;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+
+import com.kingsandthings.model.board.Tile;
 
 public class TileView extends ImageView {
 	
-	private static final int WIDTH = 100;
+	private static final int TILE_WIDTH = 100;
+	private static Image defaultImg = new Image("/images/tiles/back.png");
 	
-	private static Image defaultImg = new Image("/images/hex/tile_default.png");
-	private Image tileImg;
+	// Model 
+	private Tile tile;		
 	
-	private List<TileView> neighbours;
+	// Sub-view elements
+	private TileActionMenu actionMenu;
+	private ImageView controlMarkerView;
 	
+	/*
+	 * Constructor
+	 */
 	public TileView (String id, int x, int y) {
-		
-		neighbours = new ArrayList<TileView>();
 		
 		if (id != null) {
 			setId(id);
@@ -31,60 +32,80 @@ public class TileView extends ImageView {
 		setPreserveRatio(true);
 		setCache(true);
 		
-		setFitWidth(WIDTH);
+		setFitWidth(TILE_WIDTH);
 		setX(x);
 		setY(y);
 		
-		setOnMouseEntered(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				
-				ImageView image = (ImageView) event.getSource();
-				image.setImage(defaultImg);				
-				
-			};
+		actionMenu = new TileActionMenu(this);
 		
-		});
-		
-		setOnMouseExited(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				
-				ImageView image = (ImageView) event.getSource();
-				image.setImage(tileImg == null? defaultImg : tileImg);
-				
-			};
-		
-		});
-		
-		setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println( ((Node) event.getSource()).getId() + " clicked");
-			}
-			
-		});
+//		setOnMouseEntered(new EventHandler<MouseEvent>() {
+//
+//			@Override
+//			public void handle(MouseEvent event) {
+//				
+//				ImageView image = (ImageView) event.getSource();
+//				image.setImage(defaultImg);				
+//				
+//			};
+//		
+//		});
+//		
+//		setOnMouseExited(new EventHandler<MouseEvent>() {
+//
+//			@Override
+//			public void handle(MouseEvent event) {
+//				
+//				ImageView image = (ImageView) event.getSource();
+//				image.setImage(tile.getImage() == null? defaultImg : tile.getImage());
+//				
+//			};
+//		
+//		});
 	
 	}
+	
+	public TileActionMenu getActionMenu() {
+		return actionMenu;
+	}
+	
+	public void toggleActionMenu() {
 
-	public void setTileImage(Image image) {
+		boolean visible = actionMenu.showingProperty().get();
 		
-		if (image != null) {
-			setImage(image);
+		if (visible) {
+			actionMenu.hide();
+		} else {
+			actionMenu.show(this, Side.RIGHT, -25, 10);
 		}
 		
-		tileImg = image;
 	}
 	
-	public List<TileView> getNeighbours() {
-		return neighbours;
-	}
-	
-	public void addNeighbour(TileView tileView) {
-		neighbours.add(tileView);
+	/*
+	 * Associates a tile model with the tile view.
+	 */
+	public void setTile(Tile tile) {
+		
+		this.tile = tile;
+		
+		if (tile != null && tile.getImage() != null) {
+			setImage(tile.getImage());
+		}
+		
 	}
 
+	/*
+	 * Returns the tile model associated with the tile view.
+	 */
+	public Tile getTile() {
+		return tile;
+	}
+	
+	public void setControlMarkerView(ImageView controlMarkerView) {
+		this.controlMarkerView = controlMarkerView;
+	}
+	
+	public ImageView getControlMarkerView() {
+		return controlMarkerView;
+	}
+	
 }
