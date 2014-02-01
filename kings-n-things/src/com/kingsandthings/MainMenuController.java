@@ -2,7 +2,7 @@ package com.kingsandthings;
 
 import java.util.Arrays;
 
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.scene.Parent;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -44,7 +44,7 @@ public class MainMenuController extends Controller {
 		
 	}
 	
-	public void handleStartButtonAction(ActionEvent event) {
+	public void handleStartButtonAction(Event event) {
 		
 		int numPlayers = (int) ((Slider) view.lookup("#playerNum")).getValue();
 		String playerName = ((TextField) view.lookup("#playerName")).getText();
@@ -54,7 +54,7 @@ public class MainMenuController extends Controller {
 		gameController.initialize(stage, settings, this);
 	}
 	
-	public void handleNewGameButtonAction(ActionEvent event) {
+	public void handleNewGameButtonAction(Event event) {
 		
 		view.displayGameSettings();
 		
@@ -63,11 +63,11 @@ public class MainMenuController extends Controller {
 		
 	}
 	
-	public void handleBackButtonAction(ActionEvent event) {
+	public void handleBackButtonAction(Event event) {
 		view.displayMainMenu();
 	}
 	
-	public void handleExitButtonAction(ActionEvent event) {
+	public void handleExitButtonAction(Event event) {
 		stage.close();
 	}
 	

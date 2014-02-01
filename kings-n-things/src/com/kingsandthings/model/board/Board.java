@@ -8,12 +8,11 @@ public class Board {
 	private Tile[][] tiles;
 	
 	public Board(int numPlayers) {
-		
-		// TODO - change depending on numPlayers
-		int boardSize = 10;
-		
-		tiles = generateTiles(boardSize);
-		
+		tiles = generateTiles(10);
+	}
+	
+	public Tile[][] getTiles() {
+		return tiles;
 	}
 	
 	private Tile[][] generateTiles(int size) {
@@ -76,10 +75,6 @@ public class Board {
 		
 		return tiles;
 		
-	}
-	
-	public Tile[][] getTiles() {
-		return tiles;
 	}
 	
 }

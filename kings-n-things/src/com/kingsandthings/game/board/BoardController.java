@@ -2,15 +2,13 @@ package com.kingsandthings.game.board;
 
 import java.util.logging.Logger;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.event.Event;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.MenuItem;
 
 import com.kingsandthings.Controller;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Board;
-import com.kingsandthings.model.board.Tile;
 
 public class BoardController extends Controller {
 	
@@ -66,49 +64,47 @@ public class BoardController extends Controller {
 					continue;
 				}
 				
-				final int row = i;
-				final int col = j;
+				addEventHandler(tileView, "setOnMouseClicked", "handleTileClick");
 				
-				tileView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-					
-					@Override
-					public void handle(MouseEvent event) {
-						
-						final Tile modelTile = tileView.getTile();
-						if (modelTile == null) {
-							return;
-						}
-						
-						LOGGER.info("Tile clicked: [" + row + "] [" + col + "] " + modelTile.getType().toString());
-						tileView.toggleActionMenu();
-						
-					}
-					
-				});
-				
-				// TODO - refactor this to use an ActionmMenuEventHandler
-				tileView.getActionMenu().getItem("toggleControlMarker").setOnAction(new EventHandler<ActionEvent> () {
-
-					@Override
-					public void handle(ActionEvent event) {
-						
-						Player owner = tileView.getTile().getOwner();
-						
-						if (owner == null) {
-							Player p = new Player("Colin");
-							tileView.getTile().setOwner(p);
-						} else {
-							tileView.getTile().setOwner(null);
-						}
-						
-						view.toggleControlMarker(tileView);
-						
-					};
-				
-				});
+				// TODO - refactor event handling for action menu items
+				addEventHandler(tileView.getActionMenu().get("toggleControlMarker"), "setOnAction", "handleToggleMarkerMenuItem");
 				
 			}
 		}
+	}
+	
+	/*
+	 * Event handling.
+	 */
+	public void handleToggleMarkerMenuItem(Event event) {
+		
+		MenuItem item = (MenuItem) event.getSource();
+		
+		TileActionMenu tileActionMenu = (TileActionMenu) item.getParentPopup();
+		TileView tileView = tileActionMenu.getOwner();
+		
+		Player owner = tileView.getTile().getOwner();
+		
+		if (owner == null) {
+			// TODO - get current player
+			Player p = new Player("Colin");
+			tileView.getTile().setOwner(p);
+		} else {
+			tileView.getTile().setOwner(null);
+		}
+		
+		view.toggleControlMarker(tileView);
+		
+	}
+	
+	/*
+	 * Event handling.
+	 */
+	public void handleTileClick(Event event) {
+		
+		TileView tileView = (TileView) event.getSource();
+		
+		tileView.toggleActionMenu();
 	}
 	
 }

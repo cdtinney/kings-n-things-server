@@ -2,7 +2,7 @@ package com.kingsandthings.game;
 
 import java.util.logging.Logger;
 
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 
@@ -54,11 +54,11 @@ public class GameController extends Controller {
 		
 	}
 	
-	public void handleAboutMenuItemAction(ActionEvent event) {
+	public void handleAboutMenuItemAction(Event event) {
 		LOGGER.info("TODO: Open about dialog (version, authors, last date modified");
 	}
 	
-	public void handleQuitGameMenuItemAction(ActionEvent event) {
+	public void handleQuitGameMenuItemAction(Event event) {
 		// TODO - refactor so objects (e.g. panes) aren't being created multiple times
 		parent.initialize ((Stage) view.getWindow());
 	}

@@ -1,29 +1,37 @@
 package com.kingsandthings.game.board;
 
-import java.util.HashMap;
-
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 
 public class TileActionMenu extends ContextMenu {
 	
-	private HashMap<String, MenuItem> menuItems;
+	public TileView owner;
 	
 	public TileActionMenu(TileView tileView) {
 		
-		menuItems = new HashMap<String, MenuItem>();
+		owner = tileView;
 		
 		MenuItem toggleControlMarker = new MenuItem("Toggle Control Marker");
-		menuItems.put("toggleControlMarker", toggleControlMarker);
+		toggleControlMarker.setId("toggleControlMarker");
 		
-		getItems().addAll(toggleControlMarker);
+		getItems().add(toggleControlMarker);
 		
 	}
 	
-	public MenuItem getItem(String id) {
+	public TileView getOwner() {
+		return owner;
+	}
+	
+	public MenuItem get(String id) {
 		
-		if (menuItems != null && menuItems.containsKey(id)) {
-			return menuItems.get(id);
+		for (MenuItem item:  getItems()) {
+			
+			String nodeId = item.getId();
+			
+			if (nodeId != null && nodeId.equals(id)) {
+				return  item;
+			}
+			
 		}
 		
 		return null;

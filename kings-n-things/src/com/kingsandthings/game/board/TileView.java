@@ -1,8 +1,10 @@
 package com.kingsandthings.game.board;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
 import com.kingsandthings.model.board.Tile;
 
@@ -11,10 +13,10 @@ public class TileView extends ImageView {
 	private static final int TILE_WIDTH = 100;
 	private static Image defaultImg = new Image("/images/tiles/back.png");
 	
-	// Model 
+	// Model
 	private Tile tile;		
 	
-	// Sub-view elements
+	// View
 	private TileActionMenu actionMenu;
 	private ImageView controlMarkerView;
 	
@@ -64,10 +66,16 @@ public class TileView extends ImageView {
 	
 	}
 	
+	/*
+	 * Returns an instance of an action menu specific to this tile instance.
+	 */
 	public TileActionMenu getActionMenu() {
 		return actionMenu;
 	}
 	
+	/*
+	 * Toggles visibility of the action menu.
+	 */
 	public void toggleActionMenu() {
 
 		boolean visible = actionMenu.showingProperty().get();
@@ -100,10 +108,16 @@ public class TileView extends ImageView {
 		return tile;
 	}
 	
+	/*
+	 * Sets an image view representing the control marker.
+	 */
 	public void setControlMarkerView(ImageView controlMarkerView) {
 		this.controlMarkerView = controlMarkerView;
 	}
 	
+	/*
+	 * Returns the image view representing the control marker.
+	 */
 	public ImageView getControlMarkerView() {
 		return controlMarkerView;
 	}
