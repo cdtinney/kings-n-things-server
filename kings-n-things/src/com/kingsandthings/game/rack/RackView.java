@@ -12,7 +12,7 @@ import com.kingsandthings.game.View;
 
 public class RackView extends Pane implements View<Node> {
 	
-	private static final Image rackImg = new Image("/images/rack.png");
+	private static final Image rackImg = new Image("/images/extra/rack.png");
 	
 	// TODO - store racks mapped to players (?)
 	private int numPlayers;
@@ -23,6 +23,8 @@ public class RackView extends Pane implements View<Node> {
 
 	@Override
 	public Node initialize() {
+		
+		setPrefWidth(300);
 		
 		getStyleClass().addAll("pane", "board");
 		

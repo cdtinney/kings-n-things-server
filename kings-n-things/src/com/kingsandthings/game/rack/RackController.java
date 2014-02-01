@@ -15,8 +15,6 @@ public class RackController extends Controller {
 	public void initialize(int numPlayers) {
 		
 		view = new RackView(numPlayers);
-		view.setPrefWidth(400);
-		
 		view.initialize();
 		
 	}
