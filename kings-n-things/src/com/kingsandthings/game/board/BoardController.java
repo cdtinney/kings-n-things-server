@@ -12,6 +12,7 @@ import com.kingsandthings.model.board.Board;
 
 public class BoardController extends Controller {
 	
+	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(BoardController.class.getName());
 
 	private Board board;		// Model
@@ -65,6 +66,8 @@ public class BoardController extends Controller {
 				}
 				
 				addEventHandler(tileView, "setOnMouseClicked", "handleTileClick");
+				addEventHandler(tileView, "setOnMouseEntered", "handleTileHover");
+				addEventHandler(tileView, "setOnMouseExited", "handleTileHover");
 				
 				// TODO - refactor event handling for action menu items
 				addEventHandler(tileView.getActionMenu().get("toggleControlMarker"), "setOnAction", "handleToggleMarkerMenuItem");
@@ -74,7 +77,7 @@ public class BoardController extends Controller {
 	}
 	
 	/*
-	 * Event handling.
+	 * Event handling
 	 */
 	public void handleToggleMarkerMenuItem(Event event) {
 		
@@ -86,8 +89,8 @@ public class BoardController extends Controller {
 		Player owner = tileView.getTile().getOwner();
 		
 		if (owner == null) {
-			// TODO - get current player
-			Player p = new Player("Colin");
+			// TODO - get current player (perhaps using some manager class)
+			Player p = new Player("Colin", 1);
 			tileView.getTile().setOwner(p);
 		} else {
 			tileView.getTile().setOwner(null);
@@ -98,7 +101,7 @@ public class BoardController extends Controller {
 	}
 	
 	/*
-	 * Event handling.
+	 * Tile event handling
 	 */
 	public void handleTileClick(Event event) {
 		
@@ -107,4 +110,20 @@ public class BoardController extends Controller {
 		tileView.toggleActionMenu();
 	}
 	
+	/* 
+	 * Tile eEvent handling
+	 */
+	public void handleTileHover(Event event) {
+
+		TileView tileView = (TileView) event.getSource();
+		
+		double opacity = tileView.opacityProperty().get();
+		if (opacity != 1) {
+			tileView.setOpacity(1);
+		} else {
+			tileView.setOpacity(0.8);
+		}
+		
+	}
+
 }

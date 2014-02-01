@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import com.kingsandthings.Controller;
 import com.kingsandthings.MainMenuController;
 import com.kingsandthings.game.board.BoardController;
+import com.kingsandthings.game.rack.RackController;
 
 public class GameController extends Controller {
 	
@@ -19,6 +20,7 @@ public class GameController extends Controller {
 	
 	// Sub-controllers
 	private BoardController boardController;
+	private RackController rackController;
 	
 	// Parent controller
 	private MainMenuController parent;
@@ -34,10 +36,12 @@ public class GameController extends Controller {
 		boardController = new BoardController();
 		boardController.initialize(settings.numPlayers);
 		
-		// TODO - use settings.playernames with some controller to display them all
+		rackController = new RackController();
+		rackController.initialize(settings.numPlayers);
 		
 		// Add sub-views
 		view.addToBorderPane(boardController.getView(), "center");
+		view.addToBorderPane(rackController.getView(), "right");
 		
 		stage.setScene(view);
 		stage.centerOnScreen();

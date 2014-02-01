@@ -5,8 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 
 public class GameView extends Scene implements View<Scene> {
@@ -26,7 +24,6 @@ public class GameView extends Scene implements View<Scene> {
 	@Override
 	public Scene initialize() {
 		
-		addPanes();
 		addMenuBar();
 		
 		return this;
@@ -51,16 +48,6 @@ public class GameView extends Scene implements View<Scene> {
 			root.setRight(node);
 			
 		}
-		
-	}
-	
-	private void addPanes() {
-		
-		ImageView bowlImageView = new ImageView();
-		bowlImageView.setFitWidth(200);
-		bowlImageView.setPreserveRatio(true);
-		bowlImageView.setCache(true);
-		bowlImageView.setImage(new Image("/images/Bowl.png"));
 		
 	}
 	

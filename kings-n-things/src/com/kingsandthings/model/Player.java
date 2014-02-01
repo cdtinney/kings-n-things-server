@@ -4,10 +4,12 @@ import javafx.scene.image.Image;
 
 public class Player {
 	
-	private String name; 
+	private String name;
+	private int initialPosition;
 	
-	public Player(String name) {
+	public Player(String name, int initialPosition) {
 		this.name = name;
+		this.initialPosition = initialPosition;
 	}
 	
 	public String getName() {
@@ -15,7 +17,10 @@ public class Player {
 	}
 	
 	public Image getControlMarker() {
-		return new Image("/images/other/control_marker_1.png");
+		
+		String image = "/images/other/control_marker_" + initialPosition + ".png";
+		return new Image(image);
+	
 	}
 
 }

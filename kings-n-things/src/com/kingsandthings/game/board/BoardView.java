@@ -26,8 +26,8 @@ public class BoardView extends Pane implements View<Node> {
 		
 		getStyleClass().addAll("pane", "board");
 		
-		int initialX = 50;
-		int initialY = 150;
+		int initialX = 75;
+		int initialY = 175;
 		
 		int xOffset = 79;
 		int yOffset = 91;

@@ -1,10 +1,8 @@
 package com.kingsandthings.game.board;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 
 import com.kingsandthings.model.board.Tile;
 
@@ -39,30 +37,6 @@ public class TileView extends ImageView {
 		setY(y);
 		
 		actionMenu = new TileActionMenu(this);
-		
-//		setOnMouseEntered(new EventHandler<MouseEvent>() {
-//
-//			@Override
-//			public void handle(MouseEvent event) {
-//				
-//				ImageView image = (ImageView) event.getSource();
-//				image.setImage(defaultImg);				
-//				
-//			};
-//		
-//		});
-//		
-//		setOnMouseExited(new EventHandler<MouseEvent>() {
-//
-//			@Override
-//			public void handle(MouseEvent event) {
-//				
-//				ImageView image = (ImageView) event.getSource();
-//				image.setImage(tile.getImage() == null? defaultImg : tile.getImage());
-//				
-//			};
-//		
-//		});
 	
 	}
 	
