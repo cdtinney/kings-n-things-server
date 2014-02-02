@@ -11,10 +11,10 @@ import com.kingsandthings.Controller;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Board;
-import com.kingsandthings.model.board.Tile;
 
 public class BoardController extends Controller {
 	
+	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(BoardController.class.getName());
 
 	// Model
@@ -46,6 +46,12 @@ public class BoardController extends Controller {
 		// Initialize view and set the tiles
 		view.initialize();
 		view.setTileImages(board.getTiles());
+		
+		// Set up starting tiles
+		for (Player player : PlayerManager.INSTANCE.getPlayers()) {
+			int pos = PlayerManager.INSTANCE.getPosition(player);
+			board.setStartingTile(player, pos);
+		}
 		
 		// Set up event handlers for clicking tiles
 		setupTileClickHandlers();
@@ -99,40 +105,10 @@ public class BoardController extends Controller {
 		TileActionMenu tileActionMenu = (TileActionMenu) item.getParentPopup();
 		TileView tileView = tileActionMenu.getOwner();
 		
-		Player owner = tileView.getTile().getOwner();
-		
 		// TODO - get current player (perhaps using some manager class)
-		Player player = PlayerManager.INSTANCE.getPlayer("Colin");
+		Player player = PlayerManager.INSTANCE.getActivePlayer();
 		
-		boolean success = false;
-		
-		if (owner == null) {
-			
-			success = board.setTileControl(tileView.getTile(), player, true);
-
-			// TODO - dialogs
-			if (success) {
-				LOGGER.info("Control marker placed successfully.");
-				view.toggleControlMarker(tileView);
-			} else {
-				LOGGER.info("Control marker not placed");
-			}
-			
-		} else {
-			
-			success = board.setTileControl(tileView.getTile(), player, false);
-			
-			if (success) {
-				LOGGER.info("Control marker removed successfully.");
-			} else {
-				LOGGER.info("Control marker not removed successfully - player does not control the tile.");
-			}
-			
-		}
-		
-		if (success) {
-			view.toggleControlMarker(tileView);
-		}
+		board.toggleTileControl(tileView.getTile(), player);
 		
 	}
 	
@@ -142,23 +118,7 @@ public class BoardController extends Controller {
 	 * @param event
 	 */
 	protected void handleTileClick(Event event) {
-		
 		TileView tileView = (TileView) event.getSource();
-		
-		List<Tile> neighbours = tileView.getTile().getNeighbours();
-		
-		for (TileView[] t : view.getTiles()) {
-			for (TileView tt : t) {
-				if (tt == null) continue;
-				
-				if (neighbours.contains(tt.getTile())) {
-					tt.setOpacity(0.6);
-				} else {
-					tt.setOpacity(1.0);
-				}
-			}
-		}
-		
 		tileView.toggleActionMenu();
 	}
 	

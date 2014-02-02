@@ -10,30 +10,48 @@ import com.kingsandthings.model.enums.Terrain;
 
 public class Board {
 	
-	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(Board.class.getName());
 	
 	private Tile[][] tiles;
 	
 	public Board(int numPlayers) {
-		
 		tiles = generateTiles(10);
+	}
+	
+	public void toggleTileControl(Tile tile, Player player) {
+		
+		if (tile.getOwner() == null) {
+			setTileControl(tile, player);
+		} else {
+			clearTileControl(tile, player);
+		}
 		
 	}
 	
-	public boolean setTileControl(Tile tile, Player player, boolean control) {
-		 
-		if (!control && tile.getOwner() == player) {
-			tile.setOwner(null);
-			return true;
+	public void clearTileControl(Tile tile, Player player) {
+		
+		if (tile.getOwner() != player) {
+			LOGGER.info("Cannot remove control marker from a tile the player does not own.");
+			return;
 		}
 		
-		if (validInitialControlTile(tile, player)) {
-			tile.setOwner(player);
-			return true;
+		if (player.getStartingTile() == tile) {
+			LOGGER.info("Cannot remove control marker from starting tile.");
+			return;
 		}
 		
-		return false;
+		player.removeControlledTile(tile);
+		
+	}
+	
+	public void setTileControl(Tile tile, Player player) {
+		
+		if (!validInitialControlTile(tile, player)) {
+			LOGGER.info("Tile is not valid for initial control marker placement.");
+			return;
+		}
+		
+		player.addControlledTile(tile);
 		
 	}
 	
@@ -62,6 +80,30 @@ public class Board {
 		}
 		
 		return playerNeighbour && !enemyNeighbour;
+	}
+	
+	public void setStartingTile(Player player, int position) {
+		
+		switch(position) {
+		
+			case 1:
+				player.setStartingTile(tiles[0][5]);
+				break;
+		
+			case 2:
+				player.setStartingTile(tiles[4][5]);
+				break;
+		
+			case 3:
+				player.setStartingTile(tiles[4][1]);
+				break;
+		
+			case 4:
+				player.setStartingTile(tiles[0][1]);
+				break;
+				
+		}
+		
 	}
 	
 	private List<Tile> getNeighbours(Tile[][] tiles, Tile tile) {

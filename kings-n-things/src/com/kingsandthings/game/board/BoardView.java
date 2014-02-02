@@ -1,5 +1,7 @@
 package com.kingsandthings.game.board;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
 
 import javafx.scene.image.Image;
@@ -81,13 +83,22 @@ public class BoardView extends Pane implements InitializableView {
 				
 				try {
 					
-					TileView view = tiles[i][j];
+					final TileView view = tiles[i][j];
 					
 					if (tile == null || view == null) {
 						continue;
 					}
 					
 					view.setTile(tile);
+					
+					tile.addChangeListener(new PropertyChangeListener() {
+
+						@Override
+						public void propertyChange(PropertyChangeEvent event) {
+						       toggleControlMarker(view);
+						}
+						
+					});
 					
 				} catch (IndexOutOfBoundsException e) {
 					LOGGER.warning("Model and view tile array size mismatch - " + e.getMessage());
@@ -98,12 +109,14 @@ public class BoardView extends Pane implements InitializableView {
 		
 	}
 	
+	// TODO - move this into factory(?) class
 	private TileView[][] generateTiles(int initialX, int initialY, int xOffset, int yOffset, int columnOffset, int size) {
 
 		TileView[][] tiles = new TileView[size][size];
 		
 		// column 0
 		tiles[0][0] = new TileView(null, initialX, initialY);
+		
 		tiles[1][0] = new TileView(null, initialX, initialY + yOffset);
 		tiles[2][0] = new TileView(null, initialX, initialY + yOffset*2);
 		tiles[3][0] = new TileView(null, initialX, initialY + yOffset*3);
@@ -159,11 +172,11 @@ public class BoardView extends Pane implements InitializableView {
 	
 	private void addTilesToView(TileView[][] tiles) {
 		
-		for (int i=0; i<tiles.length; ++i) {
-			for (int j=0; j<tiles[i].length; ++j) {
+		for (TileView[] row : tiles) {
+			for (TileView tile : row) {
 				
-				if (tiles[i][j] != null) {
-					getChildren().add(tiles[i][j]);
+				if (tile != null) {
+					getChildren().add(tile);
 				}
 				
 			}

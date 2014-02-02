@@ -1,5 +1,7 @@
 package com.kingsandthings.model.board;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -13,6 +15,8 @@ import com.kingsandthings.model.things.Thing;
 public class Tile {
 	
 	private static Logger LOGGER = Logger.getLogger(Tile.class.getName());
+	
+	private List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 
 	private Player owner;
 	private List<Tile> neighbours;
@@ -32,6 +36,18 @@ public class Tile {
 		
 	}
 	
+	public void addChangeListener(PropertyChangeListener newListener) {
+		listeners.add(newListener);
+	}
+	
+	private void notifyListeners(Object object, String property, Object oldValue, Object newValue) {
+		
+		for (PropertyChangeListener listener : listeners) {
+			listener.propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
+	    }
+		
+	}
+	
 	/*
 	 * Returns the player who controls the tile.
 	 */
@@ -43,7 +59,11 @@ public class Tile {
 	 * Sets the player who controls the tile.
 	 */
 	public void setOwner(Player player) {
+		
 		owner = player;
+		
+		notifyListeners(this, "Tile.owner", owner, player);
+		
 	}
 	
 	public List<Tile> getNeighbours() {

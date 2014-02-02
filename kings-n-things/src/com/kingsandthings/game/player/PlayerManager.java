@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javafx.scene.image.Image;
+
 import com.kingsandthings.model.Player;
 
 /**
@@ -25,6 +27,8 @@ public final class PlayerManager {
 	private Map<String, Player> players;
 	private Map<Player, Integer> positions;
 	
+	private Player activePlayer;
+	
 	public PlayerManager() {
 		
 		if (INSTANCE != null) {
@@ -33,6 +37,25 @@ public final class PlayerManager {
 		
 		players = new HashMap<String, Player>();
 		positions = new HashMap<Player, Integer>();
+		
+	}
+	
+	public Player getActivePlayer() {
+		return activePlayer;
+	}
+	
+	public void nextPlayer() {
+		
+		int activePosition = positions.get(activePlayer);
+		
+		for (Player player : positions.keySet()) {
+			
+			if (positions.get(player) == activePosition + 1) {
+				activePlayer = player;
+				return;
+			}
+			
+		}
 		
 	}
 	
@@ -82,14 +105,20 @@ public final class PlayerManager {
 		}
 		
 		Player player = new Player(name);
-		
 		players.put(name, player);
+
+		setControlMarkerImage(player, players.size());
 		setInitialPosition(player, players.size());
 		
 		return true;
 	}
 	
-	public boolean setInitialPosition(Player player, int position) {
+	private void setControlMarkerImage(Player player, int position) {
+		String path = "/images/other/control_marker_" + position + ".png";
+		player.setControlMarker(new Image(path));	
+	}
+	
+	private boolean setInitialPosition(Player player, int position) {
 		
 		if (players.containsKey(player.getName())) {
 			
@@ -101,6 +130,10 @@ public final class PlayerManager {
 			if (positions.containsValue(position)) {
 				LOGGER.warning("Initial position " + position + " already assigned to player.");
 				return false;
+			}
+			
+			if (position == 1) {
+				activePlayer = player;
 			}
 			
 			positions.put(player, position);
