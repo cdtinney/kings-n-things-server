@@ -20,6 +20,10 @@ public class Board {
 	
 	public void toggleTileControl(Tile tile, Player player) {
 		
+		if (player == null) {
+			return;
+		}
+		
 		if (tile.getOwner() == null) {
 			setTileControl(tile, player);
 		} else {

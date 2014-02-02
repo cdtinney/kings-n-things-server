@@ -1,5 +1,7 @@
 package com.kingsandthings.game.player;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,8 @@ public final class PlayerManager {
 	
 	private static Logger LOGGER = Logger.getLogger(PlayerManager.class.getName());
 	
+	private List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+	
 	public static final PlayerManager INSTANCE = new PlayerManager();
 	
 	private Integer numPlayers;
@@ -39,6 +43,19 @@ public final class PlayerManager {
 		positions = new HashMap<Player, Integer>();
 		
 	}
+
+	
+	public void addChangeListener(PropertyChangeListener newListener) {
+		listeners.add(newListener);
+	}
+	
+	private void notifyListeners(Object object, String property, Object oldValue, Object newValue) {
+		
+		for (PropertyChangeListener listener : listeners) {
+			listener.propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
+	    }
+		
+	}
 	
 	public Player getActivePlayer() {
 		return activePlayer;
@@ -50,12 +67,16 @@ public final class PlayerManager {
 		
 		for (Player player : positions.keySet()) {
 			
-			if (positions.get(player) == activePosition + 1) {
-				activePlayer = player;
+			int position = positions.get(player);
+			if (position == activePosition + 1) {
+				notifyListeners(this, "activePlayer", activePlayer, activePlayer = player);
 				return;
 			}
 			
 		}
+		
+		LOGGER.info("All players completed phase.");
+		activePlayer = null;
 		
 	}
 	

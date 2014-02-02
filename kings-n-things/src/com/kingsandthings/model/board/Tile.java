@@ -59,11 +59,7 @@ public class Tile {
 	 * Sets the player who controls the tile.
 	 */
 	public void setOwner(Player player) {
-		
-		owner = player;
-		
-		notifyListeners(this, "Tile.owner", owner, player);
-		
+		notifyListeners(this, "Tile.owner", owner, owner = player);
 	}
 	
 	public List<Tile> getNeighbours() {

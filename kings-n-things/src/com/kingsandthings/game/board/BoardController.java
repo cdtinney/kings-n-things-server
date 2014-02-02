@@ -105,7 +105,6 @@ public class BoardController extends Controller {
 		TileActionMenu tileActionMenu = (TileActionMenu) item.getParentPopup();
 		TileView tileView = tileActionMenu.getOwner();
 		
-		// TODO - get current player (perhaps using some manager class)
 		Player player = PlayerManager.INSTANCE.getActivePlayer();
 		
 		board.toggleTileControl(tileView.getTile(), player);

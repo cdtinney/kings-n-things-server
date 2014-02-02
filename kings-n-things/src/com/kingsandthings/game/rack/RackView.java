@@ -1,5 +1,7 @@
 package com.kingsandthings.game.rack;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javafx.scene.image.Image;
@@ -34,6 +36,25 @@ public class RackView extends Pane implements InitializableView {
 		getStyleClass().addAll("pane", "board");
 		
 		addPlayerRacks();	
+		
+		final RackView instance = this;
+		
+		PlayerManager.INSTANCE.addChangeListener(new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				
+				String oldName = ((Player) event.getOldValue()).getName().replaceAll("\\s+","");
+				String newName = ((Player) event.getNewValue()).getName().replaceAll("\\s+","");
+				
+				Text oldText = (Text) instance.lookup("#" + oldName);
+				Text newText = (Text) instance.lookup("#" + newName);
+				
+				oldText.setText(oldName);
+				newText.setText("* " + newName);
+			}
+			
+		});
 	}
 	
 	private void addPlayerRacks() {
@@ -45,22 +66,36 @@ public class RackView extends Pane implements InitializableView {
 		int textYOffset = 15;
 		
 		for (int i=0; i<numPlayers; ++i) {
-
-			String name = players.get(i).getName();
-			int pos = PlayerManager.INSTANCE.getPosition(players.get(i));
 			
+			Player player = players.get(i);
+
+			String name = player.getName();
+			String displayText = name;
+			
+			if (PlayerManager.INSTANCE.getActivePlayer() == player) {
+				displayText = "* " + displayText;
+			}
+			
+			int pos = PlayerManager.INSTANCE.getPosition(player);
 			int y = (yGap * (pos -1)) + yOffset;
 			
-			Text text = new Text(name + " - [position " + pos + "]");
+			ImageView controlMarker = new ImageView(player.getControlMarker());
+			controlMarker.setPreserveRatio(true);
+			controlMarker.setCache(true);
+			controlMarker.setFitWidth(20);
+			controlMarker.setX(xOffset - 5);
+			controlMarker.setY(y - 32);
+			
+			Text text = new Text(displayText);
+			text.setId(name.replaceAll("\\s+",""));
 			text.setFont(Font.font("Lucida Sans", 20));
 			text.setFill(Color.WHITE);
-			text.setLayoutX(xOffset - 5);
+			text.setLayoutX(xOffset - 5 + 27);
 			text.setLayoutY(y - textYOffset);
 			
 			ImageView rackImageView1 = getRackImageView(xOffset, y);
 			ImageView rackImageView2 = getRackImageView(xOffset, y + rackImageView1.fitHeightProperty().get() + 50);
-			
-			getChildren().addAll(text, rackImageView1, rackImageView2);
+			getChildren().addAll(text, rackImageView1, rackImageView2, controlMarker);
 			
 		}
 		
@@ -68,11 +103,10 @@ public class RackView extends Pane implements InitializableView {
 	
 	private ImageView getRackImageView(double x, double y) {
 		
-		ImageView imageView = new ImageView();
+		ImageView imageView = new ImageView(rackImg);
 		imageView.setPreserveRatio(true);
 		imageView.setCache(true);
 		imageView.setFitWidth(250);
-		imageView.setImage(rackImg);
 		imageView.setX(x);
 		imageView.setY(y);
 		

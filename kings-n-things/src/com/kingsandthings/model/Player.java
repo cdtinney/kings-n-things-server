@@ -36,7 +36,7 @@ public class Player {
 		}
 		
 		if (controlledTiles.size() >=  INITIAL_LIMIT) { 
-			LOGGER.info("Only " + INITIAL_LIMIT + " control markers can be placed in the Starting Kingdoms phase.");
+			LOGGER.warning("Only " + INITIAL_LIMIT + " control markers can be placed in the Starting Kingdoms phase.");
 			return;
 		}
 		
