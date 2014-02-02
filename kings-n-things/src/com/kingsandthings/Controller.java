@@ -31,7 +31,7 @@ public abstract class Controller {
 		addEventHandler(target, eventProperty, handlerMethodName, null);
 	}
 	
-	// TODO - comment this method and add more specific catch statements
+	// TODO - Comment this method 
 	protected void addEventHandler(Object target, String eventProperty, final String handlerMethodName, final Map<String, Object> parameters) {
 		
 		if (target == null) {
@@ -52,15 +52,20 @@ public abstract class Controller {
 					try {
 						
 						if (parameters != null) {
-							Method method = instance.getClass().getMethod(handlerMethodName, Event.class, Map.class);
+							Method method = instance.getClass().getDeclaredMethod(handlerMethodName, Event.class, Map.class);
 							method.invoke(instance, event, parameters);
 							
 						} else {
-							Method method = instance.getClass().getMethod(handlerMethodName, Event.class);
+							Method method = instance.getClass().getDeclaredMethod(handlerMethodName, Event.class);
 							method.invoke(instance, event);
 							
 						}
 						
+						
+					} catch (NoSuchMethodException e) {
+						LOGGER.warning("Event handler cannot find method " + instance.getClass().getSimpleName() 
+								+ "." + handlerMethodName
+								+ "(" + Event.class.getSimpleName() + ")");
 						
 					} catch (Exception e) {
 						e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.kingsandthings.game;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import javafx.event.Event;
@@ -9,7 +10,9 @@ import javafx.stage.Stage;
 import com.kingsandthings.Controller;
 import com.kingsandthings.MainMenuController;
 import com.kingsandthings.game.board.BoardController;
+import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.game.rack.RackController;
+import com.kingsandthings.model.Player;
 
 public class GameController extends Controller {
 	
@@ -25,19 +28,26 @@ public class GameController extends Controller {
 	// Parent controller
 	private MainMenuController parent;
 	
-	public void initialize(Stage stage, GameSettings settings, MainMenuController parent) {
+	public void initialize(Stage stage, List<String> playerNames, MainMenuController parent) {
 		
 		this.parent = parent;
 		
 		view = new GameView();
 		view.initialize();
 		
+		PlayerManager manager = PlayerManager.getInstance();
+		
+		manager.setNumPlayers(playerNames.size());
+		manager.addAllPlayers(playerNames);
+		
+		List<Player> players = manager.getPlayers();
+		
 		// Initialize sub controllers
 		boardController = new BoardController();
-		boardController.initialize(settings.numPlayers);
+		boardController.initialize(players);
 		
 		rackController = new RackController();
-		rackController.initialize(settings.numPlayers);
+		rackController.initialize(players);
 		
 		// Add sub-views
 		view.addToBorderPane(boardController.getView(), "center");
@@ -58,11 +68,11 @@ public class GameController extends Controller {
 		
 	}
 	
-	public void handleAboutMenuItemAction(Event event) {
+	protected void handleAboutMenuItemAction(Event event) {
 		LOGGER.info("TODO: Open about dialog (version, authors, last date modified");
 	}
 	
-	public void handleQuitGameMenuItemAction(Event event) {
+	protected void handleQuitGameMenuItemAction(Event event) {
 		// TODO - refactor so objects (e.g. panes) aren't being created multiple times
 		parent.initialize ((Stage) view.getWindow());
 	}

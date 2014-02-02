@@ -13,12 +13,12 @@ import com.kingsandthings.model.things.Thing;
 public class Tile {
 	
 	private static Logger LOGGER = Logger.getLogger(Tile.class.getName());
+
+	private Player owner;
+	private List<Tile> neighbours;
 	
 	private Terrain type = null;
-	private Player owner;
 	private List<Thing> things;
-	
-	public List<Tile> neighbours;
 	
 	/* 
 	 * Constructor
@@ -44,6 +44,14 @@ public class Tile {
 	 */
 	public void setOwner(Player player) {
 		owner = player;
+	}
+	
+	public List<Tile> getNeighbours() {
+		return neighbours;
+	}
+	
+	public void setNeighbours(List<Tile> neighbours) {
+		this.neighbours = neighbours;
 	}
 	
 	/*

@@ -2,27 +2,26 @@ package com.kingsandthings.game.board;
 
 import java.util.logging.Logger;
 
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
-import com.kingsandthings.game.View;
+import com.kingsandthings.game.InitializableView;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Tile;
 
-public class BoardView extends Pane implements View<Node> {
+public class BoardView extends Pane implements InitializableView {
 	
 	private static Logger LOGGER = Logger.getLogger(BoardView.class.getName());
 	
 	private TileView[][] tiles = new TileView[10][10];
 	
-	public BoardView(int numPlayers) {
+	public BoardView() {
 		
 	}
 	
 	@Override
-	public Node initialize() {
+	public void initialize() {
 		
 		getStyleClass().addAll("pane", "board");
 		
@@ -37,8 +36,6 @@ public class BoardView extends Pane implements View<Node> {
 		tiles = generateTiles(initialX, initialY, xOffset, yOffset, columnOffset, 10);
 		
 		addTilesToView(tiles);
-		
-		return this;
 	}
 	
 	public void toggleControlMarker(TileView tileView) {

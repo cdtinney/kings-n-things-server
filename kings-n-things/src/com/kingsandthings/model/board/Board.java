@@ -16,17 +16,8 @@ public class Board {
 	private Tile[][] tiles;
 	
 	public Board(int numPlayers) {
-		tiles = generateTiles(10);
 		
-		for (int i=0; i<tiles.length; ++i) {
-			for (int j=0; j<tiles[i].length; ++j) {
-				
-				if (tiles[i][j] != null) {
-					tiles[i][j].neighbours = getNeighbours(tiles[i][j]);
-				}
-				
-			}
-		}
+		tiles = generateTiles(10);
 		
 	}
 	
@@ -55,7 +46,7 @@ public class Board {
 	 */
 	public boolean validInitialControlTile(Tile tile, Player player) { 
 		
-		List<Tile> neighbours = getNeighbours(tile);
+		List<Tile> neighbours = getNeighbours(tiles, tile);
 		
 		boolean playerNeighbour = false;
 		boolean enemyNeighbour = false;
@@ -73,7 +64,7 @@ public class Board {
 		return playerNeighbour && !enemyNeighbour;
 	}
 	
-	private List<Tile> getNeighbours(Tile tile) {
+	private List<Tile> getNeighbours(Tile[][] tiles, Tile tile) {
 		
 		List<Tile> neighbours = new ArrayList<Tile>();
 		
@@ -209,6 +200,16 @@ public class Board {
 		tiles[1][6] = new Tile(Terrain.PLAINS);
 		tiles[2][6] = new Tile(Terrain.FOREST);
 		tiles[3][6] = new Tile(Terrain.FROZEN_WASTE);
+		
+		for (Tile[] row : tiles) {
+			for (Tile tile : row) {
+				
+				if (tile != null) {
+					tile.setNeighbours(getNeighbours(tiles, tile));
+				}
+				
+			}
+		}
 		
 		return tiles;
 		

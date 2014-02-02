@@ -7,7 +7,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 
-public class GameView extends Scene implements View<Scene> {
+public class GameView extends Scene implements InitializableView {
 	
 	private final static int WIDTH = 1280;
 	private final static int HEIGHT = 960;
@@ -22,12 +22,8 @@ public class GameView extends Scene implements View<Scene> {
 	}
 	
 	@Override
-	public Scene initialize() {
-		
+	public void initialize() {
 		addMenuBar();
-		
-		return this;
-		
 	}
 	
 	public void addToBorderPane(Node node, String position) {

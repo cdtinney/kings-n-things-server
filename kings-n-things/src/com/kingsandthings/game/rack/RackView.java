@@ -1,6 +1,7 @@
 package com.kingsandthings.game.rack;
 
-import javafx.scene.Node;
+import java.util.List;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -8,29 +9,31 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import com.kingsandthings.game.View;
+import com.kingsandthings.game.InitializableView;
+import com.kingsandthings.game.player.PlayerManager;
+import com.kingsandthings.model.Player;
 
-public class RackView extends Pane implements View<Node> {
+public class RackView extends Pane implements InitializableView {
 	
 	private static final Image rackImg = new Image("/images/extra/rack.png");
 	
-	// TODO - store racks mapped to players (?)
 	private int numPlayers;
 	
-	public RackView(int numPlayers) {
-		this.numPlayers = numPlayers;
+	private List<Player> players;
+	
+	public RackView(List<Player> players) {
+		this.numPlayers = players.size();
+		this.players = players;
 	}
 
 	@Override
-	public Node initialize() {
+	public void initialize() {
 		
 		setPrefWidth(300);
 		
 		getStyleClass().addAll("pane", "board");
 		
-		addPlayerRacks();
-		
-		return this;		
+		addPlayerRacks();	
 	}
 	
 	private void addPlayerRacks() {
@@ -42,11 +45,14 @@ public class RackView extends Pane implements View<Node> {
 		int textYOffset = 15;
 		
 		for (int i=0; i<numPlayers; ++i) {
+
+			String name = players.get(i).getName();
+			int pos = PlayerManager.getInstance().getPosition(players.get(i));
 			
-			int y = (yGap * i) + yOffset;
+			int y = (yGap * (pos -1)) + yOffset;
 			
-			Text text = new Text("Player " + (i + 1));
-			text.setFont(Font.font("Verdana", 20));
+			Text text = new Text(name + " - [position " + pos + "]");
+			text.setFont(Font.font("Lucida Sans", 20));
 			text.setFill(Color.WHITE);
 			text.setLayoutX(xOffset - 5);
 			text.setLayoutY(y - textYOffset);

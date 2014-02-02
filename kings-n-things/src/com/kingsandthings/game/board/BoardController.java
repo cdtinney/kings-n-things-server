@@ -35,10 +35,12 @@ public class BoardController extends Controller {
 	 * 
 	 * @param numPlayers
 	 */
-	public void initialize(int numPlayers) {
+	public void initialize(List<Player> players) {
+		
+		int numPlayers = players.size();
 
 		board = new Board(numPlayers);
-		view = new BoardView(numPlayers);
+		view = new BoardView();
 		
 		// Initialize view and set the tiles
 		view.initialize();
@@ -89,7 +91,7 @@ public class BoardController extends Controller {
 	 * 
 	 * @param event
 	 */
-	public void handleToggleMarkerMenuItem(Event event) {
+	protected void handleToggleMarkerMenuItem(Event event) {
 		
 		MenuItem item = (MenuItem) event.getSource();
 		
@@ -99,7 +101,7 @@ public class BoardController extends Controller {
 		Player owner = tileView.getTile().getOwner();
 		
 		// TODO - get current player (perhaps using some manager class)
-		Player p = new Player("Colin", 1);
+		Player p = new Player("Colin");
 		
 		boolean success = false;
 		
@@ -137,11 +139,11 @@ public class BoardController extends Controller {
 	 * 
 	 * @param event
 	 */
-	public void handleTileClick(Event event) {
+	protected void handleTileClick(Event event) {
 		
 		TileView tileView = (TileView) event.getSource();
 		
-		List<Tile> neighbours = tileView.getTile().neighbours;
+		List<Tile> neighbours = tileView.getTile().getNeighbours();
 		
 		for (TileView[] t : view.getTiles()) {
 			for (TileView tt : t) {
@@ -163,7 +165,7 @@ public class BoardController extends Controller {
 	 * 
 	 * @param event
 	 */
-	public void handleTileMouseExit(Event event) {
+	protected void handleTileMouseExit(Event event) {
 
 		TileView tileView = (TileView) event.getSource();
 		tileView.setOpacity(1.0);
@@ -175,7 +177,7 @@ public class BoardController extends Controller {
 	 * 
 	 * @param event
 	 */
-	public void handleTileMouseEnter(Event event) {
+	protected void handleTileMouseEnter(Event event) {
 
 		TileView tileView = (TileView) event.getSource();
 		tileView.setOpacity(0.8);

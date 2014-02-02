@@ -1,25 +1,27 @@
 package com.kingsandthings;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
 
 import javafx.event.Event;
 import javafx.scene.Parent;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import com.kingsandthings.game.GameController;
-import com.kingsandthings.game.GameSettings;
+import com.kingsandthings.game.player.PlayerManager;
 
 public class MainMenuController extends Controller {
 	
-	// Primary stage of the application
+	@SuppressWarnings("unused")
+	private static Logger LOGGER = Logger.getLogger(PlayerManager.class.getName());
+	
+	// Primary stage
 	private Stage stage;
 	
 	// View
 	private MainMenuView view;
 	
-	// Sub-controller
+	// Sub-controllers
 	private GameController gameController = new GameController();
 	
 	public void initialize(Stage stage) {
@@ -27,8 +29,9 @@ public class MainMenuController extends Controller {
 		this.stage = stage;
 		
 		view = new MainMenuView();
+		view.initialize();
 		
-		stage.setScene(view.initialize());
+		stage.setScene(view);
 		stage.centerOnScreen();
 		
 		setupHandlers();
@@ -44,30 +47,37 @@ public class MainMenuController extends Controller {
 		
 	}
 	
-	public void handleStartButtonAction(Event event) {
+	protected void handleStartButtonAction(Event event) {
 		
-		int numPlayers = (int) ((Slider) view.lookup("#playerNum")).getValue();
-		String playerName = ((TextField) view.lookup("#playerName")).getText();
+		List<String> playerNames = view.getPlayerNames();
 		
-		GameSettings settings = new GameSettings(numPlayers, Arrays.asList(playerName));
+		for (String name : playerNames) {
+			
+			if (name.trim().length() == 0) {
+				view.setStatusText("one or more player names are empty");
+				return;
+			}
+			
+		}
 		
-		gameController.initialize(stage, settings, this);
+		gameController.initialize(stage, playerNames, this);
 	}
 	
-	public void handleNewGameButtonAction(Event event) {
+	protected void handleNewGameButtonAction(Event event) {
 		
 		view.displayGameSettings();
+		view.setDefaultPlayerNames();
 		
 		addEventHandler(view.getRoot(), "startButton", "setOnAction", "handleStartButtonAction");
 		addEventHandler(view.getRoot(), "backButton", "setOnAction", "handleBackButtonAction");
 		
 	}
 	
-	public void handleBackButtonAction(Event event) {
+	protected void handleBackButtonAction(Event event) {
 		view.displayMainMenu();
 	}
 	
-	public void handleExitButtonAction(Event event) {
+	protected void handleExitButtonAction(Event event) {
 		stage.close();
 	}
 	

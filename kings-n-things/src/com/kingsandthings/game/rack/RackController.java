@@ -1,8 +1,11 @@
 package com.kingsandthings.game.rack;
 
+import java.util.List;
+
 import javafx.scene.Node;
 
 import com.kingsandthings.Controller;
+import com.kingsandthings.model.Player;
 
 public class RackController extends Controller {
 	
@@ -12,9 +15,9 @@ public class RackController extends Controller {
 		
 	}
 	
-	public void initialize(int numPlayers) {
+	public void initialize(List<Player> players) {
 		
-		view = new RackView(numPlayers);
+		view = new RackView(players);
 		view.initialize();
 		
 	}
