@@ -1,5 +1,6 @@
 package com.kingsandthings.game.board;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import javafx.event.Event;
@@ -9,25 +10,30 @@ import javafx.scene.control.MenuItem;
 import com.kingsandthings.Controller;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Board;
+import com.kingsandthings.model.board.Tile;
 
 public class BoardController extends Controller {
 	
-	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(BoardController.class.getName());
 
-	private Board board;		// Model
-	private BoardView view;		// View
+	// Model
+	private Board board;		
 	
-	/* 
-	 * Default constructor.
+	// View
+	private BoardView view;		
+	
+	/**
+	 * Default constructor,
 	 */
 	public BoardController() {
 		
 	}
 	
-	/*
-	 * Initialize controller. This method should initialize the view associated
-	 * with the controller.
+	/**
+	 * Initialization of the controller should initialize the necessary
+	 * model(s) and view(s), and set up event handling.
+	 * 
+	 * @param numPlayers
 	 */
 	public void initialize(int numPlayers) {
 
@@ -43,15 +49,17 @@ public class BoardController extends Controller {
 		
 	}
 	
-	/*
-	 * Returns the view associated with the controller, as a Node.
+	/**
+	 * The view of a controller should be the highest-level parent node.
+	 * 
+	 * @return 
 	 */
 	public Node getView() {
 		return view;
 	}
 	
-	/*
-	 * Subscribe to click events for the TileView elements.
+	/**
+	 * Subscribe to click events for the TileView objects.
 	 */
 	private void setupTileClickHandlers() {
 		
@@ -66,8 +74,8 @@ public class BoardController extends Controller {
 				}
 				
 				addEventHandler(tileView, "setOnMouseClicked", "handleTileClick");
-				addEventHandler(tileView, "setOnMouseEntered", "handleTileHover");
-				addEventHandler(tileView, "setOnMouseExited", "handleTileHover");
+				addEventHandler(tileView, "setOnMouseEntered", "handleTileMouseEnter");
+				addEventHandler(tileView, "setOnMouseExited", "handleTileMouseExit");
 				
 				// TODO - refactor event handling for action menu items
 				addEventHandler(tileView.getActionMenu().get("toggleControlMarker"), "setOnAction", "handleToggleMarkerMenuItem");
@@ -76,8 +84,10 @@ public class BoardController extends Controller {
 		}
 	}
 	
-	/*
-	 * Event handling
+	/**
+	 * Tile context menu event handling
+	 * 
+	 * @param event
 	 */
 	public void handleToggleMarkerMenuItem(Event event) {
 		
@@ -88,41 +98,87 @@ public class BoardController extends Controller {
 		
 		Player owner = tileView.getTile().getOwner();
 		
+		// TODO - get current player (perhaps using some manager class)
+		Player p = new Player("Colin", 1);
+		
+		boolean success = false;
+		
 		if (owner == null) {
-			// TODO - get current player (perhaps using some manager class)
-			Player p = new Player("Colin", 1);
-			tileView.getTile().setOwner(p);
+			success = board.setTileControl(tileView.getTile(), p, true);
+
+			// TODO - dialogs
+			if (success) {
+				LOGGER.info("Control marker placed successfully.");
+				view.toggleControlMarker(tileView);
+			} else {
+				LOGGER.info("Control marker not placed");
+			}
+			
 		} else {
-			tileView.getTile().setOwner(null);
+			
+			success = board.setTileControl(tileView.getTile(), p, false);
+			
+			if (success) {
+				LOGGER.info("Control marker removed successfully.");
+			} else {
+				LOGGER.info("Control marker not removed successfully - player does not control the tile.");
+			}
+			
 		}
 		
-		view.toggleControlMarker(tileView);
+		if (success) {
+			view.toggleControlMarker(tileView);
+		}
 		
 	}
 	
-	/*
-	 * Tile event handling
+	/**
+	 * Tile click event handling
+	 * 
+	 * @param event
 	 */
 	public void handleTileClick(Event event) {
 		
 		TileView tileView = (TileView) event.getSource();
 		
+		List<Tile> neighbours = tileView.getTile().neighbours;
+		
+		for (TileView[] t : view.getTiles()) {
+			for (TileView tt : t) {
+				if (tt == null) continue;
+				
+				if (neighbours.contains(tt.getTile())) {
+					tt.setOpacity(0.6);
+				} else {
+					tt.setOpacity(1.0);
+				}
+			}
+		}
+		
 		tileView.toggleActionMenu();
 	}
 	
-	/* 
-	 * Tile eEvent handling
+	/**
+	 * Tile mouse exit event handling
+	 * 
+	 * @param event
 	 */
-	public void handleTileHover(Event event) {
+	public void handleTileMouseExit(Event event) {
 
 		TileView tileView = (TileView) event.getSource();
+		tileView.setOpacity(1.0);
 		
-		double opacity = tileView.opacityProperty().get();
-		if (opacity != 1) {
-			tileView.setOpacity(1);
-		} else {
-			tileView.setOpacity(0.8);
-		}
+	}
+	
+	/**
+	 * Tile mouse enter event handling
+	 * 
+	 * @param event
+	 */
+	public void handleTileMouseEnter(Event event) {
+
+		TileView tileView = (TileView) event.getSource();
+		tileView.setOpacity(0.8);
 		
 	}
 

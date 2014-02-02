@@ -8,10 +8,16 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 
-public class WindowUtils {
+/**
+ * @author Colin Tinney
+ * 
+ * Utility class providing support functions for JavaFX nodes.
+ * 
+ */
+public class NodeUtils {
 	
 	@SuppressWarnings("unused")
-	private static Logger LOGGER = Logger.getLogger(WindowUtils.class.getName());
+	private static Logger LOGGER = Logger.getLogger(NodeUtils.class.getName());
 	
 	@SuppressWarnings("unchecked")
 	public static <T> T lookup(Parent parent, String id) {

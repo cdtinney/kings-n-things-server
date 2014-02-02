@@ -18,6 +18,8 @@ public class Tile {
 	private Player owner;
 	private List<Thing> things;
 	
+	public List<Tile> neighbours;
+	
 	/* 
 	 * Constructor
 	 */
@@ -26,6 +28,7 @@ public class Tile {
 		this.type = type;
 		
 		things = new ArrayList<Thing>();
+		neighbours = new ArrayList<Tile>();
 		
 	}
 	

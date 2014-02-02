@@ -1,14 +1,154 @@
 package com.kingsandthings.model.board;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
+
+import com.kingsandthings.model.Player;
 import com.kingsandthings.model.enums.Terrain;
-import com.kingsandthings.model.things.CreatureThing;
 
 public class Board {
+	
+	@SuppressWarnings("unused")
+	private static Logger LOGGER = Logger.getLogger(Board.class.getName());
 	
 	private Tile[][] tiles;
 	
 	public Board(int numPlayers) {
 		tiles = generateTiles(10);
+		
+		for (int i=0; i<tiles.length; ++i) {
+			for (int j=0; j<tiles[i].length; ++j) {
+				
+				if (tiles[i][j] != null) {
+					tiles[i][j].neighbours = getNeighbours(tiles[i][j]);
+				}
+				
+			}
+		}
+		
+	}
+	
+	public boolean setTileControl(Tile tile, Player player, boolean control) {
+		 
+		if (!control && tile.getOwner() == player) {
+			tile.setOwner(null);
+			return true;
+		}
+		
+		if (validInitialControlTile(tile, player)) {
+			tile.setOwner(player);
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
+	/*
+	 * Determines if a player can place an initial control marker on a tile.
+	 * 
+	 * Restrictions:
+	 * - the tile must be adjacent to a previous tile owned by the player
+	 * - the tile may not be adjacent to a tile owned by another player
+	 */
+	public boolean validInitialControlTile(Tile tile, Player player) { 
+		
+		List<Tile> neighbours = getNeighbours(tile);
+		
+		boolean playerNeighbour = false;
+		boolean enemyNeighbour = false;
+		
+		for (Tile neighbour : neighbours) {
+			
+			if (neighbour.getOwner() == player) {
+				playerNeighbour = true;
+			} else if (neighbour.getOwner() != null) {
+				enemyNeighbour = true;
+			}
+			
+		}
+		
+		return playerNeighbour && !enemyNeighbour;
+	}
+	
+	private List<Tile> getNeighbours(Tile tile) {
+		
+		List<Tile> neighbours = new ArrayList<Tile>();
+		
+		int r = -1;
+		int c = -1;
+		
+		for (int i=0; i<tiles.length; ++i) {
+			for (int j=0; j<tiles[i].length; ++j) {
+				
+				if (tiles[i][j] != null && tiles[i][j] == tile) {
+					r = i;
+					c = j;
+				}
+				
+			}
+		}
+		
+		if (r == -1 || c == -1) {
+			return null;
+		}
+		
+		// Right above
+		if (c < 3) {
+			Tile rightAbove = tiles[r][c+1];
+			neighbours.add(rightAbove);
+			
+		} else if (r > 0 && c >= 3) {
+			Tile rightAbove = tiles[r-1][c+1];
+			neighbours.add(rightAbove);
+		} 
+		
+		// Right below
+		if (c < 6) {
+			int rBelowOffset = c < 3 ? 0 : 1;
+			Tile rightBelow = tiles[r+1-rBelowOffset][c+1];
+			neighbours.add(rightBelow);
+		}
+		
+		// Columns from left -> center
+		if (c > 0 && c <= 3) {
+			
+			if (r > 0) {
+				Tile leftAbove = tiles[r-1][c-1];
+				neighbours.add(leftAbove);
+			}
+			
+			Tile leftBelow = tiles[r][c-1];
+			neighbours.add(leftBelow);
+		}
+		
+		// Columns from center+1 -> right
+		if (c > 3) {
+			
+			Tile leftAbove = tiles[r][c-1];
+			Tile leftBelow = tiles[r+1][c-1];
+			
+			neighbours.add(leftAbove);
+			neighbours.add(leftBelow);
+		}
+		
+		if (r < 6) {
+			Tile below = tiles[r+1][c];
+			neighbours.add(below);
+		}
+		
+		if (r > 0) {
+			Tile above = tiles[r-1][c];
+			neighbours.add(above);
+		}
+	
+		// TODO - "Fix" for bad grid coordinate system and laziness w.r.t conditions
+		neighbours.removeAll(Collections.singleton(null));
+		
+		return neighbours;
+		
 	}
 	
 	public Tile[][] getTiles() {
@@ -20,10 +160,7 @@ public class Board {
 		Tile[][] tiles = new Tile[size][size];
 		
 		// column 0
-		tiles[0][0] = new Tile(Terrain.DESERT);
-		
-		tiles[0][0].addThing(new CreatureThing());
-		
+		tiles[0][0] = new Tile(Terrain.DESERT);		
 		tiles[1][0] = new Tile(Terrain.FROZEN_WASTE);
 		tiles[2][0] = new Tile(Terrain.FOREST);
 		tiles[3][0] = new Tile(Terrain.MOUNTAIN);

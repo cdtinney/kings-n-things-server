@@ -3,6 +3,12 @@ package com.kingsandthings.util;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+/**
+ * @author Colin Tinney
+ * 
+ * Provides custom formatting support for log messages.
+ *
+ */
 public class CustomFormatter extends Formatter {
 	
     @Override

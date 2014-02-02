@@ -85,9 +85,12 @@ public class BoardView extends Pane implements View<Node> {
 				try {
 					
 					TileView view = tiles[i][j];
-					if (tile != null && view != null) {
-						view.setTile(tile);
+					
+					if (tile == null || view == null) {
+						continue;
 					}
+					
+					view.setTile(tile);
 					
 				} catch (IndexOutOfBoundsException e) {
 					LOGGER.warning("Model and view tile array size mismatch - " + e.getMessage());
