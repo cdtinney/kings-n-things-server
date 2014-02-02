@@ -47,7 +47,7 @@ public class RackView extends Pane implements InitializableView {
 		for (int i=0; i<numPlayers; ++i) {
 
 			String name = players.get(i).getName();
-			int pos = PlayerManager.getInstance().getPosition(players.get(i));
+			int pos = PlayerManager.INSTANCE.getPosition(players.get(i));
 			
 			int y = (yGap * (pos -1)) + yOffset;
 			

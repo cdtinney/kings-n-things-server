@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 
 import com.kingsandthings.Controller;
+import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Board;
 import com.kingsandthings.model.board.Tile;
@@ -101,12 +102,13 @@ public class BoardController extends Controller {
 		Player owner = tileView.getTile().getOwner();
 		
 		// TODO - get current player (perhaps using some manager class)
-		Player p = new Player("Colin");
+		Player player = PlayerManager.INSTANCE.getPlayer("Colin");
 		
 		boolean success = false;
 		
 		if (owner == null) {
-			success = board.setTileControl(tileView.getTile(), p, true);
+			
+			success = board.setTileControl(tileView.getTile(), player, true);
 
 			// TODO - dialogs
 			if (success) {
@@ -118,7 +120,7 @@ public class BoardController extends Controller {
 			
 		} else {
 			
-			success = board.setTileControl(tileView.getTile(), p, false);
+			success = board.setTileControl(tileView.getTile(), player, false);
 			
 			if (success) {
 				LOGGER.info("Control marker removed successfully.");

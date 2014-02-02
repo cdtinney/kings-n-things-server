@@ -35,7 +35,7 @@ public class GameController extends Controller {
 		view = new GameView();
 		view.initialize();
 		
-		PlayerManager manager = PlayerManager.getInstance();
+		PlayerManager manager = PlayerManager.INSTANCE;
 		
 		manager.setNumPlayers(playerNames.size());
 		manager.addAllPlayers(playerNames);

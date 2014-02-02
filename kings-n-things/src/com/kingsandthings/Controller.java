@@ -53,10 +53,12 @@ public abstract class Controller {
 						
 						if (parameters != null) {
 							Method method = instance.getClass().getDeclaredMethod(handlerMethodName, Event.class, Map.class);
+							method.setAccessible(true);
 							method.invoke(instance, event, parameters);
 							
 						} else {
 							Method method = instance.getClass().getDeclaredMethod(handlerMethodName, Event.class);
+							method.setAccessible(true);
 							method.invoke(instance, event);
 							
 						}

@@ -18,7 +18,7 @@ public final class PlayerManager {
 	
 	private static Logger LOGGER = Logger.getLogger(PlayerManager.class.getName());
 	
-	private static final PlayerManager INSTANCE = new PlayerManager();
+	public static final PlayerManager INSTANCE = new PlayerManager();
 	
 	private Integer numPlayers;
 	
@@ -36,8 +36,8 @@ public final class PlayerManager {
 		
 	}
 	
-	public static PlayerManager getInstance() {
-		return INSTANCE;
+	public Player getPlayer(String name) {
+		return players.get(name);
 	}
 	
 	public List<Player> getPlayers() {
