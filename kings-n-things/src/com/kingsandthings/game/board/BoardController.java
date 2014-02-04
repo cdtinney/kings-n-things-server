@@ -48,8 +48,8 @@ public class BoardController extends Controller {
 		view.setTileImages(board.getTiles());
 		
 		// Set up starting tiles
-		for (Player player : PlayerManager.INSTANCE.getPlayers()) {
-			int pos = PlayerManager.INSTANCE.getPosition(player);
+		for (Player player : PlayerManager.getInstance().getPlayers()) {
+			int pos = PlayerManager.getInstance().getPosition(player);
 			board.setStartingTile(player, pos);
 		}
 		
@@ -105,7 +105,7 @@ public class BoardController extends Controller {
 		TileActionMenu tileActionMenu = (TileActionMenu) item.getParentPopup();
 		TileView tileView = tileActionMenu.getOwner();
 		
-		Player player = PlayerManager.INSTANCE.getActivePlayer();
+		Player player = PlayerManager.getInstance().getActivePlayer();
 		
 		board.toggleTileControl(tileView.getTile(), player);
 		

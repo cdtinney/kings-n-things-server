@@ -1,7 +1,5 @@
 package com.kingsandthings.game.player;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +8,7 @@ import java.util.logging.Logger;
 
 import javafx.scene.image.Image;
 
+import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.model.Player;
 
 /**
@@ -18,13 +17,10 @@ import com.kingsandthings.model.Player;
  * Singleton manager class for players.
  *
  */
-public final class PlayerManager {
+public class PlayerManager {
 	
 	private static Logger LOGGER = Logger.getLogger(PlayerManager.class.getName());
-	
-	private List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
-	
-	public static final PlayerManager INSTANCE = new PlayerManager();
+	private static PlayerManager INSTANCE = null;
 	
 	private Integer numPlayers;
 	
@@ -36,28 +32,18 @@ public final class PlayerManager {
 	public int phaseTurns = 2;
 	public int currTurns = 1;
 	
-	public PlayerManager() {
-		
-		if (INSTANCE != null) {
-			LOGGER.warning("Already instantiated");
-		}
-		
+	private PlayerManager() {
 		players = new HashMap<String, Player>();
 		positions = new HashMap<Player, Integer>();
-		
-	}
-
-	
-	public void addChangeListener(PropertyChangeListener newListener) {
-		listeners.add(newListener);
 	}
 	
-	private void notifyListeners(Object object, String property, Object oldValue, Object newValue) {
+	public static PlayerManager getInstance() {
 		
-		for (PropertyChangeListener listener : listeners) {
-			listener.propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
-	    }
+		if (INSTANCE == null) {
+			INSTANCE = new PlayerManager();
+		}
 		
+		return INSTANCE;
 	}
 	
 	public Player getActivePlayer() {
@@ -65,7 +51,7 @@ public final class PlayerManager {
 	}
 	
 	public void setActivePlayer(Player player) {
-		notifyListeners(this, "activePlayer", activePlayer, activePlayer = player);
+		PropertyChangeDispatcher.getInstance().notify(PlayerManager.class, "activePlayer", activePlayer, activePlayer = player);
 		LOGGER.info("Active player set to '" + (activePlayer != null ? activePlayer.getName() : "none") + "'");
 	}
 	
@@ -138,9 +124,13 @@ public final class PlayerManager {
 		}
 		
 		Player player = new Player(name);
+		player.setNumGold(10);
+		
 		players.put(name, player);
 
+		// TODO - should this be done here?
 		setControlMarkerImage(player, players.size());
+		
 		setInitialPosition(player, players.size());
 		
 		return true;

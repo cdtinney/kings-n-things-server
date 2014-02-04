@@ -1,7 +1,5 @@
 package com.kingsandthings.game.board;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
 
 import javafx.scene.image.Image;
@@ -9,6 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 import com.kingsandthings.game.InitializableView;
+import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Tile;
 
@@ -40,10 +39,10 @@ public class BoardView extends Pane implements InitializableView {
 		addTilesToView(tiles);
 	}
 	
-	public void toggleControlMarker(TileView tileView) {
+	@SuppressWarnings("unused")
+	private void toggleControlMarker(TileView tileView) {
 		
 		Player owner = tileView.getTile().getOwner();
-		
 		if (owner == null) {
 			getChildren().remove(tileView.getControlMarkerView());
 			return;
@@ -91,14 +90,7 @@ public class BoardView extends Pane implements InitializableView {
 					
 					view.setTile(tile);
 					
-					tile.addChangeListener(new PropertyChangeListener() {
-
-						@Override
-						public void propertyChange(PropertyChangeEvent event) {
-						       toggleControlMarker(view);
-						}
-						
-					});
+					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "owner", this, view, TileView.class, "toggleControlMarker");
 					
 				} catch (IndexOutOfBoundsException e) {
 					LOGGER.warning("Model and view tile array size mismatch - " + e.getMessage());

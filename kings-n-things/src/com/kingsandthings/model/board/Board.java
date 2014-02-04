@@ -99,7 +99,7 @@ public class Board {
 			
 			if (numControlled++ < NUM_INITIAL_TILES) {
 				tile.setOwner(player);			
-				PlayerManager.INSTANCE.nextPlayer();
+				PlayerManager.getInstance().nextPlayer();
 			}
 			
 		}

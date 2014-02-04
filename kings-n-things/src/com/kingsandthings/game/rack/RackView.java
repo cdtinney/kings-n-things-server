@@ -1,7 +1,6 @@
 package com.kingsandthings.game.rack;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javafx.scene.image.Image;
@@ -12,6 +11,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import com.kingsandthings.game.InitializableView;
+import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.model.Player;
 
@@ -37,26 +37,21 @@ public class RackView extends Pane implements InitializableView {
 		
 		addPlayerRacks();	
 		
-		final RackView instance = this;
+		PropertyChangeDispatcher.getInstance().addListener(PlayerManager.class, "activePlayer", this, null, null, "updateActivePlayer");
+	}
+	
+	protected void updateActivePlayer(PropertyChangeEvent event) {
 		
-		PlayerManager.INSTANCE.addChangeListener(new PropertyChangeListener() {
-
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				
-				String oldName = ((Player) event.getOldValue()).getName();
-				Text oldText = (Text) instance.lookup("#" + oldName.replaceAll("\\s+",""));
-				oldText.setText(oldName);
-				
-				if (event.getNewValue() != null) {
-					String newName = ((Player) event.getNewValue()).getName();
-					Text newText = (Text) instance.lookup("#" + newName.replaceAll("\\s+",""));
-					newText.setText("* " + newName);
-				}
-				
-			}
-			
-		});
+		String oldName = ((Player) event.getOldValue()).getName();
+		Text oldText = (Text) lookup("#" + oldName.replaceAll("\\s+",""));
+		oldText.setText(oldName);
+		
+		if (event.getNewValue() != null) {
+			String newName = ((Player) event.getNewValue()).getName();
+			Text newText = (Text) lookup("#" + newName.replaceAll("\\s+",""));
+			newText.setText("* " + newName);
+		}
+		
 	}
 	
 	private void addPlayerRacks() {
@@ -75,11 +70,11 @@ public class RackView extends Pane implements InitializableView {
 			
 			String displayText = name;
 			
-			if (PlayerManager.INSTANCE.getActivePlayer() == player) {
+			if (PlayerManager.getInstance().getActivePlayer() == player) {
 				displayText = "* " + displayText;
 			}
 			
-			int pos = PlayerManager.INSTANCE.getPosition(player);
+			int pos = PlayerManager.getInstance().getPosition(player);
 			int y = (yGap * (pos -1)) + yOffset;
 			
 			ImageView controlMarker = new ImageView(player.getControlMarker());
