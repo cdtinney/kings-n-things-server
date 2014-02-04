@@ -1,6 +1,5 @@
 package com.kingsandthings;
 	
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
@@ -9,6 +8,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import com.kingsandthings.util.CustomFormatter;
+import com.kingsandthings.util.CustomHandler;
+import com.kingsandthings.util.CustomLevel;
 
 public class MainApplication extends Application {
 	
@@ -44,10 +45,11 @@ public class MainApplication extends Application {
 			parent.removeHandler(handler);
 		}
 		
-		ConsoleHandler consoleHandler = new ConsoleHandler();
-		consoleHandler.setFormatter(new CustomFormatter());
+		CustomHandler customHandler = new CustomHandler();
+		customHandler.setFormatter(new CustomFormatter());
+		customHandler.setLevel(CustomLevel.STATUS);		
 		
-		parent.addHandler(consoleHandler);
+		parent.addHandler(customHandler);
 		
 	}
 	

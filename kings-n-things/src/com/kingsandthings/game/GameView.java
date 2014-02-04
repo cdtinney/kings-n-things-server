@@ -13,9 +13,9 @@ public class GameView extends Scene implements InitializableView {
 	private final static int WIDTH = 1280;
 	private final static int HEIGHT = 840;
 	
-	private BorderPane root;
+	private static Label status;
 	
-	private Label status;
+	private BorderPane root;
 	
 	public GameView() {
 		super(new BorderPane(), WIDTH, HEIGHT);
@@ -49,6 +49,15 @@ public class GameView extends Scene implements InitializableView {
 			
 		}
 		
+	}
+	
+	public static void setStatusText(String message) {
+		
+		if (status == null) {
+			return;
+		}
+		
+		status.setText("STATUS: " + message);		
 	}
 	
 	private void addMenuBar() {

@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 import com.kingsandthings.game.GameController;
 import com.kingsandthings.game.player.PlayerManager;
+import com.kingsandthings.util.CustomLevel;
 
 public class MainMenuController extends Controller {
 	
@@ -25,6 +26,8 @@ public class MainMenuController extends Controller {
 	private GameController gameController = new GameController();
 	
 	public void initialize(Stage stage) {
+		
+		LOGGER.log(CustomLevel.STATUS, "test");
 		
 		this.stage = stage;
 		
