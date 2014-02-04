@@ -10,3 +10,18 @@
    	-fx-background-position: center center; 
    	-fx-background-repeat: repeat;
 }
+
+.player {
+	/* Border */
+	-fx-border-color: #000000;
+	-fx-border-width: 1px;
+	
+	/* Effects */
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+.activePlayer {
+	/* Border */
+	-fx-border-color: white;
+	-fx-border-width: 2px;
+}

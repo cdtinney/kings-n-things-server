@@ -29,6 +29,7 @@ public class PlayerManager {
 	
 	private Player activePlayer;
 	
+	// TASK - create phase object(s) to hold these variables
 	public int phaseTurns = 2;
 	public int currTurns = 1;
 	
@@ -51,7 +52,7 @@ public class PlayerManager {
 	}
 	
 	public void setActivePlayer(Player player) {
-		PropertyChangeDispatcher.getInstance().notify(PlayerManager.class, "activePlayer", activePlayer, activePlayer = player);
+		PropertyChangeDispatcher.getInstance().notify(this, "activePlayer", activePlayer, activePlayer = player);
 		LOGGER.info("Active player set to '" + (activePlayer != null ? activePlayer.getName() : "none") + "'");
 	}
 	
@@ -69,8 +70,8 @@ public class PlayerManager {
 			
 			int position = positions.get(player);
 			if (position == activePosition + 1 || (activePosition == numPlayers && position == 1)) {
-				currTurns++;
 				setActivePlayer(player);
+				currTurns++;
 				return;
 			}
 			
@@ -128,7 +129,7 @@ public class PlayerManager {
 		
 		players.put(name, player);
 
-		// TODO - should this be done here?
+		// TASK - should this be done here?
 		setControlMarkerImage(player, players.size());
 		
 		setInitialPosition(player, players.size());

@@ -11,7 +11,7 @@ import com.kingsandthings.Controller;
 import com.kingsandthings.MainMenuController;
 import com.kingsandthings.game.board.BoardController;
 import com.kingsandthings.game.player.PlayerManager;
-import com.kingsandthings.game.rack.RackController;
+import com.kingsandthings.game.player.PlayerPaneController;
 import com.kingsandthings.model.Player;
 
 public class GameController extends Controller {
@@ -23,7 +23,7 @@ public class GameController extends Controller {
 	
 	// Sub-controllers
 	private BoardController boardController;
-	private RackController rackController;
+	private PlayerPaneController rackController;
 	
 	// Parent controller
 	private MainMenuController parent;
@@ -46,7 +46,7 @@ public class GameController extends Controller {
 		boardController = new BoardController();
 		boardController.initialize(players);
 		
-		rackController = new RackController();
+		rackController = new PlayerPaneController();
 		rackController.initialize(players);
 		
 		// Add sub-views

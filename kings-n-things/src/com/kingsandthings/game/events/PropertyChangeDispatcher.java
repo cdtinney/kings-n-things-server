@@ -32,6 +32,10 @@ public class PropertyChangeDispatcher {
 		return INSTANCE;
 	}
 	
+	public void addListener(Class<?> clazz, String property, final Object instance, PropertyChangeListener listener) {
+		getListeners(clazz, property).add(listener);
+	}
+	
 	public void addListener(Class<?> clazz, String property, final Object instance, final String handlerMethodName) {
 		addListener(clazz, property, instance, null, null, handlerMethodName);				
 	}
@@ -76,10 +80,12 @@ public class PropertyChangeDispatcher {
 		
 	}
 	
-	public void notify(Class<?> clazz, String property, Object oldValue, Object newValue) {
+	public void notify(Object source, String property, Object oldValue, Object newValue) {
+		
+		Class<?> clazz = source.getClass();
 		
 		for (PropertyChangeListener listener : getListeners(clazz, property)) {
-			listener.propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
+			listener.propertyChange(new PropertyChangeEvent(source, property, oldValue, newValue));
 		}
 		
 	}

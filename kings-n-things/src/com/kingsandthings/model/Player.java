@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import javafx.scene.image.Image;
 
+import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.model.board.Tile;
 
 public class Player {
@@ -35,8 +36,8 @@ public class Player {
 			LOGGER.warning("Cannot set gold value to a negative number.");
 			return;
 		}
-		
-		this.numGold = num;
+
+		PropertyChangeDispatcher.getInstance().notify(this, "numGold", numGold, numGold = num);
 	}
 	
 	public void setStartingTile(Tile tile) {

@@ -214,8 +214,7 @@ public class Board {
 			Tile above = tiles[r-1][c];
 			neighbours.add(above);
 		}
-	
-		// TODO - "Fix" for bad grid coordinate system and laziness w.r.t conditions
+		
 		neighbours.removeAll(Collections.singleton(null));
 		
 		return neighbours;
@@ -277,6 +276,7 @@ public class Board {
 		tiles[2][6] = new Tile(Terrain.FOREST);
 		tiles[3][6] = new Tile(Terrain.FROZEN_WASTE);
 		
+		// Set the neighbours
 		for (Tile[] row : tiles) {
 			for (Tile tile : row) {
 				
