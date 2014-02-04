@@ -44,14 +44,16 @@ public class RackView extends Pane implements InitializableView {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				
-				String oldName = ((Player) event.getOldValue()).getName().replaceAll("\\s+","");
-				String newName = ((Player) event.getNewValue()).getName().replaceAll("\\s+","");
-				
-				Text oldText = (Text) instance.lookup("#" + oldName);
-				Text newText = (Text) instance.lookup("#" + newName);
-				
+				String oldName = ((Player) event.getOldValue()).getName();
+				Text oldText = (Text) instance.lookup("#" + oldName.replaceAll("\\s+",""));
 				oldText.setText(oldName);
-				newText.setText("* " + newName);
+				
+				if (event.getNewValue() != null) {
+					String newName = ((Player) event.getNewValue()).getName();
+					Text newText = (Text) instance.lookup("#" + newName.replaceAll("\\s+",""));
+					newText.setText("* " + newName);
+				}
+				
 			}
 			
 		});
@@ -70,6 +72,7 @@ public class RackView extends Pane implements InitializableView {
 			Player player = players.get(i);
 
 			String name = player.getName();
+			
 			String displayText = name;
 			
 			if (PlayerManager.INSTANCE.getActivePlayer() == player) {

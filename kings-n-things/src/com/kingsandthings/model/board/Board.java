@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.enums.Terrain;
 
@@ -14,8 +15,14 @@ public class Board {
 	
 	private Tile[][] tiles;
 	
+	private int NUM_INITIAL_TILES = 3;
+	
 	public Board(int numPlayers) {
 		tiles = generateTiles(10);
+	}
+	
+	public Tile[][] getTiles() {
+		return tiles;
 	}
 	
 	public void toggleTileControl(Tile tile, Player player) {
@@ -32,7 +39,7 @@ public class Board {
 		
 	}
 	
-	public void clearTileControl(Tile tile, Player player) {
+	private void clearTileControl(Tile tile, Player player) {
 		
 		if (tile.getOwner() != player) {
 			LOGGER.info("Cannot remove control marker from a tile the player does not own.");
@@ -44,18 +51,16 @@ public class Board {
 			return;
 		}
 		
-		player.removeControlledTile(tile);
+		tile.setOwner(null);
 		
 	}
 	
-	public void setTileControl(Tile tile, Player player) {
+	private void setTileControl(Tile tile, Player player) {
 		
 		if (!validInitialControlTile(tile, player)) {
 			LOGGER.info("Tile is not valid for initial control marker placement.");
 			return;
 		}
-		
-		player.addControlledTile(tile);
 		
 	}
 	
@@ -63,10 +68,17 @@ public class Board {
 	 * Determines if a player can place an initial control marker on a tile.
 	 * 
 	 * Restrictions:
+	 * - the player has not placed more than the maximum number of initial control markers
 	 * - the tile must be adjacent to a previous tile owned by the player
 	 * - the tile may not be adjacent to a tile owned by another player
 	 */
-	public boolean validInitialControlTile(Tile tile, Player player) { 
+	private boolean validInitialControlTile(Tile tile, Player player) { 
+		
+		int numControlled = numControlledTiles(player);
+		if (numControlled >= NUM_INITIAL_TILES) {
+			LOGGER.warning("Only " + NUM_INITIAL_TILES + " control markers can be placed in the 'Starting Kingdoms' phase.");
+			return false;
+		}
 		
 		List<Tile> neighbours = getNeighbours(tiles, tile);
 		
@@ -83,7 +95,29 @@ public class Board {
 			
 		}
 		
+		if (playerNeighbour && !enemyNeighbour) {
+			
+			if (numControlled++ < NUM_INITIAL_TILES) {
+				tile.setOwner(player);			
+				PlayerManager.INSTANCE.nextPlayer();
+			}
+			
+		}
+		
 		return playerNeighbour && !enemyNeighbour;
+	}
+	
+	private int numControlledTiles(Player player) {
+		
+		int numOwned = 0;
+		for (Tile[] row : tiles) {
+			for (Tile t : row) {
+				if (t != null && t.getOwner() == player) numOwned++;
+			}
+		}
+		
+		return numOwned;
+		
 	}
 	
 	public void setStartingTile(Player player, int position) {
@@ -186,10 +220,6 @@ public class Board {
 		
 		return neighbours;
 		
-	}
-	
-	public Tile[][] getTiles() {
-		return tiles;
 	}
 	
 	private Tile[][] generateTiles(int size) {

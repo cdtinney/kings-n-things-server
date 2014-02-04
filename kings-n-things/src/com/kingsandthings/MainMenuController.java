@@ -50,7 +50,6 @@ public class MainMenuController extends Controller {
 	protected void handleStartButtonAction(Event event) {
 		
 		List<String> playerNames = view.getPlayerNames();
-		
 		for (String name : playerNames) {
 			
 			if (name.trim().length() == 0) {

@@ -33,6 +33,9 @@ public final class PlayerManager {
 	
 	private Player activePlayer;
 	
+	public int phaseTurns = 2;
+	public int currTurns = 1;
+	
 	public PlayerManager() {
 		
 		if (INSTANCE != null) {
@@ -61,22 +64,31 @@ public final class PlayerManager {
 		return activePlayer;
 	}
 	
+	public void setActivePlayer(Player player) {
+		notifyListeners(this, "activePlayer", activePlayer, activePlayer = player);
+		LOGGER.info("Active player set to '" + (activePlayer != null ? activePlayer.getName() : "none") + "'");
+	}
+	
 	public void nextPlayer() {
+		
+		if (currTurns == phaseTurns * numPlayers) {
+			LOGGER.info("All players completed phase.");
+			setActivePlayer(null);
+			return;
+		}
 		
 		int activePosition = positions.get(activePlayer);
 		
 		for (Player player : positions.keySet()) {
 			
 			int position = positions.get(player);
-			if (position == activePosition + 1) {
-				notifyListeners(this, "activePlayer", activePlayer, activePlayer = player);
+			if (position == activePosition + 1 || (activePosition == numPlayers && position == 1)) {
+				currTurns++;
+				setActivePlayer(player);
 				return;
 			}
 			
 		}
-		
-		LOGGER.info("All players completed phase.");
-		activePlayer = null;
 		
 	}
 	
@@ -153,6 +165,7 @@ public final class PlayerManager {
 				return false;
 			}
 			
+			// TODO - done elsewhere when a phase begins
 			if (position == 1) {
 				activePlayer = player;
 			}
