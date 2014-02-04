@@ -2,6 +2,7 @@ package com.kingsandthings.game;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -14,6 +15,8 @@ public class GameView extends Scene implements InitializableView {
 	
 	private BorderPane root;
 	
+	private Label status;
+	
 	public GameView() {
 		super(new BorderPane(), WIDTH, HEIGHT);
 		
@@ -24,6 +27,7 @@ public class GameView extends Scene implements InitializableView {
 	@Override
 	public void initialize() {
 		addMenuBar();
+		addStatusText();
 	}
 	
 	public void addToBorderPane(Node node, String position) {
@@ -50,6 +54,7 @@ public class GameView extends Scene implements InitializableView {
 	private void addMenuBar() {
 		
 		MenuBar menuBar = new MenuBar();
+		menuBar.setPrefWidth(WIDTH);
 		
 		// Game menu
 		Menu gameMenu = new Menu("Game");
@@ -71,6 +76,16 @@ public class GameView extends Scene implements InitializableView {
 		menuBar.getMenus().addAll(gameMenu, helpMenu);
 		
 		root.setTop(menuBar);
+		
+	}
+	
+	private void addStatusText() {
+		
+		status = new Label("STATUS:");
+		status.getStyleClass().add("statusText");
+		status.setPrefWidth(root.getWidth());
+		
+		root.setBottom(status);
 		
 	}
 	

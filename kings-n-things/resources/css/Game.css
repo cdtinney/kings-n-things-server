@@ -25,3 +25,13 @@
 	-fx-border-color: white;
 	-fx-border-width: 2px;
 }
+
+.statusText {
+	/* Color */
+	-fx-background-color: #1A1A1A; 
+	-fx-text-fill: white;
+	
+	/* Padding */
+	-fx-label-padding: 3px 0px 3px 7px;
+	
+}
