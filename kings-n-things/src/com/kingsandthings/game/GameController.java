@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 import com.kingsandthings.Controller;
 import com.kingsandthings.MainMenuController;
 import com.kingsandthings.game.board.BoardController;
+import com.kingsandthings.game.phase.Phase;
+import com.kingsandthings.game.phase.StartingKingdomsPhase;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.game.player.PlayerPaneController;
 import com.kingsandthings.model.Player;
@@ -39,6 +41,10 @@ public class GameController extends Controller {
 		
 		manager.setNumPlayers(playerNames.size());
 		manager.addAllPlayers(playerNames);
+		
+		Phase phase = new StartingKingdomsPhase();
+		manager.setCurrentPhase(phase);
+		phase.begin();
 		
 		List<Player> players = manager.getPlayers();
 		

@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javafx.scene.image.Image;
 
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
+import com.kingsandthings.game.phase.Phase;
 import com.kingsandthings.model.Player;
 
 /**
@@ -29,9 +30,7 @@ public class PlayerManager {
 	
 	private Player activePlayer;
 	
-	// TASK - create phase object(s) to hold these variables
-	public int phaseTurns = 2;
-	public int currTurns = 1;
+	private Phase currentPhase;
 	
 	private PlayerManager() {
 		players = new HashMap<String, Player>();
@@ -47,6 +46,10 @@ public class PlayerManager {
 		return INSTANCE;
 	}
 	
+	public void setCurrentPhase(Phase phase) {
+		currentPhase = phase;
+	}
+	
 	public Player getActivePlayer() {
 		return activePlayer;
 	}
@@ -58,12 +61,6 @@ public class PlayerManager {
 	
 	public void nextPlayer() {
 		
-		if (currTurns == phaseTurns * numPlayers) {
-			LOGGER.info("All players completed phase.");
-			setActivePlayer(null);
-			return;
-		}
-		
 		int activePosition = positions.get(activePlayer);
 		
 		for (Player player : positions.keySet()) {
@@ -71,7 +68,7 @@ public class PlayerManager {
 			int position = positions.get(player);
 			if (position == activePosition + 1 || (activePosition == numPlayers && position == 1)) {
 				setActivePlayer(player);
-				currTurns++;
+				currentPhase.incrementTurns();
 				return;
 			}
 			
@@ -85,6 +82,10 @@ public class PlayerManager {
 	
 	public List<Player> getPlayers() {
 		return new ArrayList<Player>(players.values());
+	}
+	
+	public int getNumPlayers() {
+		return numPlayers;
 	}
 	
 	public void setNumPlayers(int numPlayers) {
@@ -125,8 +126,6 @@ public class PlayerManager {
 		}
 		
 		Player player = new Player(name);
-		player.setNumGold(10);
-		
 		players.put(name, player);
 
 		// TASK - should this be done here?
@@ -154,11 +153,6 @@ public class PlayerManager {
 			if (positions.containsValue(position)) {
 				LOGGER.warning("Initial position " + position + " already assigned to player.");
 				return false;
-			}
-			
-			// TODO - done elsewhere when a phase begins
-			if (position == 1) {
-				activePlayer = player;
 			}
 			
 			positions.put(player, position);

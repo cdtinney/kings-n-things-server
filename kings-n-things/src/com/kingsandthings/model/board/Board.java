@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.kingsandthings.game.player.PlayerManager;
+import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.enums.Terrain;
 
@@ -42,12 +43,12 @@ public class Board {
 	private void clearTileControl(Tile tile, Player player) {
 		
 		if (tile.getOwner() != player) {
-			LOGGER.info("Cannot remove control marker from a tile the player does not own.");
+			LOGGER.log(LogLevel.STATUS, "Cannot remove control marker from a tile the player does not own.");
 			return;
 		}
 		
 		if (player.getStartingTile() == tile) {
-			LOGGER.info("Cannot remove control marker from starting tile.");
+			LOGGER.log(LogLevel.STATUS, "Cannot remove control marker from starting tile.");
 			return;
 		}
 		
@@ -58,7 +59,7 @@ public class Board {
 	private void setTileControl(Tile tile, Player player) {
 		
 		if (!validInitialControlTile(tile, player)) {
-			LOGGER.info("Tile is not valid for initial control marker placement.");
+			LOGGER.log(LogLevel.STATUS, "Tile is not valid for initial control marker placement.");
 			return;
 		}
 		
@@ -76,7 +77,7 @@ public class Board {
 		
 		int numControlled = numControlledTiles(player);
 		if (numControlled >= NUM_INITIAL_TILES) {
-			LOGGER.warning("Only " + NUM_INITIAL_TILES + " control markers can be placed in the 'Starting Kingdoms' phase.");
+			LOGGER.log(LogLevel.STATUS, "Only " + NUM_INITIAL_TILES + " control markers can be placed in the 'Starting Kingdoms' phase.");
 			return false;
 		}
 		

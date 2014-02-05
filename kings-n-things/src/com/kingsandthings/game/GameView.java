@@ -7,6 +7,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
 
 public class GameView extends Scene implements InitializableView {
 	
@@ -91,6 +92,7 @@ public class GameView extends Scene implements InitializableView {
 	private void addStatusText() {
 		
 		status = new Label("STATUS:");
+		status.setFont(new Font("Lucida Console", 12));
 		status.getStyleClass().add("statusText");
 		status.setPrefWidth(root.getWidth());
 		
