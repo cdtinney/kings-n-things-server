@@ -86,7 +86,7 @@ public class BoardController extends Controller {
 				addEventHandler(tileView, "setOnMouseEntered", "handleTileMouseEnter");
 				addEventHandler(tileView, "setOnMouseExited", "handleTileMouseExit");
 				
-				// TODO - refactor event handling for action menu items
+				// TODO - refactor event handling for action menus (currently, every single menu has an individual handler)
 				addEventHandler(tileView.getActionMenu().get("toggleControlMarker"), "setOnAction", "handleToggleMarkerMenuItem");
 				
 			}
