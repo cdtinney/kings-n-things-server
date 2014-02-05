@@ -1,4 +1,4 @@
-package com.kingsandthings.util;
+package com.kingsandthings.logging;
 
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -9,21 +9,21 @@ import java.util.logging.LogRecord;
  * Provides custom formatting support for log messages.
  *
  */
-public class CustomFormatter extends Formatter {
+public class LogFormatter extends Formatter {
 	
     @Override
     public String format(final LogRecord r) {
     	
         StringBuilder sb = new StringBuilder();
         
-        if (r.getLevel() == CustomLevel.STATUS) {
-            sb.append(formatMessage(r)).append(System.getProperty("line.separator"));
+        if (r.getLevel() == LogLevel.STATUS) {
+            sb.append(formatMessage(r));
             return sb.toString();
         }
         
        	sb.append(r.getLevel() + ": ");
         sb.append(r.getSourceClassName() + ":" + r.getSourceMethodName() + " - ");
-        sb.append(formatMessage(r)).append(System.getProperty("line.separator"));
+        sb.append(formatMessage(r));
         
         return sb.toString();
     }

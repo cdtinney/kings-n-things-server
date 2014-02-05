@@ -7,9 +7,9 @@ import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import com.kingsandthings.util.CustomFormatter;
-import com.kingsandthings.util.CustomHandler;
-import com.kingsandthings.util.CustomLevel;
+import com.kingsandthings.logging.LogFormatter;
+import com.kingsandthings.logging.LogHandler;
+import com.kingsandthings.logging.LogLevel;
 
 public class MainApplication extends Application {
 	
@@ -45,9 +45,11 @@ public class MainApplication extends Application {
 			parent.removeHandler(handler);
 		}
 		
-		CustomHandler customHandler = new CustomHandler();
-		customHandler.setFormatter(new CustomFormatter());
-		customHandler.setLevel(CustomLevel.STATUS);		
+		LogHandler customHandler = new LogHandler();
+		customHandler.setFormatter(new LogFormatter());
+		customHandler.setLevel(LogLevel.DEBUG);		
+		
+		parent.setLevel(LogLevel.DEBUG);
 		
 		parent.addHandler(customHandler);
 		

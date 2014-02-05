@@ -13,7 +13,6 @@ import com.kingsandthings.game.board.BoardController;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.game.player.PlayerPaneController;
 import com.kingsandthings.model.Player;
-import com.kingsandthings.util.CustomLevel;
 
 public class GameController extends Controller {
 	
@@ -66,7 +65,7 @@ public class GameController extends Controller {
 		
 		addEventHandler(parent, "aboutMenuItem", "setOnAction", "handleAboutMenuItemAction");
 		addEventHandler(parent, "quitGameMenuItem", "setOnAction", "handleQuitGameMenuItemAction");
-		
+		 
 	}
 	
 	protected void handleAboutMenuItemAction(Event event) {
