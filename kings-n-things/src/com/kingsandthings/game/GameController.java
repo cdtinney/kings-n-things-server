@@ -25,7 +25,8 @@ public class GameController extends Controller {
 	
 	// Sub-controllers
 	private BoardController boardController;
-	private PlayerPaneController rackController;
+	private PlayerPaneController playerController;
+	private GameActionController gameActionController;
 	
 	// Parent controller
 	private MainMenuController parent;
@@ -52,12 +53,16 @@ public class GameController extends Controller {
 		boardController = new BoardController();
 		boardController.initialize(players);
 		
-		rackController = new PlayerPaneController();
-		rackController.initialize(players);
+		playerController = new PlayerPaneController();
+		playerController.initialize(players);
+		
+		gameActionController = new GameActionController();
+		gameActionController.initialize();
 		
 		// Add sub-views
 		view.addToBorderPane(boardController.getView(), "center");
-		view.addToBorderPane(rackController.getView(), "right");
+		view.addToBorderPane(playerController.getView(), "right");
+		view.addToBorderPane(gameActionController.getView(), "left");
 		
 		stage.setScene(view);
 		stage.centerOnScreen();
@@ -75,7 +80,7 @@ public class GameController extends Controller {
 	}
 	
 	protected void handleAboutMenuItemAction(Event event) {
-		LOGGER.info("TODO: Open about dialog (version, authors, last date modified");
+		LOGGER.info("TODO: Open about dialog");
 	}
 	
 	protected void handleQuitGameMenuItemAction(Event event) {

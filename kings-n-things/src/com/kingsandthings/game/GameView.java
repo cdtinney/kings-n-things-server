@@ -1,5 +1,7 @@
 package com.kingsandthings.game;
 
+import java.beans.PropertyChangeEvent;
+
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -9,9 +11,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 
+import com.kingsandthings.game.events.PropertyChangeDispatcher;
+import com.kingsandthings.game.player.PlayerManager;
+
 public class GameView extends Scene implements InitializableView {
 	
-	private final static int WIDTH = 1280;
+	private final static int WIDTH = 1400;
 	private final static int HEIGHT = 840;
 	
 	private static Label status;
@@ -29,8 +34,24 @@ public class GameView extends Scene implements InitializableView {
 	public void initialize() {
 		addMenuBar();
 		addStatusText();
+		
+		PropertyChangeDispatcher.getInstance().addListener(PlayerManager.class, "activePlayer", this, "activePlayerChanged");
 	}
 	
+	@SuppressWarnings("unused")
+	private void activePlayerChanged(PropertyChangeEvent event) {
+		setStatusText(null);
+	}
+	
+	public static void setStatusText(String message) {
+		
+		if (status == null) {
+			return;
+		}
+		
+		status.setText("STATUS: " + (message == null? "" : message));		
+	}
+
 	public void addToBorderPane(Node node, String position) {
 		
 		if (position.equals("center")) {
@@ -50,15 +71,6 @@ public class GameView extends Scene implements InitializableView {
 			
 		}
 		
-	}
-	
-	public static void setStatusText(String message) {
-		
-		if (status == null) {
-			return;
-		}
-		
-		status.setText("STATUS: " + message);		
 	}
 	
 	private void addMenuBar() {

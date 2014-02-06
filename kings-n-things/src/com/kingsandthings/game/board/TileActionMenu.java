@@ -1,6 +1,6 @@
 package com.kingsandthings.game.board;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javafx.scene.control.ContextMenu;
@@ -20,10 +20,12 @@ public class TileActionMenu extends ContextMenu {
 		
 		owner = tileView;
 		
-		menuItems = new HashMap<String, MenuItem>();
+		menuItems = new LinkedHashMap<String, MenuItem>();
+
+		menuItems.put("addControlMarker", new MenuItem("Add control marker"));
+		menuItems.put("placeTower", new MenuItem("Place tower"));
 		
-		menuItems.put("toggleControlMarker", new MenuItem("Toggle Control Marker"));
-		menuItems.put("placeThing", new MenuItem("Place Thing"));
+		get("placeTower").setVisible(false);
 		
 		getItems().addAll(menuItems.values());
 		
@@ -41,8 +43,8 @@ public class TileActionMenu extends ContextMenu {
 	
 	@SuppressWarnings("unused")
 	private void onStartingKingdomsPhaseEnd() {
-		get("toggleControlMarker").setVisible(false);
-		
+		get("addControlMarker").setVisible(false);
+		get("placeTower").setVisible(true);
 	}
 
 }

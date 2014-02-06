@@ -1,12 +1,18 @@
 package com.kingsandthings.game.board;
 
+import java.util.logging.Logger;
+
 import javafx.geometry.Side;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
 import com.kingsandthings.model.board.Tile;
 
 public class TileView extends ImageView {
+	
+	@SuppressWarnings("unused")
+	private static Logger LOGGER = Logger.getLogger(TileView.class.getName());
 	
 	private static final int TILE_WIDTH = 100;
 	private static Image defaultImg = new Image("/images/tiles/back.png");
@@ -57,7 +63,22 @@ public class TileView extends ImageView {
 		if (visible) {
 			actionMenu.hide();
 		} else {
+			
+			// Menu must be shown to determine width
 			actionMenu.show(this, Side.RIGHT, -25, 10);
+			double menuWidth = actionMenu.getWidth();
+			actionMenu.hide();
+
+			double parentWidth = ((Pane) this.getParent()).getWidth();
+			double tileX = getX();
+			double tileWidth = getFitWidth();
+			
+			if ((tileX + tileWidth/2 + menuWidth) < parentWidth) {
+				actionMenu.show(this, Side.RIGHT, -25, 10);
+			} else {
+				actionMenu.show(this, Side.LEFT, 25, 10);
+			}
+			
 		}
 		
 	}

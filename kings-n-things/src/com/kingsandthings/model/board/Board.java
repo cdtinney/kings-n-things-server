@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.enums.Terrain;
@@ -14,9 +13,9 @@ public class Board {
 	
 	private static Logger LOGGER = Logger.getLogger(Board.class.getName());
 	
-	private Tile[][] tiles;
+	private final int NUM_INITIAL_TILES = 3;
 	
-	private int NUM_INITIAL_TILES = 3;
+	private Tile[][] tiles;
 	
 	public Board(int numPlayers) {
 		tiles = generateTiles(10);
@@ -26,58 +25,52 @@ public class Board {
 		return tiles;
 	}
 	
-	public void toggleTileControl(Tile tile, Player player) {
-		
-		if (player == null) {
-			return;
-		}
-		
-		if (tile.getOwner() == null) {
-			setTileControl(tile, player);
-		} else {
-			clearTileControl(tile, player);
-		}
-		
-	}
-	
-	private void clearTileControl(Tile tile, Player player) {
+	public boolean clearTileControl(Tile tile, Player player) {
 		
 		if (tile.getOwner() != player) {
 			LOGGER.log(LogLevel.STATUS, "Cannot remove control marker from a tile the player does not own.");
-			return;
+			return false;
 		}
 		
 		if (player.getStartingTile() == tile) {
 			LOGGER.log(LogLevel.STATUS, "Cannot remove control marker from starting tile.");
-			return;
+			return false;
 		}
 		
 		tile.setOwner(null);
+		return true;
 		
 	}
 	
-	private void setTileControl(Tile tile, Player player) {
+	public boolean setTileControl(Tile tile, Player player, boolean initial) {
 		
-		if (!validInitialControlTile(tile, player)) {
-			LOGGER.log(LogLevel.STATUS, "Tile is not valid for initial control marker placement.");
-			return;
+		if (initial) {
+			return setInitialControlTile(tile, player);
 		}
+		
+		// TODO - regular set 
+		return false;
 		
 	}
 	
 	/*
-	 * Determines if a player can place an initial control marker on a tile.
+	 * Sets an initial control marker.
 	 * 
 	 * Restrictions:
 	 * - the player has not placed more than the maximum number of initial control markers
 	 * - the tile must be adjacent to a previous tile owned by the player
 	 * - the tile may not be adjacent to a tile owned by another player
 	 */
-	private boolean validInitialControlTile(Tile tile, Player player) { 
+	private boolean setInitialControlTile(Tile tile, Player player) { 
 		
 		int numControlled = numControlledTiles(player);
 		if (numControlled >= NUM_INITIAL_TILES) {
 			LOGGER.log(LogLevel.STATUS, "Only " + NUM_INITIAL_TILES + " control markers can be placed in the 'Starting Kingdoms' phase.");
+			return false;
+		}
+		
+		if (tile.getOwner() == player) {
+			LOGGER.log(LogLevel.STATUS, "Tile is already owned by the player.");
 			return false;
 		}
 		
@@ -100,9 +93,12 @@ public class Board {
 			
 			if (numControlled++ < NUM_INITIAL_TILES) {
 				tile.setOwner(player);			
-				PlayerManager.getInstance().nextPlayer();
 			}
 			
+		}
+		
+		if (!playerNeighbour || enemyNeighbour) {
+			LOGGER.log(LogLevel.STATUS, "Invalid tile. Player must own at least one adjacent tile, and no enemies can own adjacent tiles.");
 		}
 		
 		return playerNeighbour && !enemyNeighbour;

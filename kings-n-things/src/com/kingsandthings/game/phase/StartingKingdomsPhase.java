@@ -34,7 +34,6 @@ public class StartingKingdomsPhase extends Phase {
 	@Override
 	public void end() {
 		
-		
 		// Notify listeners that the phase has ended
 		NotificationDispatcher.getDispatcher().notify(this.getClass(), PhaseNotification.END);
 		
