@@ -35,3 +35,20 @@
 	-fx-label-padding: 3px 0px 3px 7px;
 	
 }
+
+.diceButton {
+	/* Font */
+	-fx-font-size: 14px;
+	
+	/* Padding between graphic and text */
+	-fx-graphic-text-gap: 20px;
+	
+}
+
+.diceButton:hover {
+    -fx-cursor: hand;
+}
+
+.nofocus {
+	-fx-focus-color: transparent;
+}

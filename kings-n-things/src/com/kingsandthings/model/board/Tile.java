@@ -99,7 +99,7 @@ public class Tile {
 	
 	/*
 	 * Returns the image associated with this particular tile, based on terrain type.
-	 */
+	 */ 
 	public Image getImage() {
 		
 		Image image = null;
@@ -107,7 +107,7 @@ public class Tile {
 		
 		try {
 			image = new Image(path);
-			
+			  
 		} catch (IllegalArgumentException e) {
 			LOGGER.warning("Hex tile image not found - " + path);
 			
