@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.game.phase.Phase;
+import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.model.Player;
 
 /**
@@ -30,8 +31,6 @@ public class PlayerManager {
 	
 	private Player activePlayer;
 	
-	private Phase currentPhase;
-	
 	private PlayerManager() {
 		players = new HashMap<String, Player>();
 		positions = new HashMap<Player, Integer>();
@@ -44,10 +43,6 @@ public class PlayerManager {
 		}
 		
 		return INSTANCE;
-	}
-	
-	public void setCurrentPhase(Phase phase) {
-		currentPhase = phase;
 	}
 	
 	public Player getActivePlayer() {
@@ -68,7 +63,7 @@ public class PlayerManager {
 			int position = positions.get(player);
 			if (position == activePosition + 1 || (activePosition == numPlayers && position == 1)) {
 				setActivePlayer(player);
-				currentPhase.incrementTurns();
+				PhaseManager.getInstance().getCurrentPhase().incrementTurns();
 				return;
 			}
 			

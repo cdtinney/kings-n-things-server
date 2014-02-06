@@ -53,6 +53,17 @@ public class PlayerPane extends VBox implements InitializableView {
 		
 	}
 	
+	private PlayerView getPlayerView(Player player) {
+		
+		for (PlayerView playerView : playerViews) {
+			if (playerView.getPlayer() == player) {
+				return playerView;
+			}
+		}
+		
+		return null;
+	}
+	
 	@SuppressWarnings("unused")
 	private void updateActivePlayer(PropertyChangeEvent event) {
 		
@@ -75,19 +86,8 @@ public class PlayerPane extends VBox implements InitializableView {
 		Player player = (Player) event.getSource();
 		int numGold = player.getNumGold();
 		
-		getPlayerView(player).setNumGold(numGold);
+		getPlayerView(player).setNumGoldText(numGold);
 		
-	}
-	
-	private PlayerView getPlayerView(Player player) {
-		
-		for (PlayerView playerView : playerViews) {
-			if (playerView.getPlayer() == player) {
-				return playerView;
-			}
-		}
-		
-		return null;
 	}
 	
 }

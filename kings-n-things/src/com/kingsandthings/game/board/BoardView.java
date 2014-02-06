@@ -26,8 +26,8 @@ public class BoardView extends Pane implements InitializableView {
 		
 		getStyleClass().addAll("pane", "board");
 		
-		int initialX = 75;
-		int initialY = 175;
+		int initialX = 70;
+		int initialY = 225;
 		
 		int xOffset = 79;
 		int yOffset = 91;
@@ -43,6 +43,7 @@ public class BoardView extends Pane implements InitializableView {
 	private void toggleControlMarker(TileView tileView) {
 		
 		Player owner = tileView.getTile().getOwner();
+		
 		if (owner == null) {
 			getChildren().remove(tileView.getControlMarkerView());
 			return;

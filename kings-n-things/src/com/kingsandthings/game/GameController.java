@@ -11,6 +11,7 @@ import com.kingsandthings.Controller;
 import com.kingsandthings.MainMenuController;
 import com.kingsandthings.game.board.BoardController;
 import com.kingsandthings.game.phase.Phase;
+import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.game.phase.StartingKingdomsPhase;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.game.player.PlayerPaneController;
@@ -25,7 +26,8 @@ public class GameController extends Controller {
 	
 	// Sub-controllers
 	private BoardController boardController;
-	private PlayerPaneController rackController;
+	private PlayerPaneController playerController;
+	private GameActionController gameActionController;
 	
 	// Parent controller
 	private MainMenuController parent;
@@ -37,27 +39,31 @@ public class GameController extends Controller {
 		view = new GameView();
 		view.initialize();
 		
-		PlayerManager manager = PlayerManager.getInstance();
+		PlayerManager playerManager = PlayerManager.getInstance();
 		
-		manager.setNumPlayers(playerNames.size());
-		manager.addAllPlayers(playerNames);
+		playerManager.setNumPlayers(playerNames.size());
+		playerManager.addAllPlayers(playerNames);
 		
-		Phase phase = new StartingKingdomsPhase();
-		manager.setCurrentPhase(phase);
-		phase.begin();
+		PhaseManager phaseManager = PhaseManager.getInstance();
+		Phase firstPhase = phaseManager.getCurrentPhase();
+		firstPhase.begin();
 		
-		List<Player> players = manager.getPlayers();
+		List<Player> players = playerManager.getPlayers();
 		
 		// Initialize sub controllers
 		boardController = new BoardController();
 		boardController.initialize(players);
 		
-		rackController = new PlayerPaneController();
-		rackController.initialize(players);
+		playerController = new PlayerPaneController();
+		playerController.initialize(players);
+		
+		gameActionController = new GameActionController();
+		gameActionController.initialize();
 		
 		// Add sub-views
 		view.addToBorderPane(boardController.getView(), "center");
-		view.addToBorderPane(rackController.getView(), "right");
+		view.addToBorderPane(playerController.getView(), "right");
+		view.addToBorderPane(gameActionController.getView(), "left");
 		
 		stage.setScene(view);
 		stage.centerOnScreen();
@@ -75,7 +81,7 @@ public class GameController extends Controller {
 	}
 	
 	protected void handleAboutMenuItemAction(Event event) {
-		LOGGER.info("TODO: Open about dialog (version, authors, last date modified");
+		LOGGER.info("TODO: Open about dialog");
 	}
 	
 	protected void handleQuitGameMenuItemAction(Event event) {

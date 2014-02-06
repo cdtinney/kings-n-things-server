@@ -2,6 +2,7 @@ package com.kingsandthings.game.phase;
 
 import java.util.logging.Logger;
 
+import com.kingsandthings.game.events.NotificationDispatcher;
 import com.kingsandthings.game.player.PlayerManager;
 
 public abstract class Phase {
@@ -40,6 +41,14 @@ public abstract class Phase {
 	
 	public boolean isLastTurn() {
 		return currentNumberTurns == (numPlayerTurns * PlayerManager.getInstance().getNumPlayers());
+	}
+	
+	protected void notifyBegin() {
+		NotificationDispatcher.getDispatcher().notify(getClass(), PhaseNotification.BEGIN);
+	}
+	
+	protected void notifyEnd() {
+		NotificationDispatcher.getDispatcher().notify(getClass(), PhaseNotification.END);		
 	}
 
 }

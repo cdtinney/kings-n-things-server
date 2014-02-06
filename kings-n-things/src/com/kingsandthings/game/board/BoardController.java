@@ -14,21 +14,13 @@ import com.kingsandthings.model.board.Board;
 
 public class BoardController extends Controller {
 	
-	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(BoardController.class.getName());
 
 	// Model
 	private Board board;		
 	
 	// View
-	private BoardView view;		
-	
-	/**
-	 * Default constructor,
-	 */
-	public BoardController() {
-		
-	}
+	private BoardView view;	
 	
 	/**
 	 * Initialization of the controller should initialize the necessary
@@ -87,18 +79,20 @@ public class BoardController extends Controller {
 				addEventHandler(tileView, "setOnMouseExited", "handleTileMouseExit");
 				
 				// TODO - refactor event handling for action menus (currently, every single menu has an individual handler)
-				addEventHandler(tileView.getActionMenu().get("toggleControlMarker"), "setOnAction", "handleToggleMarkerMenuItem");
+				addEventHandler(tileView.getActionMenu().get("addControlMarker"), "setOnAction", "handleAddControlMarkerMenuItem");
+				addEventHandler(tileView.getActionMenu().get("placeTower"), "setOnAction", "handlePlaceTowerMenuItem");
 				
 			}
 		}
 	}
 	
-	/**
-	 * Tile context menu event handling
-	 * 
-	 * @param event
-	 */
-	protected void handleToggleMarkerMenuItem(Event event) {
+	protected void handlePlaceTowerMenuItem(Event event) {
+		
+		LOGGER.info("Handle add tower menu");
+		
+	}
+	
+	protected void handleAddControlMarkerMenuItem(Event event) {
 		
 		MenuItem item = (MenuItem) event.getSource();
 		
@@ -107,7 +101,9 @@ public class BoardController extends Controller {
 		
 		Player player = PlayerManager.getInstance().getActivePlayer();
 		
-		board.toggleTileControl(tileView.getTile(), player);
+		if (board.setTileControl(tileView.getTile(), player, true)) {
+			PlayerManager.getInstance().nextPlayer();
+		}
 		
 	}
 	
@@ -127,10 +123,8 @@ public class BoardController extends Controller {
 	 * @param event
 	 */
 	protected void handleTileMouseExit(Event event) {
-
 		TileView tileView = (TileView) event.getSource();
 		tileView.setOpacity(1.0);
-		
 	}
 	
 	/**
@@ -139,10 +133,8 @@ public class BoardController extends Controller {
 	 * @param event
 	 */
 	protected void handleTileMouseEnter(Event event) {
-
 		TileView tileView = (TileView) event.getSource();
 		tileView.setOpacity(0.8);
-		
 	}
 
 }

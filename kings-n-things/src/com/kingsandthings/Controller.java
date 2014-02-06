@@ -35,7 +35,7 @@ public abstract class Controller {
 	protected void addEventHandler(Object target, String eventProperty, final String handlerMethodName, final Map<String, Object> parameters) {
 		
 		if (target == null) {
-			LOGGER.warning("Cannot add '" + eventProperty + "' event handler to null target.");
+			LOGGER.warning("Cannot add '" + eventProperty + "' event handler to null target (" + this.getClass().getSimpleName() + "." + handlerMethodName + ")");
 			return;
 		}
 		
