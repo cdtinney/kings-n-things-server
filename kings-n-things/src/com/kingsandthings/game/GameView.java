@@ -43,6 +43,10 @@ public class GameView extends Scene implements InitializableView {
 		setStatusText(null);
 	}
 	
+	public static String getStatusText() {
+		return status != null? status.getText() : null;
+	}
+	
 	public static void setStatusText(String message) {
 		
 		if (status == null) {

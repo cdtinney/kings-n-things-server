@@ -11,6 +11,7 @@ import com.kingsandthings.Controller;
 import com.kingsandthings.MainMenuController;
 import com.kingsandthings.game.board.BoardController;
 import com.kingsandthings.game.phase.Phase;
+import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.game.phase.StartingKingdomsPhase;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.game.player.PlayerPaneController;
@@ -38,16 +39,16 @@ public class GameController extends Controller {
 		view = new GameView();
 		view.initialize();
 		
-		PlayerManager manager = PlayerManager.getInstance();
+		PlayerManager playerManager = PlayerManager.getInstance();
 		
-		manager.setNumPlayers(playerNames.size());
-		manager.addAllPlayers(playerNames);
+		playerManager.setNumPlayers(playerNames.size());
+		playerManager.addAllPlayers(playerNames);
 		
-		Phase phase = new StartingKingdomsPhase();
-		manager.setCurrentPhase(phase);
-		phase.begin();
+		PhaseManager phaseManager = PhaseManager.getInstance();
+		Phase firstPhase = phaseManager.getCurrentPhase();
+		firstPhase.begin();
 		
-		List<Player> players = manager.getPlayers();
+		List<Player> players = playerManager.getPlayers();
 		
 		// Initialize sub controllers
 		boardController = new BoardController();

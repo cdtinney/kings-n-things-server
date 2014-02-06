@@ -2,6 +2,7 @@ package com.kingsandthings.game;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -19,9 +20,11 @@ public class GameActionView extends VBox implements InitializableView {
 		getStyleClass().addAll("pane", "board");
 		
 		setAlignment(Pos.TOP_CENTER);
+		setSpacing(10);
 		
 		addCup();
 		addDice();
+		addPhaseActions();
 	}
 	
 	private void addCup() {
@@ -44,20 +47,37 @@ public class GameActionView extends VBox implements InitializableView {
 		imgView.setPreserveRatio(true);
 		imgView.setFitWidth(30);
 		
-		Button diceButton = new Button("Roll Dice", imgView);
-		diceButton.getStyleClass().addAll("diceButton", "nofocus");
-		diceButton.setPrefHeight(40);
-		diceButton.setPrefWidth(130);
+		Button rollDiceButton = new Button("Roll Dice", imgView);
+		rollDiceButton.setId("rollDice");
+		rollDiceButton.getStyleClass().addAll("diceButton", "nofocus");
+		rollDiceButton.setPrefHeight(40);
+		rollDiceButton.setPrefWidth(130);
+		//rollDiceButton.setDisable(true);
 		
 		ObservableList<String> diceRolls = FXCollections.observableArrayList("1 or 6", "1-6");
 		ComboBox<String> comboBox = new ComboBox<String>(diceRolls);
+		comboBox.setId("diceRollType");
 		comboBox.getStyleClass().addAll("nofocus");
 		comboBox.getSelectionModel().select(0);
+		//comboBox.setDisable(true);
 		
-		grid.add(diceButton, 0, 0);
+		grid.add(rollDiceButton, 0, 0);
 		grid.add(comboBox, 1, 0);
 		
 		getChildren().add(grid);		
+		
+	}
+	
+	private void addPhaseActions() {
+		
+		Button skipPhaseButton = new Button("Skip phase");
+		skipPhaseButton.getStyleClass().add("nofocus");
+		skipPhaseButton.setDisable(true);
+		
+		VBox.setMargin(skipPhaseButton, new Insets(20, 0, 0, 0));
+		
+		getChildren().add(skipPhaseButton);
+		
 		
 	}
 

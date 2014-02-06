@@ -30,7 +30,7 @@ public class LogHandler extends Handler {
 			GameView.setStatusText(r.getMessage());
 			
 			// Clear the status message after 10 seconds
-			clearStatusMessage(10000);
+			clearStatusMessage(10000, r.getMessage());
 			
 			return;
 		}
@@ -39,16 +39,30 @@ public class LogHandler extends Handler {
 		
 	}
 	
-	private void clearStatusMessage(int timeElapsed) {
+	private void clearStatusMessage(int timeElapsed, final String message) {
 
 		new Timer().schedule(new TimerTask() {
+			
 		    public void run() {
+		    	
 		         Platform.runLater(new Runnable() {
+		        	 
 		            public void run() {
+		            	
+		            	String status = GameView.getStatusText().replace("STATUS: ", "");
+		            	
+		            	// Ignore if the message has changed
+		            	if (!status.equals(message)) {
+		            		return;
+		            	}
+		            	
 		                GameView.setStatusText(null);
 		            }
+		            
 		        });
+		         
 		    }
+		    
 		}, timeElapsed);
 		
 	}
