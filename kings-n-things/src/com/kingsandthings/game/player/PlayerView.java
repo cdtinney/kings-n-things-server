@@ -46,7 +46,7 @@ public class PlayerView extends Pane implements InitializableView {
 		return player;
 	}
 	
-	public void setNumGold(int numGold) {
+	public void setNumGoldText(int numGold) {
 		numGoldText.setText("gold: " + numGold);
 	}
 	

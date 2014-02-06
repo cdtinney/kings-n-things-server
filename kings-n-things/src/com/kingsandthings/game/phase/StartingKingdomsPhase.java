@@ -1,6 +1,5 @@
 package com.kingsandthings.game.phase;
 
-import com.kingsandthings.game.events.NotificationDispatcher;
 import com.kingsandthings.model.Player;
 
 public class StartingKingdomsPhase extends Phase {
@@ -27,7 +26,7 @@ public class StartingKingdomsPhase extends Phase {
 		}
 		
 		// Notify listeners that the phase has begun
-		NotificationDispatcher.getDispatcher().notify(this.getClass(), PhaseNotification.BEGIN);
+		notifyBegin();
 		
 	}
 
@@ -35,8 +34,7 @@ public class StartingKingdomsPhase extends Phase {
 	public void end() {
 		
 		// Notify listeners that the phase has ended
-		NotificationDispatcher.getDispatcher().notify(this.getClass(), PhaseNotification.END);
-		
+		notifyEnd();
 	}
 
 }
