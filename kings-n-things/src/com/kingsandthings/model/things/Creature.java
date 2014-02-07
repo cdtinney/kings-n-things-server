@@ -1,30 +1,60 @@
 package com.kingsandthings.model.things;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javafx.scene.image.Image;
+
+import com.kingsandthings.model.enums.Terrain;
 
 public class Creature extends Thing {
-	 private String type;
-	    private String ability;
-
-
-	    public Creature(String iName, String iType, String iAbility, int iCombatValue, File imageLocation) {
-	        super(iName,iCombatValue,imageLocation);
-	        this.type = iType;
-	        this.ability = iAbility;
-	    }
-
-	    public Creature(String iName, String iType, int iCombatValue, File imageLocation) {
-	        super(iName,iCombatValue,imageLocation);
-	        this.type = iType;
-	        this.ability = "None";
-	    }
-
-	    public String getType() { return this.type; }
-
-	    public String toString() {
-	        return super.toString() + "\nType:" + type + "\nAbility:"+ability;
-
-	    }
 	
+	private static Logger LOGGER = Logger.getLogger(Creature.class.getName());
+	
+	public enum Ability {
+		FLYING,
+		MAGIC,
+		CHARGING,
+		RANGE,
+		SPECIAL,
+		NONE	
+	}
+	
+	private String name;
+	private List<Ability> abilities;
+	private Terrain terrainType;
+	private int combatValue;
+	
+	public Creature(String name, String terrainType, String ability, int combatValue, Image image) {
+		super(name, image);
+		
+		this.combatValue = combatValue;
+		
+		try {
+			this.terrainType = Terrain.valueOf(terrainType.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			LOGGER.warning(e.getMessage());
+		}
+		
+		abilities = new ArrayList<Ability>();
+	
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public Terrain getTerrainType() {
+		return terrainType;
+	}
+	
+	public List<Ability> getAbilities() {
+		return abilities;
+	}
+	
+	public int getCombatValue() {
+		return combatValue;
+	}
 	
 }

@@ -12,7 +12,6 @@ import com.kingsandthings.MainMenuController;
 import com.kingsandthings.game.board.BoardController;
 import com.kingsandthings.game.phase.Phase;
 import com.kingsandthings.game.phase.PhaseManager;
-import com.kingsandthings.game.phase.StartingKingdomsPhase;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.game.player.PlayerPaneController;
 import com.kingsandthings.model.Player;
