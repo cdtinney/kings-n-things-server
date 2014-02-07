@@ -22,9 +22,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
-import com.kingsandthings.game.phase.Phase;
-import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.model.Game;
+import com.kingsandthings.model.phase.Phase;
+import com.kingsandthings.model.phase.PhaseManager;
 
 public class GameActionView extends VBox implements InitializableView {
 

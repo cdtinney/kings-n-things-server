@@ -7,8 +7,8 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 
 import com.kingsandthings.game.events.NotificationDispatcher;
-import com.kingsandthings.game.phase.PhaseNotification;
-import com.kingsandthings.game.phase.StartingKingdomsPhase;
+import com.kingsandthings.model.phase.PhaseNotification;
+import com.kingsandthings.model.phase.StartingKingdomsPhase;
 
 public class TileActionMenu extends ContextMenu {
 	

@@ -8,10 +8,10 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 
 import com.kingsandthings.Controller;
-import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Game;
+import com.kingsandthings.model.phase.PhaseManager;
 
 public class GameActionController extends Controller {
 

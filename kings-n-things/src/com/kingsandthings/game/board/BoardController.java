@@ -8,10 +8,10 @@ import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 
 import com.kingsandthings.Controller;
-import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Board;
+import com.kingsandthings.model.phase.PhaseManager;
 
 public class BoardController extends Controller {
 	

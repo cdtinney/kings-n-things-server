@@ -10,11 +10,11 @@ import javafx.stage.Stage;
 import com.kingsandthings.Controller;
 import com.kingsandthings.MainMenuController;
 import com.kingsandthings.game.board.BoardController;
-import com.kingsandthings.game.phase.Phase;
-import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.game.player.PlayerPaneController;
 import com.kingsandthings.model.Player;
+import com.kingsandthings.model.phase.Phase;
+import com.kingsandthings.model.phase.PhaseManager;
 
 public class GameController extends Controller {
 	

@@ -1,4 +1,4 @@
-package com.kingsandthings.game.phase;
+package com.kingsandthings.model.phase;
 
 import javafx.scene.image.Image;
 

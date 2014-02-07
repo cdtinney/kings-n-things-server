@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 import javax.management.Notification;
 import javax.management.NotificationListener;
 
-import com.kingsandthings.game.phase.Phase;
-import com.kingsandthings.game.phase.PhaseNotification;
+import com.kingsandthings.model.phase.Phase;
+import com.kingsandthings.model.phase.PhaseNotification;
 
 public class NotificationDispatcher {
 	
