@@ -48,8 +48,8 @@ public class Board {
 			return setInitialControlTile(tile, player);
 		}
 		
-		// TODO - regular set 
-		return false;
+		tile.setOwner(player);
+		return true;
 		
 	}
 	

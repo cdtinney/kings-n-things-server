@@ -17,10 +17,6 @@ public class BoardView extends Pane implements InitializableView {
 	
 	private TileView[][] tiles = new TileView[10][10];
 	
-	public BoardView() {
-		
-	}
-	
 	@Override
 	public void initialize() {
 		
@@ -101,6 +97,20 @@ public class BoardView extends Pane implements InitializableView {
 		}
 		
 	}
+
+	private void addTilesToView(TileView[][] tiles) {
+		
+		for (TileView[] row : tiles) {
+			for (TileView tile : row) {
+				
+				if (tile != null) {
+					getChildren().add(tile);
+				}
+				
+			}
+		}
+		
+	}
 	
 	// TODO - move this into factory(?) class
 	private TileView[][] generateTiles(int initialX, int initialY, int xOffset, int yOffset, int columnOffset, int size) {
@@ -163,18 +173,4 @@ public class BoardView extends Pane implements InitializableView {
 		
 	}
 	
-	private void addTilesToView(TileView[][] tiles) {
-		
-		for (TileView[] row : tiles) {
-			for (TileView tile : row) {
-				
-				if (tile != null) {
-					getChildren().add(tile);
-				}
-				
-			}
-		}
-		
-	}
-
 }

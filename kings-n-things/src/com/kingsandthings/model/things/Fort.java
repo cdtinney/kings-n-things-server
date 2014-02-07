@@ -17,9 +17,12 @@ public class Fort extends Thing {
 	
 	private Type type;
 	private boolean neutralized = false;
+	private int combatValue;
 
 	public Fort(String type, int combatValue, Image image) {
         super(type, image);
+        
+        this.combatValue = combatValue;
         
         try {
         	this.type = Type.valueOf(type.toUpperCase());
@@ -28,6 +31,10 @@ public class Fort extends Thing {
         }
         
     }
+	
+	public int getCombatValue() {
+		return combatValue;
+	}
 	
 	public Type getType() {
 		return type;

@@ -88,7 +88,7 @@ public class ThingImport {
         List<File> files = FileUtils.listFiles(magicPath, FileUtils.imageExtensions);
     	
     	for (File file : files) {
-    		// TODO
+    		// TODO - import magic items
     	}
     	
     	return magicItems;
@@ -132,6 +132,7 @@ public class ThingImport {
     			
     			String value = splitName[i+1];
     			
+    			// The last string will contain the file extension, so take the substring of everything before the last '.'
     			if (value.contains(".")) {
     				value = value.substring(0, value.lastIndexOf("."));
     			}
@@ -145,6 +146,11 @@ public class ThingImport {
     	
     }
 
+    /*
+     * Paths to load files are different than paths to load images. Namely, slashes are
+     * the opposite direction, and 'resources' folder is not necessary. Fix that, append
+     * any sub folder names, and append the file name to get a valid URL for loading images.
+     */
     private static String getImagePath(String path, String subFolder, String fileName) {
     	
     	path = path.replace("\\", "/").replace("resources", "");

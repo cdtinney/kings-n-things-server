@@ -31,7 +31,6 @@ public abstract class Controller {
 		addEventHandler(target, eventProperty, handlerMethodName, null);
 	}
 	
-	// TODO - Comment this method 
 	protected void addEventHandler(Object target, String eventProperty, final String handlerMethodName, final Map<String, Object> parameters) {
 		
 		if (target == null) {

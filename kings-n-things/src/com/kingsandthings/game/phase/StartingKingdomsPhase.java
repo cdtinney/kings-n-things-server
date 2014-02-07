@@ -22,6 +22,7 @@ public class StartingKingdomsPhase extends Phase {
 			player.setNumGold(initialNumGold);
 			
 			// Give each player a tower
+			// TODO - don't hard code this 
 			player.addFort(new Fort("Tower", 1, new Image("/images/things/fort/-n Tower -a 1.jpg")));
 			
 			// Set the player at 1st position to active

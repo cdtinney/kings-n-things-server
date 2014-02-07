@@ -68,8 +68,7 @@ public class Tile {
 	public void addThing(Thing thing) {
 		
 		if (things.contains(thing)) {
-			// TODO - descriptive log statement using Thing attributes
-			LOGGER.info("Tile already contains Thing - ");
+			LOGGER.info("Tile already contains Thing - " + thing.getName());
 			return;
 		} 
 		
@@ -84,8 +83,7 @@ public class Tile {
 		
 		boolean contains = things.remove(thing);
 		if (!contains) {
-			// TODO - descriptive log statement using Thing attributes
-			LOGGER.info("Tile does not contain Thing - " );
+			LOGGER.info("Tile does not contain Thing - " + thing.getName());
 		}
 		
 	}
