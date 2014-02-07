@@ -13,20 +13,23 @@ public class Creature extends Thing {
 	private static Logger LOGGER = Logger.getLogger(Creature.class.getName());
 	
 	public enum Ability {
-		FLYING,
+		FLY,
 		MAGIC,
-		CHARGING,
+		CHARGE,
 		RANGE,
 		SPECIAL,
 		NONE	
 	}
 	
-	private String name;
 	private List<Ability> abilities;
 	private Terrain terrainType;
 	private int combatValue;
 	
-	public Creature(String name, String terrainType, String ability, int combatValue, Image image) {
+	public Creature(String name, String terrainType, int combatValue, Image image) {
+		this(name, terrainType, null, combatValue, image);
+	}
+	
+	public Creature(String name, String terrainType, List<String> abilities, int combatValue, Image image) {
 		super(name, image);
 		
 		this.combatValue = combatValue;
@@ -37,12 +40,22 @@ public class Creature extends Thing {
 			LOGGER.warning(e.getMessage());
 		}
 		
-		abilities = new ArrayList<Ability>();
+		this.abilities = new ArrayList<Ability>();
+		
+		if (abilities != null) {
+
+			try {
+				
+				for (String ability : abilities) {
+					this.abilities.add(Ability.valueOf(ability.toUpperCase()));
+				}
+				
+			} catch (IllegalArgumentException e) {
+				LOGGER.warning(e.getMessage());
+			}
+			
+		}
 	
-	}
-	
-	public String getName() {
-		return name;
 	}
 	
 	public Terrain getTerrainType() {
