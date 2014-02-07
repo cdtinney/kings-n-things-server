@@ -21,7 +21,9 @@ public class Player {
 	
 	private String name;
 	private Image controlMarker;
+	
 	private Tile startingTile;
+	private List<Tile> controlledTiles;
 	
 	private int numGold = 0;
 	
@@ -36,6 +38,8 @@ public class Player {
 	public Player(String name) {
 		this.name = name;
 		
+		controlledTiles = new ArrayList<Tile>();
+		
 		forts = new ArrayList<Fort>();
 		specialIncomeCounters = new ArrayList<SpecialIncome>();
 		specialCharacters = new ArrayList<SpecialCharacter>();
@@ -43,6 +47,10 @@ public class Player {
 		randomEvents = new ArrayList<RandomEvent>();
 		
 		creatures = new ArrayList<Creature>();
+	}
+	
+	public List<Tile> getControlledTiles() {
+		return controlledTiles;
 	}
 	
 	public List<Fort> getForts() {
@@ -88,14 +96,12 @@ public class Player {
 		return numGold;
 	}
 	
-	public void setNumGold(int num) {
-		
-		if (num < 0) {
-			LOGGER.warning("Cannot set gold value to a negative number.");
-			return;
-		}
-
-		PropertyChangeDispatcher.getInstance().notify(this, "numGold", numGold, numGold = num);
+	public void addGold(int num) {
+		PropertyChangeDispatcher.getInstance().notify(this, "numGold", numGold, numGold = (numGold + num));
+	}
+	
+	public void removeGold(int num) {
+		PropertyChangeDispatcher.getInstance().notify(this, "numGold", numGold, numGold = (numGold - num));
 	}
 	
 	public void setStartingTile(Tile tile) {

@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import javafx.scene.image.Image;
 
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
-import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.model.Player;
 
 /**
@@ -50,7 +49,6 @@ public class PlayerManager {
 	
 	public void setActivePlayer(Player player) {
 		PropertyChangeDispatcher.getInstance().notify(this, "activePlayer", activePlayer, activePlayer = player);
-		LOGGER.info("Active player set to '" + (activePlayer != null ? activePlayer.getName() : "none") + "'");
 	}
 	
 	public void nextPlayer() {
@@ -62,7 +60,6 @@ public class PlayerManager {
 			int position = positions.get(player);
 			if (position == activePosition + 1 || (activePosition == numPlayers && position == 1)) {
 				setActivePlayer(player);
-				PhaseManager.getInstance().getCurrentPhase().incrementTurns();
 				return;
 			}
 			

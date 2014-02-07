@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 
 import com.kingsandthings.Controller;
+import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Board;
@@ -102,7 +103,7 @@ public class BoardController extends Controller {
 		Player player = PlayerManager.getInstance().getActivePlayer();
 		
 		if (board.setTileControl(tileView.getTile(), player, true)) {
-			PlayerManager.getInstance().nextPlayer();
+			PhaseManager.getInstance().endPlayerTurn();
 		}
 		
 	}

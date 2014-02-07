@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 
 import com.kingsandthings.Controller;
+import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.logging.LogLevel;
 
 public class GameActionController extends Controller {
@@ -31,8 +32,20 @@ public class GameActionController extends Controller {
 	
 	private void setupHandlers() {
 		
-		// Roll dice button handler
 		addEventHandler(view, "rollDice", "setOnAction", "handleRollDiceButton");
+		addEventHandler(view, "skipTurn", "setOnAction", "handleSkipTurnButton");
+		addEventHandler(view, "endTurn", "setOnAction", "handleEndTurnButton");
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleSkipTurnButton(Event event) {
+		PhaseManager.getInstance().skipPlayerTurn();
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleEndTurnButton(Event event) {
+		PhaseManager.getInstance().endPlayerTurn();		
 	}
 	
 	@SuppressWarnings({ "unused", "unchecked" })

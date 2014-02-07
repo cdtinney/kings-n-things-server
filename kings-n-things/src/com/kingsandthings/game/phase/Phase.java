@@ -11,29 +11,47 @@ public abstract class Phase {
 	
 	protected PlayerManager playerManager = PlayerManager.getInstance();
 	
+	private String name;
+	
 	private boolean mandatory;
+	private boolean playerInteraction;
 	
 	private int numPlayerTurns;
 	private int currentNumberTurns = 0;
 	
-	public Phase(boolean mandatory, int numPlayerTurns) {
+	public Phase(String name, boolean mandatory, boolean playerInteraction, int numPlayerTurns) {
+		this.name = name;
 		this.mandatory = mandatory;
 		this.numPlayerTurns = numPlayerTurns;
+		this.playerInteraction = playerInteraction;
 	}
 	
-	public abstract void begin();
-	public abstract void end();
+	public String getName() {
+		return name;
+	}
+	
+	public boolean playerInteractionRequired() {
+		return playerInteraction;
+	}
 	
 	public boolean isMandatory() {
 		return mandatory;
 	}
 	
-	public void incrementTurns() {
+	public void nextTurn() {
+		
 		currentNumberTurns++;
 		
-		if (isLastTurn()) {
-			LOGGER.info("All players completed phase.");
-			PlayerManager.getInstance().setActivePlayer(null);
+		if (!isLastTurn()) {
+			next();
+			
+		} else {
+
+			LOGGER.info("All players completed phase '" + name + "'");
+			
+			// Set the next phase
+			PhaseManager.getInstance().nextPhase();
+			
 			end();
 		}
 		
@@ -41,6 +59,18 @@ public abstract class Phase {
 	
 	public boolean isLastTurn() {
 		return currentNumberTurns == (numPlayerTurns * PlayerManager.getInstance().getNumPlayers());
+	}
+	
+	public void begin() {
+		notifyBegin();
+	}
+	
+	public void next() {
+		// TODO - notify next player turn
+	}
+	
+	public void end() {
+		notifyEnd();
 	}
 	
 	protected void notifyBegin() {

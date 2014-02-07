@@ -16,8 +16,10 @@ public class Fort extends Thing {
 	}
 	
 	private Type type;
-	private boolean neutralized = false;
 	private int combatValue;
+
+	private boolean neutralized = false;
+	private boolean placedOnBoard = false;
 
 	public Fort(String type, int combatValue, Image image) {
         super(type, image);
@@ -38,6 +40,10 @@ public class Fort extends Thing {
 	
 	public Type getType() {
 		return type;
+	}
+	
+	public boolean placedOnBoard() {
+		return placedOnBoard;
 	}
 	
 	public boolean isNeutralized() {

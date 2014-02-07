@@ -63,7 +63,7 @@ public class Board {
 	 */
 	private boolean setInitialControlTile(Tile tile, Player player) { 
 		
-		int numControlled = numControlledTiles(player);
+		int numControlled = player.getControlledTiles().size();
 		if (numControlled >= NUM_INITIAL_TILES) {
 			LOGGER.log(LogLevel.STATUS, "Only " + NUM_INITIAL_TILES + " control markers can be placed in the 'Starting Kingdoms' phase.");
 			return false;
@@ -102,19 +102,6 @@ public class Board {
 		}
 		
 		return playerNeighbour && !enemyNeighbour;
-	}
-	
-	private int numControlledTiles(Player player) {
-		
-		int numOwned = 0;
-		for (Tile[] row : tiles) {
-			for (Tile t : row) {
-				if (t != null && t.getOwner() == player) numOwned++;
-			}
-		}
-		
-		return numOwned;
-		
 	}
 	
 	public void setStartingTile(Player player, int position) {

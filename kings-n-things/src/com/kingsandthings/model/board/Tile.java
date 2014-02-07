@@ -44,6 +44,10 @@ public class Tile {
 	 * Sets the player who controls the tile.
 	 */
 	public void setOwner(Player player) {
+		
+		// Add to the player's list of controlled tiles
+		player.getControlledTiles().add(this);
+		
 		PropertyChangeDispatcher.getInstance().notify(this, "owner", owner, owner = player);
 	}
 	

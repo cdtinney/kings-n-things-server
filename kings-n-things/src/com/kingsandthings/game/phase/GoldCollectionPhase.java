@@ -11,45 +11,52 @@ public class GoldCollectionPhase extends Phase {
 	
 	private static Logger LOGGER = Logger.getLogger(GoldCollectionPhase.class.getName());
 
-	public GoldCollectionPhase(boolean mandatory, int numPlayerTurns) {
-		super(true, 0);
+	public GoldCollectionPhase() {
+		super("Gold Collection", true, false, 1);
 	}
 
 	@Override
 	public void begin() {
-		
-		for (Player player: playerManager.getPlayers()) {
-			
-			int total = computeIncome(player);
-			LOGGER.log(LogLevel.STATUS, total + " gold collected.");
-			
-		}
-		
+		next();		
 	}
-
+	
 	@Override
-	public void end() {
-		// TODO Auto-generated method stub
+	public void next() {
+		
+		Player player = playerManager.getActivePlayer();
+		
+		int total = computeIncome(player);
+		player.addGold(total);
 
+		LOGGER.log(LogLevel.STATUS, "Player '" + player.getName() + "' collected " + total + " gold.");
+		
 	}
 	
 	private int computeIncome(Player player) {
 		
-		// TODO - one gold piece for each land hex controlled
-		int controlledHexValue = 0;
+		// One gold piece for each land hex controlled
+		int controlledHexValue = player.getControlledTiles().size();
 		
 		// Add gold pieces for the combat value of controlled forts
-		// TODO - on board only
 		int fortValue = 0;
 		for (Fort fort : player.getForts()) {
-			fortValue += fort.getCombatValue();
+			
+			// Forts placed on the board only
+			if (fort.placedOnBoard()) {
+				fortValue += fort.getCombatValue();
+			}
+			
 		}
 		
 		// Add gold pieces for value of special income counters 
-		// TODO - on board only
 		int specialIncomeValue = 0;
 		for (SpecialIncome counter : player.getSpecialIncomeCounters()) {
-			specialIncomeValue += counter.getGoldValue();
+			
+			// Special income counters placed on the board only
+			if (counter.placedOnBoard()) {
+				specialIncomeValue += counter.getGoldValue();
+			}
+			
 		}
 		
 		// One gold piece for each special character controlled
