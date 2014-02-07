@@ -42,17 +42,17 @@ public abstract class Phase {
 		
 		currentNumberTurns++;
 		
-		if (!isLastTurn()) {
-			next();
+		if (isLastTurn()) {
 			
-		} else {
-
-			LOGGER.info("All players completed phase '" + name + "'");
+			// End the phase
+			end();
 			
-			// Set the next phase
+			// Move to next phase
 			PhaseManager.getInstance().nextPhase();
 			
-			end();
+		} else {
+			next();
+			
 		}
 		
 	}
@@ -78,6 +78,7 @@ public abstract class Phase {
 	}
 	
 	protected void notifyEnd() {
+		LOGGER.info("All players completed phase '" + name + "'");
 		NotificationDispatcher.getDispatcher().notify(getClass(), PhaseNotification.END);		
 	}
 

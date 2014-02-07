@@ -1,5 +1,6 @@
 package com.kingsandthings.game;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import javafx.event.Event;
@@ -8,7 +9,9 @@ import javafx.scene.control.ComboBox;
 
 import com.kingsandthings.Controller;
 import com.kingsandthings.game.phase.PhaseManager;
+import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.logging.LogLevel;
+import com.kingsandthings.model.Game;
 
 public class GameActionController extends Controller {
 
@@ -32,10 +35,35 @@ public class GameActionController extends Controller {
 	
 	private void setupHandlers() {
 		
-		addEventHandler(view, "rollDice", "setOnAction", "handleRollDiceButton");
+		// Skip and end turns within a phase
 		addEventHandler(view, "skipTurn", "setOnAction", "handleSkipTurnButton");
 		addEventHandler(view, "endTurn", "setOnAction", "handleEndTurnButton");
 		
+		// Draw and select Things
+		addEventHandler(view, "drawThing", "setOnAction", "handleDrawThingButton");
+		addEventHandler(view, "selectThings", "setOnAction", "handleSelectThingsButton");
+		
+		// Roll dice
+		addEventHandler(view, "rollDice", "setOnAction", "handleRollDiceButton");
+		
+	}
+	
+	@SuppressWarnings({ "unused" })
+	private void handleSelectThingsButton(Event event) {
+		
+		List<Integer> selected = view.getSelectedThings();
+		
+		// Add the selected things to the player's list of Things
+		Game.getInstance().addThingsToPlayer(selected, PlayerManager.getInstance().getActivePlayer());
+		
+		// Hide the list of Things
+		view.toggleThingList();
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleDrawThingButton(Event event) {
+		view.toggleThingList();
 	}
 	
 	@SuppressWarnings("unused")

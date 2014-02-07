@@ -13,6 +13,7 @@ import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.RandomEvent;
 import com.kingsandthings.model.things.SpecialCharacter;
 import com.kingsandthings.model.things.SpecialIncome;
+import com.kingsandthings.model.things.Thing;
 import com.kingsandthings.model.things.Treasure;
 
 public class Player {
@@ -27,6 +28,8 @@ public class Player {
 	
 	private int numGold = 0;
 	
+	private Rack rack;
+	
 	private List<Fort> forts;
 	private List<SpecialIncome> specialIncomeCounters;
 	private List<SpecialCharacter> specialCharacters;
@@ -38,6 +41,8 @@ public class Player {
 	public Player(String name) {
 		this.name = name;
 		
+		rack = new Rack(this);
+		
 		controlledTiles = new ArrayList<Tile>();
 		
 		forts = new ArrayList<Fort>();
@@ -47,6 +52,10 @@ public class Player {
 		randomEvents = new ArrayList<RandomEvent>();
 		
 		creatures = new ArrayList<Creature>();
+	}
+	
+	public Rack getRack() {
+		return rack;
 	}
 	
 	public List<Tile> getControlledTiles() {

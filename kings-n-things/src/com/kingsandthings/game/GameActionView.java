@@ -1,14 +1,18 @@
 package com.kingsandthings.game;
 
 import java.beans.PropertyChangeEvent;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -20,15 +24,14 @@ import javafx.scene.text.Font;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.game.phase.Phase;
 import com.kingsandthings.game.phase.PhaseManager;
-import com.kingsandthings.game.player.PlayerManager;
-import com.kingsandthings.model.Player;
+import com.kingsandthings.model.Game;
 
 public class GameActionView extends VBox implements InitializableView {
 
 	@Override
 	public void initialize() {
 		
-		setPrefWidth(225);
+		setPrefWidth(235);
 		getStyleClass().addAll("pane", "board");
 		
 		setAlignment(Pos.TOP_CENTER);
@@ -40,6 +43,39 @@ public class GameActionView extends VBox implements InitializableView {
 		
 		addListeners();
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void toggleThingList() {
+
+		ListView<String>  list = (ListView<String>) lookup("#thingList");
+		Node select = lookup("#selectThings");
+		
+		// If its already visible, clear selection and hide
+		if (list.visibleProperty().get()) {
+			
+			list.getSelectionModel().clearSelection();
+			
+			list.setVisible(false);
+			select.setVisible(false);
+			
+		} else {
+			
+			// Update list of Things
+			list.setItems(FXCollections.observableArrayList(Game.getInstance().getCup().getThingNames()));
+			
+			list.setVisible(true);
+			select.setVisible(true);
+		}
+		
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Integer> getSelectedThings() {
+		ListView<String>  list = (ListView<String>) lookup("#thingList");
+		return list.getSelectionModel().getSelectedIndices();
 	}
 	
 	private void addListeners() {
@@ -76,7 +112,27 @@ public class GameActionView extends VBox implements InitializableView {
 		imgView.setPreserveRatio(true);
 		imgView.setFitWidth(200);
 		
-		getChildren().add(imgView);		
+		Button drawThingButton = new Button("Draw Thing");
+		drawThingButton.setId("drawThing");
+		drawThingButton.getStyleClass().addAll("nofocus");
+		
+		ListView<String> list = new ListView<String>();
+		list.setId("thingList");
+		list.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		list.setMaxWidth(205);
+		list.setPrefHeight(210);
+		
+		list.managedProperty().bind(list.visibleProperty());
+		list.setVisible(false);
+		
+		Button selectThings = new Button("Select Things");
+		selectThings.setId("selectThings");
+		selectThings.getStyleClass().addAll("nofocus");
+
+		selectThings.managedProperty().bind(selectThings.visibleProperty());
+		selectThings.setVisible(false);
+		
+		getChildren().addAll(imgView, drawThingButton, list, selectThings);		
 		
 	}
 	
@@ -106,6 +162,8 @@ public class GameActionView extends VBox implements InitializableView {
 		
 		grid.add(rollDiceButton, 0, 0);
 		grid.add(comboBox, 1, 0);
+		
+		VBox.setMargin(grid, new Insets(10, 0, 0, 0));
 		
 		getChildren().add(grid);		
 		

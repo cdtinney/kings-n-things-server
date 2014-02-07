@@ -12,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -39,6 +41,20 @@ public class MainMenuView extends Scene implements InitializableView {
 		root = (BorderPane) getRoot();
 		
 		getStylesheets().add(getClass().getResource("/css/MainMenu.css").toExternalForm());
+	}
+	
+	@Override
+	public void initialize() {
+		
+		playerNameFields = new ArrayList<TextField>();
+		
+		initializeMainMenu();	
+		initializeGameSettings();	
+		
+		initializeStatusText();
+		
+		displayMainMenu();
+		
 	}
 	
 	public void setDefaultPlayerNames() {
@@ -69,20 +85,6 @@ public class MainMenuView extends Scene implements InitializableView {
 		((Text) root.lookup("#statusText")).setText(text);
 	}
 	
-	@Override
-	public void initialize() {
-		
-		playerNameFields = new ArrayList<TextField>();
-		
-		initializeMainMenu();	
-		initializeGameSettings();	
-		
-		initializeStatusText();
-		
-		displayMainMenu();
-		
-	}
-	
 	public void displayMainMenu() { 
 		root.setCenter(mainMenu); 
 	}
@@ -111,6 +113,8 @@ public class MainMenuView extends Scene implements InitializableView {
 		mainMenu.setStyle("-fx-background-color: #FFFFFF");
 		mainMenu.setAlignment(Pos.CENTER);
 		
+		ImageView logoImg = new ImageView(new Image("/images/logo.png"));
+		
 		Button newGameButton = new Button("New Game");
 		newGameButton.setId("newGameButton");
 		newGameButton.setPrefWidth(125);
@@ -119,7 +123,7 @@ public class MainMenuView extends Scene implements InitializableView {
 		exitButton.setId("exitButton");
 		exitButton.setMinWidth(125);
 		
-		mainMenu.getChildren().addAll(newGameButton, exitButton);
+		mainMenu.getChildren().addAll(logoImg, newGameButton, exitButton);
 		
 	}
 	

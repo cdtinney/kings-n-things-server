@@ -19,5 +19,10 @@ public abstract class Thing {
     public Image getImage() {
     	return image;
     }
+    
+    @Override
+    public String toString() {
+    	return name;    	
+    }
 
 }

@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import com.kingsandthings.game.InitializableView;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.model.Player;
+import com.kingsandthings.model.Rack;
 
 public class PlayerPane extends VBox implements InitializableView {
 	
@@ -33,6 +34,11 @@ public class PlayerPane extends VBox implements InitializableView {
 		
 		PropertyChangeDispatcher.getInstance().addListener(PlayerManager.class, "activePlayer", this, "updateActivePlayer");
 		PropertyChangeDispatcher.getInstance().addListener(Player.class, "numGold", this, "updatePlayerGold");
+		PropertyChangeDispatcher.getInstance().addListener(Rack.class, "things", this, "updatePlayerRack");
+	}
+	
+	public List<PlayerView> getPlayerViews() {
+		return playerViews;
 	}
 	
 	private void addPlayerViews() {
@@ -87,6 +93,15 @@ public class PlayerPane extends VBox implements InitializableView {
 		int numGold = player.getNumGold();
 		
 		getPlayerView(player).setNumGoldText(numGold);
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void updatePlayerRack(PropertyChangeEvent event) {
+		
+		Rack rack = (Rack) event.getSource();
+		
+		getPlayerView(rack.getOwner()).setRackThings(rack.getThings());
 		
 	}
 	

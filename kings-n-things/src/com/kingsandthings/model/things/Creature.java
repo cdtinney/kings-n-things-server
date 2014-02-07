@@ -70,4 +70,41 @@ public class Creature extends Thing {
 		return combatValue;
 	}
 	
+	@Override
+	public String toString() {
+		
+		StringBuilder sb = new StringBuilder(super.toString());
+		
+		sb.append(" " + terrainType.toString());
+		
+		String abilityStr = " ";
+		for (Ability a : abilities) {
+			
+			switch (a) {
+				case FLY:
+					abilityStr += "^";
+					break;
+				case MAGIC:
+					abilityStr += "*";
+					break;
+				case CHARGE:
+					abilityStr += "C";
+					break;
+				case RANGE:
+					abilityStr += "R";
+					break;
+				case SPECIAL:
+					abilityStr += "S";
+					break;
+				case NONE:
+					break;
+			}
+			
+		}
+		
+		sb.append(abilityStr + combatValue);
+		return sb.toString();
+		
+	}
+	
 }

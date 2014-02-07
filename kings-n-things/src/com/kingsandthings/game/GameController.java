@@ -14,7 +14,6 @@ import com.kingsandthings.game.phase.Phase;
 import com.kingsandthings.game.phase.PhaseManager;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.game.player.PlayerPaneController;
-import com.kingsandthings.model.Game;
 import com.kingsandthings.model.Player;
 
 public class GameController extends Controller {
@@ -33,8 +32,6 @@ public class GameController extends Controller {
 	private MainMenuController parent;
 	
 	public void initialize(Stage stage, List<String> playerNames, MainMenuController parent) {
-		
-		//Game g = new Game();
 		
 		this.parent = parent;
 		
