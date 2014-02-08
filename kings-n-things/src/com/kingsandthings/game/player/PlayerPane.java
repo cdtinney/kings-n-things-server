@@ -11,6 +11,7 @@ import com.kingsandthings.game.InitializableView;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.Rack;
+import com.kingsandthings.model.things.Thing;
 
 public class PlayerPane extends VBox implements InitializableView {
 	
@@ -96,12 +97,14 @@ public class PlayerPane extends VBox implements InitializableView {
 		
 	}
 	
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "unchecked" })
 	private void updatePlayerRack(PropertyChangeEvent event) {
 		
 		Rack rack = (Rack) event.getSource();
 		
-		getPlayerView(rack.getOwner()).setRackThings(rack.getThings());
+		List<Thing> newThings = (List<Thing>) event.getNewValue();
+		
+		getPlayerView(rack.getOwner()).setRackThings(newThings);
 		
 	}
 	

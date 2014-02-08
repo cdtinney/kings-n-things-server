@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 
 import com.kingsandthings.model.enums.Terrain;
 
+@SuppressWarnings("serial")
 public class Creature extends Thing {
 	
 	private static Logger LOGGER = Logger.getLogger(Creature.class.getName());

@@ -6,12 +6,18 @@ import java.util.logging.Logger;
 import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.TransferMode;
 
 import com.kingsandthings.Controller;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Board;
 import com.kingsandthings.model.phase.PhaseManager;
+import com.kingsandthings.model.things.Thing;
+import com.kingsandthings.util.CustomDataFormat;
 
 public class BoardController extends Controller {
 	
@@ -79,6 +85,11 @@ public class BoardController extends Controller {
 				addEventHandler(tileView, "setOnMouseEntered", "handleTileMouseEnter");
 				addEventHandler(tileView, "setOnMouseExited", "handleTileMouseExit");
 				
+				// Drag and drop
+				addEventHandler(tileView, "setOnDragOver", "handleTileDragOver");
+				addEventHandler(tileView, "setOnDragDropped", "handleTileDragDropped");
+				addEventHandler(tileView, "setOnDragExited", "handleTileDragExit");
+				
 				// TODO - refactor event handling for action menus (currently, every single menu has an individual handler)
 				addEventHandler(tileView.getActionMenu().get("addControlMarker"), "setOnAction", "handleAddControlMarkerMenuItem");
 				addEventHandler(tileView.getActionMenu().get("placeTower"), "setOnAction", "handlePlaceTowerMenuItem");
@@ -87,13 +98,15 @@ public class BoardController extends Controller {
 		}
 	}
 	
-	protected void handlePlaceTowerMenuItem(Event event) {
+	@SuppressWarnings("unused")
+	private void handlePlaceTowerMenuItem(Event event) {
 		
 		LOGGER.info("Handle add tower menu");
 		
 	}
 	
-	protected void handleAddControlMarkerMenuItem(Event event) {
+	@SuppressWarnings("unused")
+	private void handleAddControlMarkerMenuItem(Event event) {
 		
 		MenuItem item = (MenuItem) event.getSource();
 		
@@ -108,32 +121,77 @@ public class BoardController extends Controller {
 		
 	}
 	
-	/**
-	 * Tile click event handling
-	 * 
-	 * @param event
-	 */
-	protected void handleTileClick(Event event) {
+	@SuppressWarnings("unused")
+	private void handleTileDragOver(Event event) {
+
+		DragEvent dragEvent = (DragEvent) event;
+		
+		if (dragEvent.getDragboard().hasContent(CustomDataFormat.THING)) {
+			
+			TileView tileView = (TileView) event.getSource();
+			
+			boolean activePlayerOwned = tileView.getTile().getOwner() == PlayerManager.getInstance().getActivePlayer();
+			
+			if (activePlayerOwned) {
+				dragEvent.acceptTransferModes(TransferMode.ANY);
+			}
+			
+			tileView.addHighlight(activePlayerOwned);
+			
+		}
+		
+		dragEvent.consume();
+
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleTileDragDropped(Event event) {
+
+		DragEvent dragEvent = (DragEvent) event;
+		
+		if (!dragEvent.getDragboard().hasContent(CustomDataFormat.THING)) {
+			return;
+		}
+		
+		TileView tileView = (TileView) event.getSource();
+		
+		Thing thing = (Thing) dragEvent.getDragboard().getContent(DataFormat.lookupMimeType("object/thing"));
+		thing.setImage((Image) dragEvent.getDragboard().getContent(DataFormat.IMAGE));
+		
+		boolean success = tileView.getTile().addThing(thing);		
+		if (success) {
+			tileView.getTile().getOwner().getRack().removeThing(thing);
+		}
+		
+		dragEvent.setDropCompleted(true);
+		dragEvent.consume();
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleTileDragExit(Event event) {
+
+		TileView tileView = (TileView) event.getSource();
+		tileView.removeHighlight();
+		
+		event.consume();
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleTileClick(Event event) {
 		TileView tileView = (TileView) event.getSource();
 		tileView.toggleActionMenu();
 	}
 	
-	/**
-	 * Tile mouse exit event handling
-	 * 
-	 * @param event
-	 */
-	protected void handleTileMouseExit(Event event) {
+	@SuppressWarnings("unused")
+	private void handleTileMouseExit(Event event) {
 		TileView tileView = (TileView) event.getSource();
 		tileView.setOpacity(1.0);
 	}
 	
-	/**
-	 * Tile mouse enter event handling
-	 * 
-	 * @param event
-	 */
-	protected void handleTileMouseEnter(Event event) {
+	@SuppressWarnings("unused")
+	private void handleTileMouseEnter(Event event) {
 		TileView tileView = (TileView) event.getSource();
 		tileView.setOpacity(0.8);
 	}

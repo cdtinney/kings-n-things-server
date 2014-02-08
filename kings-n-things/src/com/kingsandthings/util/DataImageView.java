@@ -17,6 +17,18 @@ public class DataImageView extends ImageView {
 		this.owner = owner;
 	}
 	
+	public void setVisiblity(boolean visible, boolean border) {
+		
+		setVisible(visible);
+		
+		if (visible && border) {
+			addBorder();
+		} else if (border) {
+			removeBorder();
+		}
+		
+	}
+	
 	public void setData(Object object) {
 		this.data = object;
 	}
@@ -28,6 +40,7 @@ public class DataImageView extends ImageView {
 	public void addBorder() {
 		
 		if (wrapper != null) {
+			relocateWrapper();
 			wrapper.setVisible(true);
 			return;
 		}
@@ -36,6 +49,20 @@ public class DataImageView extends ImageView {
 		wrapper.getStyleClass().add("imageBorder");
 		wrapper.managedProperty().bind(wrapper.visibleProperty());
 
+		relocateWrapper();
+		
+		owner.getChildren().add(wrapper);
+		
+		wrapper.addEventHandler(MouseEvent.ANY, new EventPropogationHandler(this));
+		
+	}
+	
+	public void removeBorder() {
+		wrapper.setVisible(false);
+	}
+	
+	private void relocateWrapper() {
+		
 		double imageHeight = this.getBoundsInParent().getHeight();
 		double imageWidth = this.getBoundsInParent().getWidth();
 		
@@ -48,14 +75,6 @@ public class DataImageView extends ImageView {
 		wrapper.setLayoutX(x);
 		wrapper.setLayoutY(y);
 		
-		owner.getChildren().add(wrapper);
-		
-		wrapper.addEventHandler(MouseEvent.ANY, new EventPropogationHandler(this));
-		
-	}
-	
-	public void removeBorder() {
-		wrapper.setVisible(false);
 	}
 
 }

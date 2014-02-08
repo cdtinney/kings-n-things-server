@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import javafx.scene.image.Image;
 
+@SuppressWarnings("serial")
 public class Fort extends Thing {
 	
 	private static Logger LOGGER = Logger.getLogger(Fort.class.getName());
@@ -48,6 +49,11 @@ public class Fort extends Thing {
 	
 	public boolean isNeutralized() {
 		return neutralized;
+	}
+
+	@Override
+	public String toString() {
+		return name + " " +  type.toString() + " " + combatValue;
 	}
 	
 }

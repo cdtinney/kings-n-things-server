@@ -6,6 +6,7 @@ import com.kingsandthings.model.enums.Terrain;
 
 import javafx.scene.image.Image;
 
+@SuppressWarnings("serial")
 public class SpecialIncome extends Thing {
 	
 	private static Logger LOGGER = Logger.getLogger(SpecialIncome.class.getName());

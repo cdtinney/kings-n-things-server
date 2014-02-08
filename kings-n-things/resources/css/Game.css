@@ -55,7 +55,7 @@
 
 .imageBorder {
 	/* Border */
-	-fx-border-color: lime;
+	-fx-border-color: turquoise;
 	-fx-border-width: 2px;
 	-fx-border-insets: -2px;
 }

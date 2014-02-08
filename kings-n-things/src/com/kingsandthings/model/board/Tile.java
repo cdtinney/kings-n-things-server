@@ -69,14 +69,14 @@ public class Tile {
 	/*
 	 * Adds a Thing to the Tile.
 	 */
-	public void addThing(Thing thing) {
+	public boolean addThing(Thing thing) {
 		
 		if (things.contains(thing)) {
-			LOGGER.info("Tile already contains Thing - " + thing.getName());
-			return;
+			LOGGER.info("Tile already contains Thing: " + thing);
+			return false;
 		} 
 		
-		things.add(thing);
+		return things.add(thing);
 		
 	}
 	
@@ -87,7 +87,7 @@ public class Tile {
 		
 		boolean contains = things.remove(thing);
 		if (!contains) {
-			LOGGER.info("Tile does not contain Thing - " + thing.getName());
+			LOGGER.info("Tile does not contain Thing: " + thing);
 		}
 		
 	}

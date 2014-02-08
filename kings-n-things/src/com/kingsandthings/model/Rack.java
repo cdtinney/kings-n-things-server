@@ -38,9 +38,11 @@ public class Rack {
 			LOGGER.log(LogLevel.STATUS, "Cannot add " + list.size() + " Things due to limit (current: " + things.size() + " maximum: " + MAX_THINGS + ")");
 			return false;
 		}
+
+		List<Thing> oldThings = new ArrayList<Thing>(things);
 		
 		things.addAll(list);
-		PropertyChangeDispatcher.getInstance().notify(this, "things", null, things);
+		PropertyChangeDispatcher.getInstance().notify(this, "things", oldThings, things);
 		return true;
 		
 	}
@@ -51,14 +53,20 @@ public class Rack {
 			LOGGER.log(LogLevel.STATUS, "Cannot add Thing due to limit (current: " + things.size() + " maximum: " + MAX_THINGS + ")");
 			return false;
 		}
+
+		List<Thing> oldThings = new ArrayList<Thing>(things);
 		
 		things.add(thing);
-		PropertyChangeDispatcher.getInstance().notify(this, "things", null, things);
+		PropertyChangeDispatcher.getInstance().notify(this, "things", oldThings, things);
 		return true;
 	}
 
 	public void removeThing(Thing thing) {
+		
+		List<Thing> oldThings = new ArrayList<Thing>(things);
+		
 		things.remove(thing);
+		PropertyChangeDispatcher.getInstance().notify(this, "things", oldThings, things);
 	}
 
 }

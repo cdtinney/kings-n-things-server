@@ -36,7 +36,7 @@ public class PlayerView extends Pane implements InitializableView {
 	
 	private List<DataImageView> rackItems;
 	
-	private ImageView currentHoverImage;
+	private DataImageView currentHoverImage;
 	
 	public PlayerView(Player player) {
 		this.player = player;
@@ -69,6 +69,8 @@ public class PlayerView extends Pane implements InitializableView {
 	
 	public void setRackThings(List<Thing> things) {
 		
+		clearThings();		
+		
 		for (int i=0; i<things.size(); ++i) {
 			
 			Thing thing = things.get(i);
@@ -76,6 +78,15 @@ public class PlayerView extends Pane implements InitializableView {
 			rackItems.get(i).setImage(thing.getImage());
 			rackItems.get(i).setData(thing);
 			
+		}
+		
+	}
+	
+	private void clearThings() {
+		
+		for (DataImageView imageView : rackItems) {
+			imageView.setImage(null);
+			imageView.setData(null);
 		}
 		
 	}
@@ -102,7 +113,7 @@ public class PlayerView extends Pane implements InitializableView {
 		Image image = rackImageView.getImage();
 		
 		if (currentHoverImage == null) {
-			currentHoverImage = new ImageView();
+			currentHoverImage = new DataImageView(this);
 			currentHoverImage.setOpacity(0.95);
 			currentHoverImage.setPreserveRatio(true);
 			currentHoverImage.setFitWidth(RACK_ITEM_HOVER_WIDTH);
@@ -113,7 +124,6 @@ public class PlayerView extends Pane implements InitializableView {
 		
 		currentHoverImage.setImage(image);
 		
-		// Compute y
 		double imageHeight = currentHoverImage.getBoundsInParent().getHeight();
 		double viewHeight = PlayerView.this.getHeight();
 		
@@ -122,15 +132,15 @@ public class PlayerView extends Pane implements InitializableView {
 			imageY -= (imageHeight / 2);
 		}
 		
-		currentHoverImage.relocate(x+RACK_ITEM_WIDTH+5, imageY);
-		currentHoverImage.setVisible(true);
+		currentHoverImage.relocate(x+RACK_ITEM_WIDTH+7, imageY);
+		currentHoverImage.setVisiblity(true, true);
 		
 	}
 	
 	public void hideHoverImage() {
 		
 		if (currentHoverImage != null) {
-			currentHoverImage.setVisible(false);
+			currentHoverImage.setVisiblity(false, true);
 		}
 		
 	}

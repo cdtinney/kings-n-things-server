@@ -13,7 +13,6 @@ import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.RandomEvent;
 import com.kingsandthings.model.things.SpecialCharacter;
 import com.kingsandthings.model.things.SpecialIncome;
-import com.kingsandthings.model.things.Thing;
 import com.kingsandthings.model.things.Treasure;
 
 public class Player {

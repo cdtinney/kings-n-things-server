@@ -3,9 +3,11 @@ package com.kingsandthings.game.board;
 import java.util.logging.Logger;
 
 import javafx.geometry.Side;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 import com.kingsandthings.model.board.Tile;
 
@@ -81,6 +83,26 @@ public class TileView extends ImageView {
 			
 		}
 		
+	}
+	
+	public void addHighlight(boolean valid) {
+	
+		InnerShadow innerShadow = new InnerShadow();
+		innerShadow.setRadius(5);
+		innerShadow.setChoke(0.8);
+		
+		if (valid) {
+			innerShadow.setColor(Color.LIMEGREEN);
+		} else {
+			innerShadow.setColor(Color.RED);
+		}
+		
+		setEffect(innerShadow);
+		
+	}
+	
+	public void removeHighlight() {
+		this.setEffect(null);
 	}
 	
 	/*

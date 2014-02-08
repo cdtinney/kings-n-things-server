@@ -4,14 +4,21 @@ import java.util.List;
 
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 
 import com.kingsandthings.Controller;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.things.Thing;
 import com.kingsandthings.util.DataImageView;
+import com.kingsandthings.util.CustomDataFormat;
 
 public class PlayerPaneController extends Controller {
+	
+	//public static DataFormat format = new DataFormat("object/thing");
 	
 	private PlayerPane view;
 	
@@ -53,24 +60,36 @@ public class PlayerPaneController extends Controller {
 		@Override
 		public void handle(MouseEvent event) {
 			
-			DataImageView itemImageView = (DataImageView) event.getSource();
-			PlayerView playerView = (PlayerView) itemImageView.getParent();
+			DataImageView imageView = (DataImageView) event.getSource();
+			PlayerView playerView = (PlayerView) imageView.getParent();
 			
 			if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
-				playerView.showHoverImage(itemImageView);
-				itemImageView.addBorder();
+				playerView.showHoverImage(imageView);
+				imageView.addBorder();
 			}
 			
 			if (event.getEventType() == MouseEvent.MOUSE_EXITED) {
 				playerView.hideHoverImage();
-				itemImageView.removeBorder();
+				imageView.removeBorder();
 			}
 			
 			if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
 				
-				// TODO - do stuff?
-				Thing t = (Thing) itemImageView.getData();
+				// TODO - do stuff
+				Thing t = (Thing) imageView.getData();
 				System.out.println(t.toString());
+				
+			}
+			
+			if (event.getEventType() == MouseEvent.DRAG_DETECTED) {
+				
+				Dragboard db = imageView.startDragAndDrop(TransferMode.ANY);
+				ClipboardContent content = new ClipboardContent();
+				
+				content.put(CustomDataFormat.THING, (Thing) imageView.getData());
+				content.put(DataFormat.IMAGE, imageView.getImage());
+				
+				db.setContent(content);
 				
 			}
 			
