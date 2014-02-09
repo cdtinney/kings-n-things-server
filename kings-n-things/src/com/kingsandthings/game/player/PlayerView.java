@@ -89,6 +89,7 @@ public class PlayerView extends Pane implements InitializableView {
 
 		DataImageView.clear(fortImages);
 		
+		// TASK - fix this
 		if (forts.size() > fortImages.size()) {
 			return;
 		}
@@ -96,6 +97,10 @@ public class PlayerView extends Pane implements InitializableView {
 		for (int i=0; i<forts.size(); ++i) {
 			
 			Fort fort = forts.get(i);
+			
+			if (fort.isPlaced()) {
+				continue;
+			}
 			
 			fortImages.get(i).setImage(fort.getImage());
 			fortImages.get(i).setData(fort);

@@ -13,10 +13,8 @@ import javafx.scene.input.TransferMode;
 
 import com.kingsandthings.Controller;
 import com.kingsandthings.game.player.PlayerManager;
-import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Board;
-import com.kingsandthings.model.board.Tile;
 import com.kingsandthings.model.phase.PhaseManager;
 import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.Thing;
@@ -24,6 +22,7 @@ import com.kingsandthings.util.CustomDataFormat;
 
 public class BoardController extends Controller {
 	
+	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(BoardController.class.getName());
 
 	// Model
@@ -95,32 +94,9 @@ public class BoardController extends Controller {
 				
 				// Action menu
 				addEventHandler(tileView.getActionMenu().get("placeControlMarker"), "setOnAction", "handlePlaceControlMarkerMenuItem");
-				addEventHandler(tileView.getActionMenu().get("placeTower"), "setOnAction", "handlePlaceTowerMenuItem");
 				
 			}
 		}
-	}
-	
-	@SuppressWarnings("unused")
-	private void handlePlaceTowerMenuItem(Event event) {
-		
-		MenuItem item = (MenuItem) event.getSource();
-		
-		TileActionMenu tileActionMenu = (TileActionMenu) item.getParentPopup();
-		TileView tileView = tileActionMenu.getOwner();
-		
-		Player player = PlayerManager.getInstance().getActivePlayer();
-		
-		Tile tile = tileView.getTile();
-		
-		if (tile.getOwner() != player) {
-			LOGGER.log(LogLevel.STATUS, "Player cannot place a tower on a tile he does not control.");
-			return;
-		}
-		
-		// TODO - add tower to tile, and display
-		// tile.addTower(player.getForts().get(0))
-		
 	}
 	
 	@SuppressWarnings("unused")
@@ -178,11 +154,13 @@ public class BoardController extends Controller {
 		
 		if (thing instanceof Fort) {
 			
-			boolean success = tileView.getTile().setFort((Fort) thing);
+			boolean success = tileView.getTile().getOwner().placeFort((Fort) thing, tileView.getTile());
+			
 			if (success) {
-				tileView.getTile().getOwner().removeFort((Fort) thing);
-				dragEvent.setDropCompleted(true);
+				PhaseManager.getInstance().endPlayerTurn();
 			}
+			
+			dragEvent.setDropCompleted(success);
 			
 		} else {
 
@@ -200,19 +178,14 @@ public class BoardController extends Controller {
 	
 	@SuppressWarnings("unused")
 	private void handleTileDragExit(Event event) {
-
 		TileView tileView = (TileView) event.getSource();
 		tileView.removeHighlight();
-		
-		event.consume();
-		
 	}
 	
 	@SuppressWarnings("unused")
 	private void handleTileClick(Event event) {
 		TileView tileView = (TileView) event.getSource();
 		tileView.toggleActionMenu();	
-		
 	}
 	
 	@SuppressWarnings("unused")

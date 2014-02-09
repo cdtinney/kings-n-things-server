@@ -61,7 +61,7 @@ public class TileView extends ImageView {
 
 		boolean visible = actionMenu.showingProperty().get();
 		
-		if (visible) {
+		if (visible || !actionMenu.visibleItems()) {
 			actionMenu.hide();
 		} else {
 			

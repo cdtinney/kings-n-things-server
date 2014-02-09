@@ -49,7 +49,7 @@ public class GameActionView extends VBox implements InitializableView {
 	public void toggleThingList() {
 
 		ListView<String>  list = (ListView<String>) lookup("#thingList");
-		Node select = lookup("#selectThings");
+		Node selectButton = lookup("#selectThings");
 		
 		// If its already visible, clear selection and hide
 		if (list.visibleProperty().get()) {
@@ -57,7 +57,7 @@ public class GameActionView extends VBox implements InitializableView {
 			list.getSelectionModel().clearSelection();
 			
 			list.setVisible(false);
-			select.setVisible(false);
+			selectButton.setVisible(false);
 			
 		} else {
 			
@@ -65,10 +65,8 @@ public class GameActionView extends VBox implements InitializableView {
 			list.setItems(FXCollections.observableArrayList(Game.getInstance().getCup().getThingNames()));
 			
 			list.setVisible(true);
-			select.setVisible(true);
+			selectButton.setVisible(true);
 		}
-		
-		
 		
 	}
 	

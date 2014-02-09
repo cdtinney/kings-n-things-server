@@ -20,7 +20,7 @@ public class Fort extends Thing {
 	private int combatValue;
 
 	private boolean neutralized = false;
-	private boolean placedOnBoard = false;
+	private boolean isPlaced = false;
 
 	public Fort(String type, int combatValue, Image image) {
         super(type, image);
@@ -47,8 +47,12 @@ public class Fort extends Thing {
 		return type;
 	}
 	
-	public boolean placedOnBoard() {
-		return placedOnBoard;
+	public void setPlaced(boolean placed) {
+		isPlaced = placed;
+	}
+	
+	public boolean isPlaced() {
+		return isPlaced;
 	}
 	
 	public boolean isNeutralized() {

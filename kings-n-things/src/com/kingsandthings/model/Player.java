@@ -7,7 +7,9 @@ import java.util.logging.Logger;
 import javafx.scene.image.Image;
 
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
+import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.board.Tile;
+import com.kingsandthings.model.phase.PhaseManager;
 import com.kingsandthings.model.things.Creature;
 import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.RandomEvent;
@@ -65,13 +67,26 @@ public class Player {
 		return forts;
 	}
 	
+	public boolean placeFort(Fort fort, Tile tile) {
+		
+		boolean success = tile.setFort(fort);
+		if (success) {
+			// Drag and drop creates a duplicate object, so we have to find it in the list
+			forts.get(forts.indexOf(fort)).setPlaced(true);
+		}
+
+		PropertyChangeDispatcher.getInstance().notify(this, "forts", null, forts);
+		return success;
+		
+	}
+	
 	public void addFort(Fort fort) {
 		
 		if (forts.contains(fort)) {
 			LOGGER.warning("Fort already contained in player list");
 			return;
 		}
-		
+
 		List<Fort> oldForts = forts;
 		forts.add(fort);
 		PropertyChangeDispatcher.getInstance().notify(this, "forts", oldForts, forts);
@@ -86,7 +101,7 @@ public class Player {
 		}
 		
 		List<Fort> oldForts = forts;
-		forts.add(fort);
+		forts.remove(fort);
 		PropertyChangeDispatcher.getInstance().notify(this, "forts", oldForts, forts);
 		
 	}

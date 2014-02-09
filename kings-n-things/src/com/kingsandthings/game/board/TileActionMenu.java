@@ -9,7 +9,6 @@ import javafx.scene.control.MenuItem;
 import com.kingsandthings.game.events.NotificationDispatcher;
 import com.kingsandthings.model.phase.PhaseNotification;
 import com.kingsandthings.model.phase.StartingKingdomsPhase;
-import com.kingsandthings.model.phase.TowerPlacementPhase;
 
 public class TileActionMenu extends ContextMenu {
 	
@@ -24,14 +23,10 @@ public class TileActionMenu extends ContextMenu {
 		menuItems = new LinkedHashMap<String, MenuItem>();
 
 		menuItems.put("placeControlMarker", new MenuItem("Place control marker"));
-		menuItems.put("placeTower", new MenuItem("Place tower"));
-		
-		menuItems.get("placeTower").setVisible(false);
 		
 		getItems().addAll(menuItems.values());
 		
 		NotificationDispatcher.getDispatcher().addListener(StartingKingdomsPhase.class, PhaseNotification.END, this, "onStartingKingdomsPhaseEnd");
-		NotificationDispatcher.getDispatcher().addListener(TowerPlacementPhase.class, PhaseNotification.BEGIN, this, "onTowerPlacementPhaseBegin");
 		
 	}
 	
@@ -43,14 +38,22 @@ public class TileActionMenu extends ContextMenu {
 		return menuItems.get(id);
 	}
 	
-	@SuppressWarnings("unused")
-	private void onStartingKingdomsPhaseEnd() {
-		get("placeControlMarker").setVisible(false);
+	public boolean visibleItems() {
+		
+		int numVisible = 0;
+		for (MenuItem item : getItems()) {
+			if (item.isVisible()) {
+				numVisible++;
+			}
+		}
+		
+		return numVisible > 0;
+		
 	}
 	
 	@SuppressWarnings("unused")
-	private void onTowerPlacementPhaseBegin() {
-		get("placeTower").setVisible(true);
+	private void onStartingKingdomsPhaseEnd() {
+		get("placeControlMarker").setVisible(false);
 	}
 
 }

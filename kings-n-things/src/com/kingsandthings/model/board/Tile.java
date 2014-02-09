@@ -76,7 +76,7 @@ public class Tile {
 			LOGGER.log(LogLevel.STATUS, "This tile already contains a fort.");
 			return false;
 		}
-
+		
 		PropertyChangeDispatcher.getInstance().notify(this, "fort", this.fort, this.fort = fort);
 		return true;
 	}

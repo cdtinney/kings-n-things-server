@@ -3,6 +3,7 @@ package com.kingsandthings.game.player;
 import java.util.List;
 
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -12,6 +13,7 @@ import javafx.scene.input.TransferMode;
 
 import com.kingsandthings.Controller;
 import com.kingsandthings.model.Player;
+import com.kingsandthings.model.phase.PhaseManager;
 import com.kingsandthings.model.things.Thing;
 import com.kingsandthings.util.CustomDataFormat;
 import com.kingsandthings.util.DataImageView;
@@ -35,32 +37,36 @@ public class PlayerPaneController extends Controller {
 	
 	private void setupRackImageHandlers() {
 		
-		for (PlayerView playerView : view.getPlayerViews()) {
+		for (final PlayerView playerView : view.getPlayerViews()) {
 			
 			for (DataImageView rackImage : playerView.getRackImageViews()) {
 				addEventHandler(rackImage, "setOnMouseClicked", "handleRackImageClicked");
-				addEventHandler(rackImage, "setOnDragDetected", "handleRackImageDragDetected");
+				addEventHandler(rackImage, "setOnDragDetected", "handleThingDragDetected");
 			}
 			
 			for (DataImageView fortImage : playerView.getFortImageViews()) {
-				addEventHandler(fortImage, "setOnMouseClicked", "handleRackImageClicked");
-				addEventHandler(fortImage, "setOnDragDetected", "handleRackImageDragDetected");
-				addEventHandler(fortImage, "setOnDragDone", "handleRackImageDragDone");
+				addEventHandler(fortImage, "setOnDragDetected", "handleThingDragDetected");
+				addEventHandler(fortImage, "setOnDragDone", "handleThingDragDone");
+				
+				// TODO - abstract this
+				fortImage.addEventFilter(Event.ANY, new EventHandler<Event>() {
+					@Override
+					public void handle(Event event) {
+						
+						Player player = playerView.getPlayer();
+						
+						if (PlayerManager.getInstance().getActivePlayer() != player) {
+							event.consume();
+						}
+						
+						if (!PhaseManager.getInstance().getCurrentPhase().getName().equals("Tower Placement")) {
+							event.consume();
+						}
+					}
+				});
+				
 			}
 		}
-		
-	}
-	
-	@SuppressWarnings("unused")
-	private void handleFortImageClicked(Event event) {
-
-		DataImageView imageView = (DataImageView) event.getSource();
-		System.out.println("fort image clicked");
-		
-	}
-	
-	@SuppressWarnings("unused")
-	private void handleFortImageDragDetected(Event event) {
 		
 	}
 	
@@ -76,7 +82,7 @@ public class PlayerPaneController extends Controller {
 	}
 	
 	@SuppressWarnings("unused")
-	private void handleRackImageDragDetected(Event event) {
+	private void handleThingDragDetected(Event event) {
 		
 		DataImageView imageView = (DataImageView) event.getSource();
 
@@ -91,15 +97,16 @@ public class PlayerPaneController extends Controller {
 	}
 	
 	@SuppressWarnings("unused")
-	private void handleRackImageDragDone(Event event) {
+	private void handleThingDragDone(Event event) {
 		
 		DragEvent dragEvent = (DragEvent) event;
 		
 		if (dragEvent.getTransferMode() == null) {
 			System.out.println("unsuccessful drop");
-		} else {
-			System.out.println("successful drop");
-		}
+			return;
+		} 
+		
+		System.out.println("successful drop");
 		
 	}
 
