@@ -42,7 +42,7 @@ public class GoldCollectionPhase extends Phase {
 		for (Fort fort : player.getForts()) {
 			
 			// Forts placed on the board only
-			if (fort.placedOnBoard()) {
+			if (fort.isPlaced()) {
 				fortValue += fort.getCombatValue();
 			}
 			
