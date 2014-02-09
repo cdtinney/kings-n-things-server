@@ -2,12 +2,14 @@ package com.kingsandthings.model.phase;
 
 import java.util.logging.Logger;
 
+import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Tile;
 import com.kingsandthings.model.things.Creature;
 
 import java.util.Collections;
 import java.util.List;
+
 import com.kingsandthings.model.enums.Ability;;
 
 public class CombatPhase extends Phase {
@@ -54,6 +56,7 @@ public class CombatPhase extends Phase {
 		//Check if battle is over
 		if (!(defenders.isEmpty() || attackers.isEmpty())) {
 			initiateCombat(playerDefender,playerAttacker,defenders,attackers);
+			LOGGER.log(LogLevel.STATUS, "Battle is over between" + playerDefender + " and " + playerAttacker);
 		}
 	}
 
