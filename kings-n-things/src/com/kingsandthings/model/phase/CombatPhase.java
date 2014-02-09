@@ -38,20 +38,20 @@ public class CombatPhase extends Phase {
 		//MAGIC
 		damageToAttacker = computeCombat(playerDefender, getMagicCreatures(defenders));
 		damageToDefender = computeCombat(playerAttacker, getMagicCreatures(attackers));
-		playerRemoveCreatures(playerAttacker, attackers, damageToAttacker);
-		playerRemoveCreatures(playerDefender, defenders, damageToDefender);
+		attackers.removeAll(playerRemoveCreatures(playerAttacker, attackers, damageToAttacker));
+		defenders.removeAll(playerRemoveCreatures(playerDefender, defenders, damageToDefender));
 		
 		//RANGED
 		damageToAttacker = computeCombat(playerDefender, getRangedCreatures(defenders));
 		damageToDefender = computeCombat(playerAttacker, getRangedCreatures(attackers));
-		playerRemoveCreatures(playerAttacker, attackers, damageToAttacker);
-		playerRemoveCreatures(playerDefender, defenders, damageToDefender);
+		attackers.removeAll(playerRemoveCreatures(playerAttacker, attackers, damageToAttacker));
+		defenders.removeAll(playerRemoveCreatures(playerDefender, defenders, damageToDefender));
 		
 		//MELEE = !RANGED && !MAGIC
 		damageToAttacker = computeCombat(playerDefender, getMeleeCreatures(defenders));
 		damageToDefender = computeCombat(playerAttacker, getMeleeCreatures(attackers));
-		playerRemoveCreatures(playerAttacker, attackers, damageToAttacker);
-		playerRemoveCreatures(playerDefender, defenders, damageToDefender);
+		attackers.removeAll(playerRemoveCreatures(playerAttacker, attackers, damageToAttacker));
+		defenders.removeAll(playerRemoveCreatures(playerDefender, defenders, damageToDefender));
 		
 		//Check if battle is over
 		if (!(defenders.isEmpty() || attackers.isEmpty())) {
@@ -61,9 +61,12 @@ public class CombatPhase extends Phase {
 	}
 
 	// Player chooses set of creatures that receive damage hits, call this function to remove them
-	private void playerRemoveCreatures(Player player, List<Creature> creatures, int damage) {
+	private List<Creature> playerRemoveCreatures(Player player, List<Creature> creatures, int damage) {
+		List<Creature> creaturesToRemove = Collections.<Creature>emptyList();
 		// TODO player chooses creatures to remove/kill = damage dealt
-		// player.remove([all chosen creatures]);
+		// remove creatures from player's control, ie something like:player.remove(creaturesToRemove);
+		// return list of creatures to take out for the rest of combat
+		return creaturesToRemove;
 	}
 
 	// Returns amount of damage a set of creatures deal based on die rolls
