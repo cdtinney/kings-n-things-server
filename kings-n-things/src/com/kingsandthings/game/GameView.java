@@ -24,7 +24,7 @@ public class GameView extends Scene implements InitializableView {
 	private BorderPane root;
 	
 	public GameView() {
-		super(new BorderPane(), WIDTH, HEIGHT);
+		super(new BorderPane(), WIDTH, HEIGHT);	
 		
 		root = (BorderPane) getRoot();
 		getStylesheets().add(getClass().getResource("/css/Game.css").toExternalForm());

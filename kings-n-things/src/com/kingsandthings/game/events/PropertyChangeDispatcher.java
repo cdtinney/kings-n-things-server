@@ -2,6 +2,7 @@ package com.kingsandthings.game.events;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +74,9 @@ public class PropertyChangeDispatcher {
 			LOGGER.warning("Property change handler method not found: " + instance.getClass().getSimpleName() 
 			+ "." + handlerMethodName);
 			
+		} catch (InvocationTargetException e) {
+			LOGGER.warning("Exception thrown in " + instance.getClass().getSimpleName() + "." + handlerMethodName);
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			
@@ -96,6 +100,10 @@ public class PropertyChangeDispatcher {
 			
 			// Add a new map for the class
 			listeners.put(clazz, new HashMap<String, List<PropertyChangeListener>>());
+			
+		}
+		
+		if (listeners.get(clazz).get(property) == null) {
 			
 			// Add a new list of listeners for each property of the class
 			listeners.get(clazz).put(property, new ArrayList<PropertyChangeListener>());

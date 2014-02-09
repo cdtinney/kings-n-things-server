@@ -35,6 +35,10 @@ public class Fort extends Thing {
         
     }
 	
+	public static Fort getTower() {
+		return new Fort("Tower", 1, new Image("/images/things/fort/-n Tower -a 1.jpg"));
+	}
+	
 	public int getCombatValue() {
 		return combatValue;
 	}

@@ -6,12 +6,15 @@ import java.util.List;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import com.kingsandthings.game.InitializableView;
 import com.kingsandthings.model.Player;
+import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.Thing;
 import com.kingsandthings.util.DataImageView;
 
@@ -19,7 +22,9 @@ public class PlayerView extends Pane implements InitializableView {
 	
 	private static final Image rackImg = new Image("/images/extra/rack.png");
 	
-	private static final int RACK_ITEM_HOVER_WIDTH = 85;
+	private static final int WIDTH = 425;
+	private static final int HEIGHT = 165;
+	
 	private static final int RACK_ITEM_WIDTH = 30;
 	private static final int RACK_ITEM_GAP = 23;
 	
@@ -27,16 +32,21 @@ public class PlayerView extends Pane implements InitializableView {
 	private static final int INITIAL_RACK_X = 15;
 	private static final int INITIAL_RACK_Y = 55;
 	
+	private static final int FORTS_X = WIDTH - 100;
+	private static final int FORTS_Y = INITIAL_RACK_Y;
+	
 	// Model
 	private Player player;
 	
 	// View elements
 	private Text playerNameText;
 	private Text numGoldText;
+	private ImageView controlMarkerImage;
 	
-	private List<DataImageView> rackItems;
+	private List<DataImageView> rackImages;
+	private List<DataImageView> fortImages;
 	
-	private DataImageView currentHoverImage;
+	private VBox fortsVBox;
 	
 	public PlayerView(Player player) {
 		this.player = player;
@@ -45,50 +55,76 @@ public class PlayerView extends Pane implements InitializableView {
 	@Override
 	public void initialize() {
 
-		setPrefWidth(425);
-		setPrefHeight(165);
+		setPrefWidth(WIDTH);
+		setPrefHeight(HEIGHT);
 		
 		getStyleClass().addAll("player");
 		
-		rackItems = new ArrayList<DataImageView>();
+		rackImages = new ArrayList<DataImageView>();
+		fortImages = new ArrayList<DataImageView>();
 		
 		addRackImages();
 		addPlayerNameText();
 		addNumGoldText();
 		addPlayerControlMarker();
+		addFortsVBox();
+		
+		update();
 		
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}
 	
 	public List<DataImageView> getRackImageViews() {
-		return rackItems;
+		return rackImages;
+	}
+	
+	public List<DataImageView> getFortImageViews() {
+		return fortImages;
+	}
+	
+	public void setFortThings(List<Fort> forts) {
+
+		DataImageView.clear(fortImages);
+		
+		if (forts.size() > fortImages.size()) {
+			return;
+		}
+		
+		for (int i=0; i<forts.size(); ++i) {
+			
+			Fort fort = forts.get(i);
+			
+			fortImages.get(i).setImage(fort.getImage());
+			fortImages.get(i).setData(fort);
+			
+		}
+		
 	}
 	
 	public void setRackThings(List<Thing> things) {
 		
-		clearThings();		
+		DataImageView.clear(rackImages);	
 		
 		for (int i=0; i<things.size(); ++i) {
 			
 			Thing thing = things.get(i);
 			
-			rackItems.get(i).setImage(thing.getImage());
-			rackItems.get(i).setData(thing);
+			rackImages.get(i).setImage(thing.getImage());
+			rackImages.get(i).setData(thing);
 			
 		}
 		
 	}
 	
-	private void clearThings() {
-		
-		for (DataImageView imageView : rackItems) {
-			imageView.setImage(null);
-			imageView.setData(null);
-		}
-		
+	public void setControlMarkerImage(Image image) {
+		controlMarkerImage.setImage(image);
+	}
+	
+	public void setPlayerName(String name) {
+		playerNameText.setText(name);
 	}
 	
 	public void setNumGoldText(int numGold) {
@@ -105,67 +141,51 @@ public class PlayerView extends Pane implements InitializableView {
 		
 	}
 	
-	public void showHoverImage(ImageView rackImageView) {
+	private void update() {
 		
-		double x = rackImageView.getLayoutX();
-		double y = rackImageView.getLayoutY();
+		if (PlayerManager.getInstance().getActivePlayer() == player) {
+			setActive(true);
+		}
+		
+		setNumGoldText(player.getNumGold());
+		setPlayerName(player.getName());
+		setControlMarkerImage(player.getControlMarker());
+		setFortThings(player.getForts());
+		
+	}
 
-		Image image = rackImageView.getImage();
+	private void addFortsVBox() {
 		
-		if (currentHoverImage == null) {
-			currentHoverImage = new DataImageView(this);
-			currentHoverImage.setOpacity(0.95);
-			currentHoverImage.setPreserveRatio(true);
-			currentHoverImage.setFitWidth(RACK_ITEM_HOVER_WIDTH);
-			currentHoverImage.managedProperty().bind(currentHoverImage.visibleProperty());
-			
-			getChildren().add(currentHoverImage);
-		}
+		fortsVBox = VBoxBuilder.create().spacing(4).layoutX(FORTS_X).layoutY(FORTS_Y).build();	
 		
-		currentHoverImage.setImage(image);
+		// TASK - figure out how to add event handlers dynamically		
+		DataImageView test = new DataImageView(RACK_ITEM_WIDTH);
+		fortImages.add(test);
+		fortsVBox.getChildren().add(test);
 		
-		double imageHeight = currentHoverImage.getBoundsInParent().getHeight();
-		double viewHeight = PlayerView.this.getHeight();
-		
-		double imageY = y;
-		if (imageY + imageHeight > viewHeight) {
-			imageY -= (imageHeight / 2);
-		}
-		
-		currentHoverImage.relocate(x+RACK_ITEM_WIDTH+7, imageY);
-		currentHoverImage.setVisiblity(true, true);
+		getChildren().add(fortsVBox);
 		
 	}
 	
-	public void hideHoverImage() {
-		
-		if (currentHoverImage != null) {
-			currentHoverImage.setVisiblity(false, true);
-		}
-		
-	}
-
 	private void addRackImages() {
 		
 		// Add the actual images of the rack
-		ImageView rackImageView1 = getRackImageView(INITIAL_RACK_X, INITIAL_RACK_Y);
-		ImageView rackImageView2 = getRackImageView(INITIAL_RACK_X, INITIAL_RACK_Y + rackImageView1.fitHeightProperty().get() + 50);
+		ImageView topRack = getRackImageView(INITIAL_RACK_X, INITIAL_RACK_Y);
+		ImageView bottomRack = getRackImageView(INITIAL_RACK_X, INITIAL_RACK_Y + topRack.fitHeightProperty().get() + 50);
 		
-		getChildren().addAll(rackImageView1, rackImageView2);
+		getChildren().addAll(topRack, bottomRack);
 		
 		// Create placeholder images for the items on the rack
 		for (int i=0; i<10; ++i) {
 			
-			DataImageView imgView = new DataImageView(this);
-			imgView.setPreserveRatio(true);
-			imgView.setFitWidth(RACK_ITEM_WIDTH);
+			DataImageView imgView = new DataImageView(RACK_ITEM_WIDTH);
 			
 			// Compute the coordinates
 			final int x = INITIAL_RACK_ITEM_X + (i%5)*RACK_ITEM_WIDTH + (i%5)*RACK_ITEM_GAP;
 			final int y = (i < 5 ? INITIAL_RACK_Y : INITIAL_RACK_Y + 50);
 			imgView.relocate(x, y);
 			
-			rackItems.add(imgView);
+			rackImages.add(imgView);
 			
 			getChildren().add(imgView);
 			
@@ -175,7 +195,7 @@ public class PlayerView extends Pane implements InitializableView {
 
 	private void addNumGoldText() {
 
-		numGoldText = new Text("gold: " + player.getNumGold());
+		numGoldText = new Text();
 		numGoldText.setFont(Font.font("Lucida Sans", 16));
 		numGoldText.setFill(Color.GOLD);
 		numGoldText.setLayoutX(340);
@@ -187,7 +207,7 @@ public class PlayerView extends Pane implements InitializableView {
 	
 	private void addPlayerNameText() {
 		
-		playerNameText = new Text(player.getName());
+		playerNameText = new Text();
 		playerNameText.setFont(Font.font("Lucida Sans", 20));
 		playerNameText.setFill(Color.WHITE);
 		playerNameText.setLayoutX(70);
@@ -199,14 +219,14 @@ public class PlayerView extends Pane implements InitializableView {
 	
 	private void addPlayerControlMarker() {
 		
-		ImageView controlMarker = new ImageView(player.getControlMarker());
-		controlMarker.setPreserveRatio(true);
-		controlMarker.setCache(true);
-		controlMarker.setFitWidth(30);
-		controlMarker.setX(30);
-		controlMarker.setY(15);
+		controlMarkerImage = new ImageView();
+		controlMarkerImage.setPreserveRatio(true);
+		controlMarkerImage.setCache(true);
+		controlMarkerImage.setFitWidth(30);
+		controlMarkerImage.setX(30);
+		controlMarkerImage.setY(15);
 		
-		getChildren().add(controlMarker);
+		getChildren().add(controlMarkerImage);
 		
 	}
 	

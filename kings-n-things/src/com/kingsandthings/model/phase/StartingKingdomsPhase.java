@@ -1,7 +1,6 @@
 package com.kingsandthings.model.phase;
 
-import javafx.scene.image.Image;
-
+import com.kingsandthings.game.board.BoardView;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.things.Fort;
 
@@ -16,14 +15,15 @@ public class StartingKingdomsPhase extends Phase {
 	@Override
 	public void begin() {
 		
+		BoardView.setInstructionText("please place a control marker");
+		
 		for (Player player: playerManager.getPlayers()) {
 			
-			// Give each player 10 gold
+			// Give each player 10 gold 
 			player.addGold(initialNumGold);
 			
 			// Give each player a tower
-			// TODO - don't hard code this 
-			player.addFort(new Fort("Tower", 1, new Image("/images/things/fort/-n Tower -a 1.jpg")));
+			player.addFort(Fort.getTower());
 			
 		}
 		

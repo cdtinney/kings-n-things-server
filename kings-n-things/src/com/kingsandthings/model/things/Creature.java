@@ -1,7 +1,9 @@
 package com.kingsandthings.model.things;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javafx.scene.image.Image;
@@ -78,29 +80,18 @@ public class Creature extends Thing {
 		
 		sb.append(" " + terrainType.toString());
 		
+		Map<Ability, String> map = new HashMap<Ability, String>() {{
+			put(Ability.FLY, "^");
+			put(Ability.MAGIC, "*");
+			put(Ability.CHARGE, "C");
+			put(Ability.RANGE, "R");
+			put(Ability.MAGIC, "S");
+			put(Ability.NONE, "");
+		}};
+		
 		String abilityStr = " ";
 		for (Ability a : abilities) {
-			
-			switch (a) {
-				case FLY:
-					abilityStr += "^";
-					break;
-				case MAGIC:
-					abilityStr += "*";
-					break;
-				case CHARGE:
-					abilityStr += "C";
-					break;
-				case RANGE:
-					abilityStr += "R";
-					break;
-				case SPECIAL:
-					abilityStr += "S";
-					break;
-				case NONE:
-					break;
-			}
-			
+			abilityStr += map.get(a);
 		}
 		
 		sb.append(abilityStr + combatValue);

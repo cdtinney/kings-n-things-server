@@ -41,7 +41,7 @@ public abstract class Thing implements Serializable {
     
     @Override
     public String toString() {
-    	return name;    	
+    	return name;   	
     }
 
 }

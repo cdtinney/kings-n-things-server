@@ -7,13 +7,19 @@ import java.util.logging.Logger;
 import javafx.scene.image.Image;
 
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
+import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.enums.Terrain;
+import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.Thing;
 
 public class Tile {
 	
 	private static Logger LOGGER = Logger.getLogger(Tile.class.getName());
+	
+	private static final Image defaultImg = new Image("/images/tiles/back.png");
+	
+	private Image image;
 
 	private Player owner;
 	private List<Tile> neighbours;
@@ -21,32 +27,33 @@ public class Tile {
 	private Terrain type = null;
 	private List<Thing> things;
 	
-	/* 
-	 * Constructor
-	 */
+	private Fort fort;
+	
+	private boolean discovered = false;
+	
 	public Tile(Terrain type) {
 		
 		this.type = type;
 		
 		things = new ArrayList<Thing>();
 		neighbours = new ArrayList<Tile>();
+
+		image = new Image("/images/tiles/" + type.toString().toLowerCase() + ".png");
 		
 	}
 	
-	/*
-	 * Returns the player who controls the tile.
-	 */
+	public boolean isDiscovered() {
+		return discovered;
+	}
+	
 	public Player getOwner() {
 		return owner;
 	}
 	
-	/*
-	 * Sets the player who controls the tile.
-	 */
 	public void setOwner(Player player) {
 		
-		// Add to the player's list of controlled tiles
 		player.getControlledTiles().add(this);
+		discovered = true;
 		
 		PropertyChangeDispatcher.getInstance().notify(this, "owner", owner, owner = player);
 	}
@@ -59,16 +66,25 @@ public class Tile {
 		this.neighbours = neighbours;
 	}
 	
-	/*
-	 * Returns a list of Things currently in place on the Tile.
-	 */
+	public Fort getFort() {
+		return fort;
+	}
+	
+	public boolean setFort(Fort fort) {
+		
+		if (this.fort != null) {
+			LOGGER.log(LogLevel.STATUS, "This tile already contains a fort.");
+			return false;
+		}
+
+		PropertyChangeDispatcher.getInstance().notify(this, "fort", this.fort, this.fort = fort);
+		return true;
+	}
+	
 	public List<Thing> getThings() {
 		return things;
 	}
 	
-	/*
-	 * Adds a Thing to the Tile.
-	 */
 	public boolean addThing(Thing thing) {
 		
 		if (things.contains(thing)) {
@@ -80,9 +96,6 @@ public class Tile {
 		
 	}
 	
-	/*
-	 * Removes a Thing from the Tile.
-	 */
 	public void removeThing(Thing thing) {
 		
 		boolean contains = things.remove(thing);
@@ -92,31 +105,17 @@ public class Tile {
 		
 	}
 	
-	/* 
-	 * Returns the terrain type of the tile.
-	 */
 	public Terrain getType() {
 		return type;
 	}
 	
-	/*
-	 * Returns the image associated with this particular tile, based on terrain type.
-	 */ 
 	public Image getImage() {
 		
-		Image image = null;
-		String path = "/images/tiles/" + type.toString().toLowerCase() + ".png";
-		
-		try {
-			image = new Image(path);
-			  
-		} catch (IllegalArgumentException e) {
-			LOGGER.warning("Hex tile image not found - " + path);
-			
+		if (!discovered) {
+			return defaultImg;
 		}
 		
 		return image;		
-		
 	}
 
 }

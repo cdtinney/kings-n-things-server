@@ -13,9 +13,12 @@ import javafx.scene.input.TransferMode;
 
 import com.kingsandthings.Controller;
 import com.kingsandthings.game.player.PlayerManager;
+import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Board;
+import com.kingsandthings.model.board.Tile;
 import com.kingsandthings.model.phase.PhaseManager;
+import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.Thing;
 import com.kingsandthings.util.CustomDataFormat;
 
@@ -46,7 +49,7 @@ public class BoardController extends Controller {
 		view.initialize();
 		view.setTileImages(board.getTiles());
 		
-		// Set up starting tiles
+		// Set up starting tiles (TODO - move this to the initial phase)
 		for (Player player : PlayerManager.getInstance().getPlayers()) {
 			int pos = PlayerManager.getInstance().getPosition(player);
 			board.setStartingTile(player, pos);
@@ -90,8 +93,8 @@ public class BoardController extends Controller {
 				addEventHandler(tileView, "setOnDragDropped", "handleTileDragDropped");
 				addEventHandler(tileView, "setOnDragExited", "handleTileDragExit");
 				
-				// TODO - refactor event handling for action menus (currently, every single menu has an individual handler)
-				addEventHandler(tileView.getActionMenu().get("addControlMarker"), "setOnAction", "handleAddControlMarkerMenuItem");
+				// Action menu
+				addEventHandler(tileView.getActionMenu().get("placeControlMarker"), "setOnAction", "handlePlaceControlMarkerMenuItem");
 				addEventHandler(tileView.getActionMenu().get("placeTower"), "setOnAction", "handlePlaceTowerMenuItem");
 				
 			}
@@ -101,12 +104,27 @@ public class BoardController extends Controller {
 	@SuppressWarnings("unused")
 	private void handlePlaceTowerMenuItem(Event event) {
 		
-		LOGGER.info("Handle add tower menu");
+		MenuItem item = (MenuItem) event.getSource();
+		
+		TileActionMenu tileActionMenu = (TileActionMenu) item.getParentPopup();
+		TileView tileView = tileActionMenu.getOwner();
+		
+		Player player = PlayerManager.getInstance().getActivePlayer();
+		
+		Tile tile = tileView.getTile();
+		
+		if (tile.getOwner() != player) {
+			LOGGER.log(LogLevel.STATUS, "Player cannot place a tower on a tile he does not control.");
+			return;
+		}
+		
+		// TODO - add tower to tile, and display
+		// tile.addTower(player.getForts().get(0))
 		
 	}
 	
 	@SuppressWarnings("unused")
-	private void handleAddControlMarkerMenuItem(Event event) {
+	private void handlePlaceControlMarkerMenuItem(Event event) {
 		
 		MenuItem item = (MenuItem) event.getSource();
 		
@@ -158,12 +176,24 @@ public class BoardController extends Controller {
 		Thing thing = (Thing) dragEvent.getDragboard().getContent(DataFormat.lookupMimeType("object/thing"));
 		thing.setImage((Image) dragEvent.getDragboard().getContent(DataFormat.IMAGE));
 		
-		boolean success = tileView.getTile().addThing(thing);		
-		if (success) {
-			tileView.getTile().getOwner().getRack().removeThing(thing);
+		if (thing instanceof Fort) {
+			
+			boolean success = tileView.getTile().setFort((Fort) thing);
+			if (success) {
+				tileView.getTile().getOwner().removeFort((Fort) thing);
+				dragEvent.setDropCompleted(true);
+			}
+			
+		} else {
+
+			boolean success = tileView.getTile().addThing(thing);		
+			if (success) {
+				tileView.getTile().getOwner().getRack().removeThing(thing);
+				dragEvent.setDropCompleted(true);
+			}
+			
 		}
 		
-		dragEvent.setDropCompleted(true);
 		dragEvent.consume();
 		
 	}
@@ -181,7 +211,8 @@ public class BoardController extends Controller {
 	@SuppressWarnings("unused")
 	private void handleTileClick(Event event) {
 		TileView tileView = (TileView) event.getSource();
-		tileView.toggleActionMenu();
+		tileView.toggleActionMenu();	
+		
 	}
 	
 	@SuppressWarnings("unused")

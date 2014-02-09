@@ -11,19 +11,17 @@ import com.kingsandthings.game.InitializableView;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.Rack;
+import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.Thing;
 
 public class PlayerPane extends VBox implements InitializableView {
 	
 	private List<PlayerView> playerViews;
 	
+	private List<Player> players;
+	
 	public PlayerPane(List<Player> players) {
-		
-		playerViews = new ArrayList<PlayerView>();
-		for (Player player : players) {
-			playerViews.add(new PlayerView(player));
-		}
-		
+		this.players = players;
 	}
 
 	@Override
@@ -32,29 +30,41 @@ public class PlayerPane extends VBox implements InitializableView {
 		getStyleClass().addAll("pane", "board");
 		
 		addPlayerViews();
+		addListeners();
 		
-		PropertyChangeDispatcher.getInstance().addListener(PlayerManager.class, "activePlayer", this, "updateActivePlayer");
-		PropertyChangeDispatcher.getInstance().addListener(Player.class, "numGold", this, "updatePlayerGold");
-		PropertyChangeDispatcher.getInstance().addListener(Rack.class, "things", this, "updatePlayerRack");
 	}
 	
 	public List<PlayerView> getPlayerViews() {
 		return playerViews;
 	}
 	
-	private void addPlayerViews() {
+	private void addListeners() {
 		
-		for (PlayerView playerView: playerViews) {
+		// Player model
+		PropertyChangeDispatcher.getInstance().addListener(Player.class, "numGold", this, "updatePlayerGold");
+		PropertyChangeDispatcher.getInstance().addListener(Player.class, "forts", this, "updatePlayerForts");
+		
+		// Player manager
+		PropertyChangeDispatcher.getInstance().addListener(PlayerManager.class, "activePlayer", this, "updateActivePlayer");
+		
+		// Rack model
+		PropertyChangeDispatcher.getInstance().addListener(Rack.class, "things", this, "updatePlayerRack");
+		
+	}
+	
+	private void addPlayerViews() {
+
+		playerViews = new ArrayList<PlayerView>();
+		
+		for (Player player : players) {
 			
+			PlayerView playerView = new PlayerView(player);
 			playerView.initialize();
 
-			// Check current active player
-			if (PlayerManager.getInstance().getActivePlayer() == playerView.getPlayer()) {
-				playerView.setActive(true);
-			}
-			
 			setMargin(playerView, new Insets(30, 10, 0, 10));
 			getChildren().add(playerView);
+			
+			playerViews.add(playerView);
 			
 		}
 		
@@ -105,6 +115,17 @@ public class PlayerPane extends VBox implements InitializableView {
 		List<Thing> newThings = (List<Thing>) event.getNewValue();
 		
 		getPlayerView(rack.getOwner()).setRackThings(newThings);
+		
+	}
+	
+	@SuppressWarnings({ "unused", "unchecked" })
+	private void updatePlayerForts(PropertyChangeEvent event) {
+
+		Player player = (Player) event.getSource();
+		
+		List<Fort> newForts = (List<Fort>) event.getNewValue();
+		
+		getPlayerView(player).setFortThings(newForts);
 		
 	}
 	

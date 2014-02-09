@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javafx.scene.image.Image;
+
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
+import com.kingsandthings.model.things.Fort;
 
 public class PhaseManager {
 	
@@ -26,6 +29,7 @@ public class PhaseManager {
 		
 		// Add the phases in order
 		phases.add(new StartingKingdomsPhase());
+		phases.add(new TowerPlacementPhase());
 		phases.add(new GoldCollectionPhase());
 		
 		// Set the first player to active

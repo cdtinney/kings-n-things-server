@@ -22,8 +22,8 @@
 
 .activePlayer {
 	/* Border */
-	-fx-border-color: white;
-	-fx-border-width: 2px;
+	-fx-border-color: limegreen;
+	-fx-border-width: 3px;
 }
 
 .statusText {
@@ -34,6 +34,20 @@
 	/* Padding */
 	-fx-label-padding: 3px 0px 3px 7px;
 	
+}
+
+.instructionsText { 
+	/* Font */
+	-fx-font: 16px "Lucida Sans";
+	
+	/* Color */
+	-fx-text-fill: white;
+	
+	/* Padding */
+	-fx-label-padding: 15px 0px 0px 0px;
+	
+	/* Layout */
+	-fx-alignment: center;
 }
 
 .diceButton {

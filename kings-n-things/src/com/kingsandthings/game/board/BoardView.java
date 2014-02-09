@@ -2,8 +2,7 @@ package com.kingsandthings.game.board;
 
 import java.util.logging.Logger;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 import com.kingsandthings.game.InitializableView;
@@ -16,6 +15,8 @@ public class BoardView extends Pane implements InitializableView {
 	private static Logger LOGGER = Logger.getLogger(BoardView.class.getName());
 	
 	private TileView[][] tiles = new TileView[10][10];
+	
+	private static Label instructions;
 	
 	@Override
 	public void initialize() {
@@ -33,37 +34,24 @@ public class BoardView extends Pane implements InitializableView {
 		tiles = generateTiles(initialX, initialY, xOffset, yOffset, columnOffset, 10);
 		
 		addTilesToView(tiles);
+		addInstructionText();
+		
 	}
-	
-	@SuppressWarnings("unused")
-	private void toggleControlMarker(TileView tileView) {
+
+	public static void setInstructionText(String message) {
 		
-		Player owner = tileView.getTile().getOwner();
-		
-		if (owner == null) {
-			getChildren().remove(tileView.getControlMarkerView());
+		if (instructions == null) {
 			return;
-		} else {
-			addControlMarker(tileView, owner.getControlMarker());
 		}
 		
+		instructions.setText(message == null? "" : message);		
 	}
 	
-	private void addControlMarker(TileView tileView, Image image) {
-		
-		double x = tileView.getX();
-		double y = tileView.getY();
-		
-		ImageView imgView = new ImageView(image);
-		imgView.setPreserveRatio(true);
-		imgView.setFitWidth(30);
-		imgView.setX(x + 42);
-		imgView.setY(y + 3);
-		
-		tileView.setControlMarkerView(imgView);
-		
-		getChildren().add(imgView);	
-		
+	private void addInstructionText() {
+		instructions = new Label("instructions go here");
+		instructions.getStyleClass().add("instructionsText");
+		instructions.setPrefWidth(getBoundsInParent().getWidth() + 75);
+		getChildren().add(instructions);
 	}
 	
 	public TileView[][] getTiles() {
@@ -87,7 +75,9 @@ public class BoardView extends Pane implements InitializableView {
 					
 					view.setTile(tile);
 					
-					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "owner", this, view, TileView.class, "toggleControlMarker");
+					// TODO - change this, too many listeners (or move to TileView)
+					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "owner", this, view, TileView.class, "handleTileOwnerChanged");
+					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "fort", this, view, TileView.class, "handleTileFortChanged");
 					
 				} catch (IndexOutOfBoundsException e) {
 					LOGGER.warning("Model and view tile array size mismatch - " + e.getMessage());
@@ -97,7 +87,23 @@ public class BoardView extends Pane implements InitializableView {
 		}
 		
 	}
+	
+	@SuppressWarnings("unused")
+	private void handleTileFortChanged(TileView tileView) {
+		tileView.updateFortView();		
+	}
 
+	@SuppressWarnings("unused")
+	private void handleTileOwnerChanged(TileView tileView) {
+		
+		// Update the control marker
+		tileView.updateControlMarkerView();
+		
+		// Set the image of the tile
+		tileView.setImage(tileView.getTile().getImage());
+		
+	}
+	
 	private void addTilesToView(TileView[][] tiles) {
 		
 		for (TileView[] row : tiles) {

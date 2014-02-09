@@ -40,13 +40,9 @@ public class GameController extends Controller {
 		
 		PlayerManager playerManager = PlayerManager.getInstance();
 		
+		// TODO - move to Game object
 		playerManager.setNumPlayers(playerNames.size());
 		playerManager.addAllPlayers(playerNames);
-		
-		PhaseManager phaseManager = PhaseManager.getInstance();
-		Phase firstPhase = phaseManager.getCurrentPhase();
-		firstPhase.begin();
-		
 		List<Player> players = playerManager.getPlayers();
 		
 		// Initialize sub controllers
@@ -68,6 +64,12 @@ public class GameController extends Controller {
 		stage.centerOnScreen();
 		
 		setupHandlers();
+		
+		// TODO - move to Game object
+		PhaseManager phaseManager = PhaseManager.getInstance();
+		Phase firstPhase = phaseManager.getCurrentPhase();
+		firstPhase.begin();
+		
 	}
 	
 	public void setupHandlers() {

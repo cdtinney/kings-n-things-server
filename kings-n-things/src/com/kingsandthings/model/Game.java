@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javafx.scene.image.Image;
-
-import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.Thing;
 import com.kingsandthings.model.things.ThingImport;
 
@@ -21,13 +18,9 @@ public class Game {
 	private Game() {
 		
 		// Add all the Things to the cup
-		// TODO - treasures, income counters, etc
+		// TODO - Add everything to the Cup
 		cup = new Cup();
 		cup.addThings(ThingImport.importCreatures());
-		
-		List<Fort> list = new ArrayList<Fort>();
-		list.add(new Fort("Tower", 1, new Image("/images/things/fort/-n Tower -a 1.jpg")));
-		cup.addThings(list);
 		
 	}
 	

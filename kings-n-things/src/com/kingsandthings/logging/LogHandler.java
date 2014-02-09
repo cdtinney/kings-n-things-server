@@ -10,6 +10,8 @@ import javafx.application.Platform;
 import com.kingsandthings.game.GameView;
 
 public class LogHandler extends Handler {
+	
+	private Timer timer = new Timer();
 
 	@Override
 	public void close() throws SecurityException {
@@ -29,8 +31,8 @@ public class LogHandler extends Handler {
 			// Set the status message in the view
 			GameView.setStatusText(r.getMessage());
 			
-			// Clear the status message after 10 seconds
-			clearStatusMessage(10000, r.getMessage());
+			// Clear the status message after 5 seconds
+			clearStatusMessage(5000, r.getMessage());
 			
 			return;
 		}
@@ -40,8 +42,8 @@ public class LogHandler extends Handler {
 	}
 	
 	private void clearStatusMessage(int timeElapsed, final String message) {
-
-		new Timer().schedule(new TimerTask() {
+		
+		timer.schedule(new TimerTask() {
 			
 		    public void run() {
 		    	

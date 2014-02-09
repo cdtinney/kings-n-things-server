@@ -2,23 +2,21 @@ package com.kingsandthings.game.player;
 
 import java.util.List;
 
-import javafx.event.EventHandler;
+import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 
 import com.kingsandthings.Controller;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.things.Thing;
-import com.kingsandthings.util.DataImageView;
 import com.kingsandthings.util.CustomDataFormat;
+import com.kingsandthings.util.DataImageView;
 
 public class PlayerPaneController extends Controller {
-	
-	//public static DataFormat format = new DataFormat("object/thing");
 	
 	private PlayerPane view;
 	
@@ -27,7 +25,7 @@ public class PlayerPaneController extends Controller {
 		view = new PlayerPane(players);
 		view.initialize();
 		
-		setupHandlers();
+		setupRackImageHandlers();
 		
 	}
 	
@@ -35,64 +33,72 @@ public class PlayerPaneController extends Controller {
 		return view;
 	}
 	
-	private void setupHandlers() {
-		
-		setupRackHandlers();
-		
-	}
-	
-	private void setupRackHandlers() {
-		
-		RackImageViewMouseHandler handler = new RackImageViewMouseHandler();
+	private void setupRackImageHandlers() {
 		
 		for (PlayerView playerView : view.getPlayerViews()) {
 			
 			for (DataImageView rackImage : playerView.getRackImageViews()) {
-				rackImage.addEventHandler(MouseEvent.ANY, handler);
+				addEventHandler(rackImage, "setOnMouseClicked", "handleRackImageClicked");
+				addEventHandler(rackImage, "setOnDragDetected", "handleRackImageDragDetected");
 			}
 			
+			for (DataImageView fortImage : playerView.getFortImageViews()) {
+				addEventHandler(fortImage, "setOnMouseClicked", "handleRackImageClicked");
+				addEventHandler(fortImage, "setOnDragDetected", "handleRackImageDragDetected");
+				addEventHandler(fortImage, "setOnDragDone", "handleRackImageDragDone");
+			}
 		}
 		
 	}
 	
-	private class RackImageViewMouseHandler implements EventHandler<MouseEvent> {
+	@SuppressWarnings("unused")
+	private void handleFortImageClicked(Event event) {
 
-		@Override
-		public void handle(MouseEvent event) {
+		DataImageView imageView = (DataImageView) event.getSource();
+		System.out.println("fort image clicked");
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleFortImageDragDetected(Event event) {
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleRackImageClicked(Event event) {
 			
-			DataImageView imageView = (DataImageView) event.getSource();
-			PlayerView playerView = (PlayerView) imageView.getParent();
-			
-			if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
-				playerView.showHoverImage(imageView);
-				imageView.addBorder();
-			}
-			
-			if (event.getEventType() == MouseEvent.MOUSE_EXITED) {
-				playerView.hideHoverImage();
-				imageView.removeBorder();
-			}
-			
-			if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
-				
-				// TODO - do stuff
-				Thing t = (Thing) imageView.getData();
-				System.out.println(t.toString());
-				
-			}
-			
-			if (event.getEventType() == MouseEvent.DRAG_DETECTED) {
-				
-				Dragboard db = imageView.startDragAndDrop(TransferMode.ANY);
-				ClipboardContent content = new ClipboardContent();
-				
-				content.put(CustomDataFormat.THING, (Thing) imageView.getData());
-				content.put(DataFormat.IMAGE, imageView.getImage());
-				
-				db.setContent(content);
-				
-			}
-			
+		DataImageView imageView = (DataImageView) event.getSource();
+
+		// TODO - do stuff
+		Thing t = (Thing) imageView.getData();
+		System.out.println(t.toString());
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleRackImageDragDetected(Event event) {
+		
+		DataImageView imageView = (DataImageView) event.getSource();
+
+		Dragboard db = imageView.startDragAndDrop(TransferMode.ANY);
+		ClipboardContent content = new ClipboardContent();
+		
+		content.put(CustomDataFormat.THING, (Thing) imageView.getData());
+		content.put(DataFormat.IMAGE, imageView.getImage());
+		
+		db.setContent(content);
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleRackImageDragDone(Event event) {
+		
+		DragEvent dragEvent = (DragEvent) event;
+		
+		if (dragEvent.getTransferMode() == null) {
+			System.out.println("unsuccessful drop");
+		} else {
+			System.out.println("successful drop");
 		}
 		
 	}

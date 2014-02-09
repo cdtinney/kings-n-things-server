@@ -72,7 +72,22 @@ public class Player {
 			return;
 		}
 		
+		List<Fort> oldForts = forts;
 		forts.add(fort);
+		PropertyChangeDispatcher.getInstance().notify(this, "forts", oldForts, forts);
+		
+	}
+	
+	public void removeFort(Fort fort) {
+		
+		if (!forts.contains(fort)) {
+			LOGGER.warning("Fort not contained in player list.");
+			return;
+		}
+		
+		List<Fort> oldForts = forts;
+		forts.add(fort);
+		PropertyChangeDispatcher.getInstance().notify(this, "forts", oldForts, forts);
 		
 	}
 	

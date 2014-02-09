@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import javafx.geometry.Side;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.effect.InnerShadowBuilder;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -24,11 +25,9 @@ public class TileView extends ImageView {
 	
 	// View
 	private TileActionMenu actionMenu;
-	private ImageView controlMarkerView;
+	private ImageView controlMarkerImageView;
+	private ImageView fortImageView;
 	
-	/*
-	 * Constructor
-	 */
 	public TileView (String id, int x, int y) {
 		
 		if (id != null) {
@@ -45,7 +44,7 @@ public class TileView extends ImageView {
 		setY(y);
 		
 		actionMenu = new TileActionMenu(this);
-	
+		
 	}
 	
 	/*
@@ -87,9 +86,7 @@ public class TileView extends ImageView {
 	
 	public void addHighlight(boolean valid) {
 	
-		InnerShadow innerShadow = new InnerShadow();
-		innerShadow.setRadius(5);
-		innerShadow.setChoke(0.8);
+		InnerShadow innerShadow = InnerShadowBuilder.create().radius(4).choke(5).build();
 		
 		if (valid) {
 			innerShadow.setColor(Color.LIMEGREEN);
@@ -105,9 +102,6 @@ public class TileView extends ImageView {
 		this.setEffect(null);
 	}
 	
-	/*
-	 * Associates a tile model with the tile view.
-	 */
 	public void setTile(Tile tile) {
 		
 		this.tile = tile;
@@ -118,25 +112,72 @@ public class TileView extends ImageView {
 		
 	}
 
-	/*
-	 * Returns the tile model associated with the tile view.
-	 */
 	public Tile getTile() {
 		return tile;
 	}
 	
-	/*
-	 * Sets an image view representing the control marker.
-	 */
-	public void setControlMarkerView(ImageView controlMarkerView) {
-		this.controlMarkerView = controlMarkerView;
+	public void updateControlMarkerView() {
+		
+		if (tile.getOwner() == null) {
+			removeControlMarkerView();
+		} else {
+			addControlMarkerView();
+		}
+		
 	}
 	
-	/*
-	 * Returns the image view representing the control marker.
-	 */
-	public ImageView getControlMarkerView() {
-		return controlMarkerView;
+	public void updateFortView() {
+		
+		if (tile.getFort() == null) {
+			
+			if (fortImageView != null) {
+				Pane parent = (Pane) fortImageView.getParent();
+				parent.getChildren().remove(fortImageView);
+				fortImageView = null;
+			}
+			
+			return;
+			
+		}
+		
+		if (fortImageView == null) {
+			fortImageView = new ImageView();
+			fortImageView.setPreserveRatio(true);
+			fortImageView.setFitWidth(30);
+			fortImageView.setX(getX() + 18);
+			fortImageView.setY(getY() + 3);
+			
+			((Pane) getParent()).getChildren().add(fortImageView);	
+		}
+			
+		fortImageView.setImage(tile.getFort().getImage());
+		
+	}
+	
+	private void addControlMarkerView() {
+		
+		ImageView imgView = new ImageView(tile.getOwner().getControlMarker());
+		imgView.setPreserveRatio(true);
+		imgView.setFitWidth(30);
+		imgView.setX(getX() + 47);
+		imgView.setY(getY() + 3);
+		
+		controlMarkerImageView = imgView;
+		
+		((Pane) getParent()).getChildren().add(imgView);	
+		
+	}
+	
+	private void removeControlMarkerView() {
+		
+		if (controlMarkerImageView == null) {
+			return;
+		}
+		
+		Pane parent = (Pane) controlMarkerImageView.getParent();
+		parent.getChildren().remove(controlMarkerImageView);
+		
+		controlMarkerImageView = null;
 	}
 	
 }
