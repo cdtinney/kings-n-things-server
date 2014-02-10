@@ -1,4 +1,4 @@
-package com.kingsandthings.game.player;
+package com.kingsandthings.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import javafx.scene.image.Image;
 
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
-import com.kingsandthings.model.Player;
 
 /**
  * @author Colin Tinney
@@ -49,6 +48,18 @@ public class PlayerManager {
 	
 	public void setActivePlayer(Player player) {
 		PropertyChangeDispatcher.getInstance().notify(this, "activePlayer", activePlayer, activePlayer = player);
+	}
+	
+	public void setFirstPlayerActive() {
+		
+		for (Player player: getPlayers()) {
+			
+			if (getPosition(player) == 1) {
+				setActivePlayer(player);
+			}
+			
+		}
+		
 	}
 	
 	public void nextPlayer() {

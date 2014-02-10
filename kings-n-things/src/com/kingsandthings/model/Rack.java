@@ -68,5 +68,14 @@ public class Rack {
 		things.remove(thing);
 		PropertyChangeDispatcher.getInstance().notify(this, "things", oldThings, things);
 	}
+	
+	public void removeThings(List<Thing> list) {
+		
+		List<Thing> oldThings = new ArrayList<Thing>(things);
+		
+		things.removeAll(list);
+		PropertyChangeDispatcher.getInstance().notify(this, "things", oldThings, things);
+		
+	}
 
 }

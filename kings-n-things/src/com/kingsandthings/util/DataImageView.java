@@ -18,6 +18,8 @@ public class DataImageView extends ImageView {
 	
 	private DataImageView hoverImageView;
 	
+	private boolean selected = false;
+	
 	public DataImageView() {
 		setPreserveRatio(true);
 		setCache(true);
@@ -37,18 +39,7 @@ public class DataImageView extends ImageView {
 		for (DataImageView imageView : imageViews) {
 			imageView.setData(null);
 			imageView.setImage(null);
-		}
-		
-	}
-	
-	public void setVisiblity(boolean visible, boolean border) {
-		
-		setVisible(visible);
-		
-		if (visible && border) {
-			showBorder();
-		} else if (border) {
-			hideBorder();
+			imageView.setSelected(false);
 		}
 		
 	}
@@ -61,7 +52,21 @@ public class DataImageView extends ImageView {
 		return this.data;
 	}
 	
-	public void showHoverImage() {
+	public void setSelected(boolean selected) {
+		showBorder(this.selected = selected);
+		showHoverImage(this.selected);
+	}
+	
+	public boolean isSelected() {
+		return selected;
+	}
+	
+	private void showHoverImage(boolean show) {
+		
+		if (!show && hoverImageView != null) {
+			hoverImageView.setVisible(false);
+			return;
+		}
 
 		Pane parent = (Pane) this.getParent();
 
@@ -79,7 +84,7 @@ public class DataImageView extends ImageView {
 		
 		hoverImageView.setImage(getImage());
 
-		double x = getLayoutX() + imageWidth + 7;
+		double x = getLayoutX() + imageWidth + 7 + (selected? -4 : 0);
 		
 		double hoverImageHeight = hoverImageView.getBoundsInParent().getHeight();
 		double viewHeight = parent.getHeight();
@@ -90,24 +95,19 @@ public class DataImageView extends ImageView {
 		}
 		
 		hoverImageView.relocate(x, y);
-		hoverImageView.setVisiblity(true, true);
+		hoverImageView.setVisible(true);
+		hoverImageView.showBorder(true);
 		
 	}
 	
-	public void hideHoverImage() {
+	private void showBorder(boolean show) {
 		
-		if (hoverImageView != null) {
-			hoverImageView.setVisible(false);
+		if (show) {
+			setEffect(DropShadowBuilder.create().color(Color.TURQUOISE).spread(1).radius(3).build());
+		} else if (!selected) {
+			setEffect(null);
 		}
 		
-	}
-	
-	public void showBorder() {
-		setEffect(DropShadowBuilder.create().color(Color.TURQUOISE).spread(1).radius(3).build());
-	}
-	
-	public void hideBorder() {
-		setEffect(null);
 	}
 	
 	private static class ImageViewHoverHandler implements EventHandler<MouseEvent> {
@@ -118,13 +118,13 @@ public class DataImageView extends ImageView {
 			DataImageView imgView = (DataImageView) event.getSource();
 			
 			if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
-				imgView.showHoverImage();
-				imgView.showBorder();
+				imgView.showHoverImage(true);
+				imgView.showBorder(true);
 			}
 			
 			if (event.getEventType() == MouseEvent.MOUSE_EXITED) {
-				imgView.hideHoverImage();
-				imgView.hideBorder();
+				imgView.showHoverImage(false);
+				imgView.showBorder(false);
 			}
 			
 		}

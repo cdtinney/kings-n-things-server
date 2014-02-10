@@ -14,6 +14,7 @@ public class StartingKingdomsPhase extends Phase {
 	
 	@Override
 	public void begin() {
+		notifyBegin();
 		
 		BoardView.setInstructionText("please place a control marker");
 		
@@ -27,16 +28,6 @@ public class StartingKingdomsPhase extends Phase {
 			
 		}
 		
-		// Notify listeners that the phase has begun
-		notifyBegin();
-		
-	}
-
-	@Override
-	public void end() {
-		
-		// Notify listeners that the phase has ended
-		notifyEnd();
 	}
 
 }

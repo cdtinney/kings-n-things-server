@@ -21,8 +21,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import com.kingsandthings.game.events.NotificationDispatcher;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.model.Game;
+import com.kingsandthings.model.phase.InitialPlacementPhase;
 import com.kingsandthings.model.phase.Phase;
 import com.kingsandthings.model.phase.PhaseManager;
 
@@ -64,8 +66,11 @@ public class GameActionView extends VBox implements InitializableView {
 			// Update list of Things
 			list.setItems(FXCollections.observableArrayList(Game.getInstance().getCup().getThingNames()));
 			
-			list.setVisible(true);
-			selectButton.setVisible(true);
+			// TASK - Demo only. Don't hard code.
+			if (PhaseManager.getInstance().getCurrentPhase().getStep().equals("Draw_Things")) {
+				list.setVisible(true);
+				selectButton.setVisible(true);
+			}
 		}
 		
 	}
@@ -78,6 +83,19 @@ public class GameActionView extends VBox implements InitializableView {
 	
 	private void addListeners() {
 		PropertyChangeDispatcher.getInstance().addListener(PhaseManager.class, "currentPhase", this, "phaseChanged");
+		
+		NotificationDispatcher.getInstance().addListener(InitialPlacementPhase.class, Phase.Notification.BEGIN, this, "onInitialPlacementPhaseBegin");
+		NotificationDispatcher.getInstance().addListener(InitialPlacementPhase.class, Phase.Notification.END, this, "onInitialPlacementPhaseEnd");
+	}
+	
+	@SuppressWarnings("unused")
+	private void onInitialPlacementPhaseBegin() {
+		lookup("#drawThing").setDisable(false);
+	}
+	
+	@SuppressWarnings("unused")
+	private void onInitialPlacementPhaseEnd() {
+		lookup("#drawThing").setDisable(true);
 	}
 	
 	@SuppressWarnings("unused")

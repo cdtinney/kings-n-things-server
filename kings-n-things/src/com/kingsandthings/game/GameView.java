@@ -12,7 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
-import com.kingsandthings.game.player.PlayerManager;
+import com.kingsandthings.model.PlayerManager;
 
 public class GameView extends Scene implements InitializableView {
 	

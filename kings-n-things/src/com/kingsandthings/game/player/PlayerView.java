@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 
 import com.kingsandthings.game.InitializableView;
 import com.kingsandthings.model.Player;
+import com.kingsandthings.model.PlayerManager;
 import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.Thing;
 import com.kingsandthings.util.DataImageView;
@@ -89,7 +90,7 @@ public class PlayerView extends Pane implements InitializableView {
 
 		DataImageView.clear(fortImages);
 		
-		// TASK - fix this
+		// TASK - fix this 
 		if (forts.size() > fortImages.size()) {
 			return;
 		}

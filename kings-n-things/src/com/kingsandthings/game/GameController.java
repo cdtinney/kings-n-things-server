@@ -3,22 +3,21 @@ package com.kingsandthings.game;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javafx.event.Event;
-import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 import com.kingsandthings.Controller;
 import com.kingsandthings.MainMenuController;
 import com.kingsandthings.game.board.BoardController;
-import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.game.player.PlayerPaneController;
-import com.kingsandthings.model.Player;
-import com.kingsandthings.model.phase.Phase;
-import com.kingsandthings.model.phase.PhaseManager;
+import com.kingsandthings.model.Game;
 
 public class GameController extends Controller {
 	
+	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(GameController.class.getName());
+	
+	// Model 
+	private Game game;
 	
 	// View
 	private GameView view;
@@ -28,66 +27,47 @@ public class GameController extends Controller {
 	private PlayerPaneController playerController;
 	private GameActionController gameActionController;
 	
-	// Parent controller
-	private MainMenuController parent;
-	
 	public void initialize(Stage stage, List<String> playerNames, MainMenuController parent) {
-		
-		this.parent = parent;
 		
 		view = new GameView();
 		view.initialize();
 		
-		PlayerManager playerManager = PlayerManager.getInstance();
+		// Initialize model
+		game = Game.getInstance();
+		game.addPlayers(playerNames);
 		
-		// TODO - move to Game object
-		playerManager.setNumPlayers(playerNames.size());
-		playerManager.addAllPlayers(playerNames);
-		List<Player> players = playerManager.getPlayers();
-		
-		// Initialize sub controllers
-		boardController = new BoardController();
-		boardController.initialize(players);
-		
-		playerController = new PlayerPaneController();
-		playerController.initialize(players);
-		
-		gameActionController = new GameActionController();
-		gameActionController.initialize();
-		
-		// Add sub-views
-		view.addToBorderPane(boardController.getView(), "center");
-		view.addToBorderPane(playerController.getView(), "right");
-		view.addToBorderPane(gameActionController.getView(), "left");
+		initializeSubControllers();
+		addSubViews();
 		
 		stage.setScene(view);
 		stage.centerOnScreen();
 		
-		setupHandlers();
+		addEventHandler(view.getRoot(), "quitGameMenuItem", "setOnAction", "handleQuitGameMenuItemAction");
 		
-		// TODO - move to Game object
-		PhaseManager phaseManager = PhaseManager.getInstance();
-		Phase firstPhase = phaseManager.getCurrentPhase();
-		firstPhase.begin();
+		// Start the game
+		game.begin();
 		
 	}
 	
-	public void setupHandlers() {
+	private void initializeSubControllers() {
+
+		boardController = new BoardController();
+		boardController.initialize(game.getPlayers());
 		
-		Parent parent = view.getRoot();
+		playerController = new PlayerPaneController();
+		playerController.initialize(game.getPlayers());
 		
-		addEventHandler(parent, "aboutMenuItem", "setOnAction", "handleAboutMenuItemAction");
-		addEventHandler(parent, "quitGameMenuItem", "setOnAction", "handleQuitGameMenuItemAction");
-		 
+		gameActionController = new GameActionController();
+		gameActionController.initialize();
+		
 	}
 	
-	protected void handleAboutMenuItemAction(Event event) {
-		LOGGER.info("TODO: Open about dialog");
-	}
-	
-	protected void handleQuitGameMenuItemAction(Event event) {
-		// TODO - refactor so objects (e.g. panes) aren't being created multiple times
-		parent.initialize ((Stage) view.getWindow());
+	private void addSubViews() {
+		
+		view.addToBorderPane(boardController.getView(), "center");
+		view.addToBorderPane(playerController.getView(), "right");
+		view.addToBorderPane(gameActionController.getView(), "left");
+		
 	}
 
 }

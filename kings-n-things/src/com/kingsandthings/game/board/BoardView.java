@@ -7,7 +7,6 @@ import javafx.scene.layout.Pane;
 
 import com.kingsandthings.game.InitializableView;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
-import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Tile;
 
 public class BoardView extends Pane implements InitializableView {

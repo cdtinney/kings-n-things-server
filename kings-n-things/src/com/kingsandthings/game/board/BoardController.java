@@ -7,16 +7,15 @@ import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
-import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 
 import com.kingsandthings.Controller;
-import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.model.Player;
+import com.kingsandthings.model.PlayerManager;
 import com.kingsandthings.model.board.Board;
+import com.kingsandthings.model.board.Tile;
 import com.kingsandthings.model.phase.PhaseManager;
-import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.Thing;
 import com.kingsandthings.util.CustomDataFormat;
 
@@ -120,7 +119,7 @@ public class BoardController extends Controller {
 
 		DragEvent dragEvent = (DragEvent) event;
 		
-		if (dragEvent.getDragboard().hasContent(CustomDataFormat.THING)) {
+		if (dragEvent.getDragboard().hasContent(CustomDataFormat.THINGS)) {
 			
 			TileView tileView = (TileView) event.getSource();
 			
@@ -138,44 +137,33 @@ public class BoardController extends Controller {
 
 	}
 	
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "unchecked" })
 	private void handleTileDragDropped(Event event) {
 
 		DragEvent dragEvent = (DragEvent) event;
 		
-		if (!dragEvent.getDragboard().hasContent(CustomDataFormat.THING)) {
+		boolean hasThings = dragEvent.getDragboard().hasContent(CustomDataFormat.THINGS);
+		if (!hasThings) {
 			return;
 		}
 		
 		TileView tileView = (TileView) event.getSource();
+		Tile tile = tileView.getTile();
 		
-		Thing thing = (Thing) dragEvent.getDragboard().getContent(DataFormat.lookupMimeType("object/thing"));
-		thing.setImage((Image) dragEvent.getDragboard().getContent(DataFormat.IMAGE));
+		List<Thing> things = (List<Thing>) dragEvent.getDragboard().getContent(CustomDataFormat.THINGS);
+		List<String> imageUrls = (List<String>) dragEvent.getDragboard().getContent(CustomDataFormat.IMAGES);
 		
-		if (thing instanceof Fort) {
-			
-			boolean success = tileView.getTile().getOwner().placeFort((Fort) thing, tileView.getTile());
-			
-			if (success) {
-				PhaseManager.getInstance().endPlayerTurn();
-			}
-			
-			dragEvent.setDropCompleted(success);
-			
-		} else {
-
-			boolean success = tileView.getTile().addThing(thing);		
-			if (success) {
-				tileView.getTile().getOwner().getRack().removeThing(thing);
-				dragEvent.setDropCompleted(true);
-			}
-			
+		for (int i=0; i<things.size(); ++i) {
+			things.get(i).setImage(new Image(imageUrls.get(i)));
 		}
 		
+		boolean success = board.addThingsToTile(tile, things);
+		
+		dragEvent.setDropCompleted(success);
 		dragEvent.consume();
 		
 	}
-	
+
 	@SuppressWarnings("unused")
 	private void handleTileDragExit(Event event) {
 		TileView tileView = (TileView) event.getSource();

@@ -8,10 +8,11 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 
 import com.kingsandthings.Controller;
-import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Game;
+import com.kingsandthings.model.PlayerManager;
 import com.kingsandthings.model.phase.PhaseManager;
+import com.kingsandthings.model.things.Thing;
 
 public class GameActionController extends Controller {
 
@@ -54,7 +55,7 @@ public class GameActionController extends Controller {
 		List<Integer> selected = view.getSelectedThings();
 		
 		// Add the selected things to the player's list of Things
-		Game.getInstance().addThingsToPlayer(selected, PlayerManager.getInstance().getActivePlayer());
+		Game.getInstance().addThingIndicesToPlayer(selected, PlayerManager.getInstance().getActivePlayer());
 		
 		// Hide the list of Things
 		view.toggleThingList();
@@ -63,7 +64,16 @@ public class GameActionController extends Controller {
 	
 	@SuppressWarnings("unused")
 	private void handleDrawThingButton(Event event) {
-		view.toggleThingList();
+		
+		if (!PhaseManager.getInstance().getCurrentPhase().getStep().equals("Draw_Things")) {
+			return;
+		}
+		
+		// TASK - Demo only. Modify this.
+		List<Thing> things = Game.getInstance().getCup().drawThings(10);
+		Game.getInstance().addThingsToPlayer(things, PlayerManager.getInstance().getActivePlayer());
+		
+		//view.toggleThingList();
 	}
 	
 	@SuppressWarnings("unused")

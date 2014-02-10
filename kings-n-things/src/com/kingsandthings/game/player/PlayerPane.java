@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import com.kingsandthings.game.InitializableView;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.model.Player;
+import com.kingsandthings.model.PlayerManager;
 import com.kingsandthings.model.Rack;
 import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.Thing;
@@ -17,7 +18,6 @@ import com.kingsandthings.model.things.Thing;
 public class PlayerPane extends VBox implements InitializableView {
 	
 	private List<PlayerView> playerViews;
-	
 	private List<Player> players;
 	
 	public PlayerPane(List<Player> players) {

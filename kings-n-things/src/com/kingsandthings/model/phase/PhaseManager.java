@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javafx.scene.image.Image;
-
+import com.kingsandthings.game.board.BoardView;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
-import com.kingsandthings.game.player.PlayerManager;
 import com.kingsandthings.logging.LogLevel;
-import com.kingsandthings.model.Player;
-import com.kingsandthings.model.things.Fort;
+import com.kingsandthings.model.PlayerManager;
 
 public class PhaseManager {
 	
@@ -25,21 +22,15 @@ public class PhaseManager {
 	private int currentPhaseNumber = 0;
 	
 	private PhaseManager() {
+		
 		phases = new ArrayList<Phase>();
 		
-		// Add the phases in order
+		// Add the phases (in order)
 		phases.add(new StartingKingdomsPhase());
 		phases.add(new TowerPlacementPhase());
 		phases.add(new GoldCollectionPhase());
+		phases.add(new InitialPlacementPhase());
 		
-		// Set the first player to active
-		for (Player player: playerManager.getPlayers()) {
-			
-			if (playerManager.getPosition(player) == 1) {
-				playerManager.setActivePlayer(player);
-			}
-			
-		}
 	}
 	
 	public static PhaseManager getInstance() {
@@ -52,8 +43,11 @@ public class PhaseManager {
 		
 	}
 	
+	public void beginPhases() {
+		phases.get(0).begin();
+	}
+	
 	public void endPlayerTurn() {
-		PlayerManager.getInstance().nextPlayer();
 		getCurrentPhase().nextTurn();
 	}
 	
@@ -80,10 +74,13 @@ public class PhaseManager {
 		if (currentPhaseNumber + 1 == phases.size()) {
 			
 			// Set the active player to none
-			PlayerManager.getInstance().setActivePlayer(null);
+			playerManager.setActivePlayer(null);
 			
 			// Notify listeners
 			PropertyChangeDispatcher.getInstance().notify(this, "currentPhase", oldPhase, null);
+			
+			// Clear instruction text
+			BoardView.setInstructionText("");
 			
 			return;
 			

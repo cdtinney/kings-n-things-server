@@ -85,6 +85,17 @@ public class Tile {
 		return things;
 	}
 	
+	public boolean addThings(List<Thing> things) {
+		
+		for (Thing thing: things) {
+			if (!addThing(thing)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public boolean addThing(Thing thing) {
 		
 		if (things.contains(thing)) {

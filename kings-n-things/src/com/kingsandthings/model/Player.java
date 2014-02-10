@@ -7,9 +7,7 @@ import java.util.logging.Logger;
 import javafx.scene.image.Image;
 
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
-import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.board.Tile;
-import com.kingsandthings.model.phase.PhaseManager;
 import com.kingsandthings.model.things.Creature;
 import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.RandomEvent;

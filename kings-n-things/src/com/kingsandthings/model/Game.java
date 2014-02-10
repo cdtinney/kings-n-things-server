@@ -4,25 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.kingsandthings.model.phase.PhaseManager;
 import com.kingsandthings.model.things.Thing;
-import com.kingsandthings.model.things.ThingImport;
 
 public class Game {
 
 	private static Logger LOGGER = Logger.getLogger(Game.class.getName());
-	
 	private static Game INSTANCE = null;
 	
-	private Cup cup;
+	private PhaseManager phaseManager = PhaseManager.getInstance();
+	private PlayerManager playerManager = PlayerManager.getInstance();
 	
-	private Game() {
-		
-		// Add all the Things to the cup
-		// TODO - Add everything to the Cup
-		cup = new Cup();
-		cup.addThings(ThingImport.importCreatures());
-		
-	}
+	private final int NUM_INITIAL_THINGS = 10;
+	
+	private Cup cup;
 	
 	public static Game getInstance() {
 		
@@ -34,14 +29,47 @@ public class Game {
 		
 	}
 	
+	public void addPlayers(List<String> playerNames) {
+		playerManager.setNumPlayers(playerNames.size());
+		playerManager.addAllPlayers(playerNames);
+	}
+	
+	public List<Player> getPlayers() {
+		return playerManager.getPlayers();
+	}
+	
+	public void begin() {
+		playerManager.setFirstPlayerActive();
+		phaseManager.beginPhases();
+	}
+	
 	public Cup getCup() {
+		
+		if (cup == null) {
+			cup = new Cup();
+		}
+		
 		return cup;
 	}
 	
-	/*
-	 * TODO - remove. For demo only.
-	 */
-	public void addThingsToPlayer(List<Integer> indices, Player player) {
+	// TASK - Demo only. Remove/move.
+	public void addThingsToPlayer(List<Thing> things, Player player) {
+
+		boolean success = player.getRack().addThings(things);
+		
+		if (success) {
+			cup.removeThings(things);
+			
+			if (player.getRack().getThings().size() == NUM_INITIAL_THINGS) {
+				PhaseManager.getInstance().endPlayerTurn();
+			}
+			
+		}
+		
+	}
+	
+	// TASK - Demo only. Remove/move.
+	public void addThingIndicesToPlayer(List<Integer> indices, Player player) {
 		
 		if (player == null) {
 			LOGGER.warning("Cannot add Things to null player (is there an active player?)");
@@ -53,15 +81,6 @@ public class Game {
 		for (Integer i : indices) {
 			things.add(cup.getThings().get(i));
 		}
-
-		// Add them to the player's list of Things
-		boolean success = player.getRack().addThings(things);
-		
-		// If they were successfully added, remove the Things from the cup
-		if (success) {
-			cup.removeThings(things);
-		}
-		
 	}
 
 }

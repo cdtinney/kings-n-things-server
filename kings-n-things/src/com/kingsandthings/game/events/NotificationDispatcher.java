@@ -11,7 +11,6 @@ import javax.management.Notification;
 import javax.management.NotificationListener;
 
 import com.kingsandthings.model.phase.Phase;
-import com.kingsandthings.model.phase.PhaseNotification;
 
 public class NotificationDispatcher {
 	
@@ -20,13 +19,13 @@ public class NotificationDispatcher {
 	// Single instance of the class
 	private static NotificationDispatcher INSTANCE = null;
 	
-	private Map<Class<? extends Phase>, Map<PhaseNotification, List<NotificationListener>>> listeners;
+	private Map<Class<? extends Phase>, Map<Phase.Notification, List<NotificationListener>>> listeners;
 	
 	private NotificationDispatcher() { 
-		listeners = new HashMap<Class<? extends Phase>, Map<PhaseNotification, List<NotificationListener>>>();
+		listeners = new HashMap<Class<? extends Phase>, Map<Phase.Notification, List<NotificationListener>>>();
 	}
 	
-	public static NotificationDispatcher getDispatcher() {
+	public static NotificationDispatcher getInstance() {
 		
 		if (INSTANCE == null) {
 			INSTANCE = new NotificationDispatcher();
@@ -36,7 +35,7 @@ public class NotificationDispatcher {
 		
 	}
 	
-	public void addListener(Class<? extends Phase> clazz, PhaseNotification type, final Object instance, final String handlerMethodName) {
+	public void addListener(Class<? extends Phase> clazz, Phase.Notification type, final Object instance, final String handlerMethodName) {
 		
 		getListeners(clazz, type).add(new NotificationListener() {
 
@@ -49,10 +48,10 @@ public class NotificationDispatcher {
 		
 	}
 	
-	public void notify(Class<? extends Phase> clazz, PhaseNotification type) {
+	public void notify(Class<? extends Phase> clazz, Phase.Notification begin) {
 		
-		for (NotificationListener listener : getListeners(clazz, type)) {
-			listener.handleNotification(new Notification(type.toString(), clazz, 0L), null);
+		for (NotificationListener listener : getListeners(clazz, begin)) {
+			listener.handleNotification(new Notification(begin.toString(), clazz, 0L), null);
 		}
 		
 	}
@@ -66,8 +65,8 @@ public class NotificationDispatcher {
 			handlerMethod.invoke(instance);
 			
 		} catch (NoSuchMethodException e) {
-			LOGGER.warning("Property change handler method not found: " + instance.getClass().getSimpleName() 
-			+ "." + handlerMethodName);
+			LOGGER.warning("Method not found: " + instance.getClass().getSimpleName() 
+			+ "." + handlerMethodName + "()");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -76,11 +75,11 @@ public class NotificationDispatcher {
 		
 	}
 	
-	private List<NotificationListener> getListeners(Class<? extends Phase> clazz, PhaseNotification type) {
+	private List<NotificationListener> getListeners(Class<? extends Phase> clazz, Phase.Notification type) {
 		
 		// Add an entry for the phase class if it doesn't exist already
 		if (!listeners.containsKey(clazz)) {
-			listeners.put(clazz, new HashMap<PhaseNotification, List<NotificationListener>>());
+			listeners.put(clazz, new HashMap<Phase.Notification, List<NotificationListener>>());
 			
 		}
 		

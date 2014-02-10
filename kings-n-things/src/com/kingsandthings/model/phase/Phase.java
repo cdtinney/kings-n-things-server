@@ -3,13 +3,19 @@ package com.kingsandthings.model.phase;
 import java.util.logging.Logger;
 
 import com.kingsandthings.game.events.NotificationDispatcher;
-import com.kingsandthings.game.player.PlayerManager;
+import com.kingsandthings.model.PlayerManager;
 
 public abstract class Phase {
+	
+	public enum Notification {
+		BEGIN,
+		END
+	}
 	
 	private static Logger LOGGER = Logger.getLogger(Phase.class.getName());
 	
 	protected PlayerManager playerManager = PlayerManager.getInstance();
+	protected String currentStep = "none";
 	
 	private String name;
 	
@@ -38,8 +44,21 @@ public abstract class Phase {
 		return mandatory;
 	}
 	
+	public void begin() {
+		notifyBegin();
+	}
+	
+	public void next() {
+		// TODO
+	}
+	
+	public void end() {
+		notifyEnd();
+	}
+	
 	public void nextTurn() {
 		
+		playerManager.nextPlayer();
 		currentNumberTurns++;
 		
 		if (isLastTurn()) {
@@ -51,35 +70,40 @@ public abstract class Phase {
 			PhaseManager.getInstance().nextPhase();
 			
 		} else {
-			next();
+			
+			if (allPlayersCompletedTurn()) {
+				nextStep();
+			} else {
+				next();
+			}
 			
 		}
 		
 	}
 	
-	public boolean isLastTurn() {
-		return currentNumberTurns == (numPlayerTurns * PlayerManager.getInstance().getNumPlayers());
-	}
-	
-	public void begin() {
-		notifyBegin();
-	}
-	
-	public void next() {
-		
-	}
-	
-	public void end() {
-		notifyEnd();
+	public String getStep() {
+		return currentStep;
 	}
 	
 	protected void notifyBegin() {
-		NotificationDispatcher.getDispatcher().notify(getClass(), PhaseNotification.BEGIN);
+		NotificationDispatcher.getInstance().notify(getClass(), Notification.BEGIN);
 	}
 	
 	protected void notifyEnd() {
 		LOGGER.info("All players completed phase '" + name + "'");
-		NotificationDispatcher.getDispatcher().notify(getClass(), PhaseNotification.END);		
+		NotificationDispatcher.getInstance().notify(getClass(), Notification.END);		
+	}
+	
+	protected void nextStep() {
+		next();
+	}
+	
+	private boolean allPlayersCompletedTurn() {
+		return currentNumberTurns % PlayerManager.getInstance().getNumPlayers() == 0;
+	}
+	
+	private boolean isLastTurn() {
+		return currentNumberTurns == (numPlayerTurns * PlayerManager.getInstance().getNumPlayers());
 	}
 
 }

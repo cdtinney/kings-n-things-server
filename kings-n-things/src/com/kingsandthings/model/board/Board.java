@@ -8,6 +8,9 @@ import java.util.logging.Logger;
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.enums.Terrain;
+import com.kingsandthings.model.phase.PhaseManager;
+import com.kingsandthings.model.things.Fort;
+import com.kingsandthings.model.things.Thing;
 
 public class Board {
 	
@@ -25,20 +28,43 @@ public class Board {
 		return tiles;
 	}
 	
-	public boolean clearTileControl(Tile tile, Player player) {
+	public boolean addThingsToTile(Tile tile, List<Thing> things) {
 		
-		if (tile.getOwner() != player) {
-			LOGGER.log(LogLevel.STATUS, "Cannot remove control marker from a tile the player does not own.");
-			return false;
+		Player owner = tile.getOwner();
+		
+		boolean success = false;
+		
+		for (Thing thing : things) {
+			
+			// TASK - Demo only. Need to fix.
+			if (thing instanceof Fort) {
+				
+				success = owner.placeFort((Fort) thing, tile);
+				
+				if (success) {
+					PhaseManager.getInstance().endPlayerTurn();
+				}
+				
+				return success;
+				
+			}
+			
 		}
 		
-		if (player.getStartingTile() == tile) {
-			LOGGER.log(LogLevel.STATUS, "Cannot remove control marker from starting tile.");
-			return false;
+		success = tile.addThings(things);
+		
+		if (success) {
+			
+			owner.getRack().removeThings(things);
+			
+			// TASK - Demo only. Need to fix.
+			if (owner.getRack().getThings().isEmpty()) {
+				PhaseManager.getInstance().endPlayerTurn();
+			}
+			
 		}
 		
-		tile.setOwner(null);
-		return true;
+		return success;	
 		
 	}
 	
@@ -50,6 +76,30 @@ public class Board {
 		
 		tile.setOwner(player);
 		return true;
+		
+	}
+	
+	public void setStartingTile(Player player, int position) {
+		
+		switch(position) {
+		
+			case 1:
+				player.setStartingTile(tiles[0][5]);
+				break;
+		
+			case 2:
+				player.setStartingTile(tiles[4][5]);
+				break;
+		
+			case 3:
+				player.setStartingTile(tiles[4][1]);
+				break;
+		
+			case 4:
+				player.setStartingTile(tiles[0][1]);
+				break;
+				
+		}
 		
 	}
 	
@@ -102,30 +152,6 @@ public class Board {
 		}
 		
 		return playerNeighbour && !enemyNeighbour;
-	}
-	
-	public void setStartingTile(Player player, int position) {
-		
-		switch(position) {
-		
-			case 1:
-				player.setStartingTile(tiles[0][5]);
-				break;
-		
-			case 2:
-				player.setStartingTile(tiles[4][5]);
-				break;
-		
-			case 3:
-				player.setStartingTile(tiles[4][1]);
-				break;
-		
-			case 4:
-				player.setStartingTile(tiles[0][1]);
-				break;
-				
-		}
-		
 	}
 	
 	private List<Tile> getNeighbours(Tile[][] tiles, Tile tile) {

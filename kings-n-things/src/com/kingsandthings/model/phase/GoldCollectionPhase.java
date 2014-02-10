@@ -2,6 +2,7 @@ package com.kingsandthings.model.phase;
 
 import java.util.logging.Logger;
 
+import com.kingsandthings.game.board.BoardView;
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.things.Fort;
@@ -18,10 +19,14 @@ public class GoldCollectionPhase extends Phase {
 	@Override
 	public void begin() {
 		next();		
+		
+		notifyBegin();
 	}
 	
 	@Override
 	public void next() {
+
+		BoardView.setInstructionText("please collect gold");
 		
 		Player player = playerManager.getActivePlayer();
 		
@@ -40,12 +45,7 @@ public class GoldCollectionPhase extends Phase {
 		// Add gold pieces for the combat value of controlled forts
 		int fortValue = 0;
 		for (Fort fort : player.getForts()) {
-			
-			// Forts placed on the board only
-			if (fort.placedOnBoard()) {
-				fortValue += fort.getCombatValue();
-			}
-			
+			fortValue += fort.getCombatValue();			
 		}
 		
 		// Add gold pieces for value of special income counters 
@@ -63,7 +63,17 @@ public class GoldCollectionPhase extends Phase {
 		int specialCharacterValue = player.getSpecialCharacters().size();
 		
 		// Add it all up
-		return controlledHexValue + fortValue + specialIncomeValue + specialCharacterValue;
+		int total = controlledHexValue + fortValue + specialIncomeValue + specialCharacterValue;
+		
+		String message = "Gold collected:\n";
+		message += "\n\tControlled Hexes: " + controlledHexValue;
+		message += "\n\tForts: " + fortValue;
+		message += "\n\tSpecial Income: " + specialIncomeValue;
+		message += "\n\tSpecial Characters: " + specialCharacterValue;
+		message += "\n\nTotal: " + total;
+		//Dialog.show(Type.NOTIFY, message);
+		
+		return total;
 		
 	}
 
