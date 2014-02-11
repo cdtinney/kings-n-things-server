@@ -3,6 +3,9 @@ package com.kingsandthings.game.board;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuItemBuilder;
@@ -11,6 +14,8 @@ import com.kingsandthings.game.events.NotificationDispatcher;
 import com.kingsandthings.model.phase.MovementPhase;
 import com.kingsandthings.model.phase.Phase.Notification;
 import com.kingsandthings.model.phase.StartingKingdomsPhase;
+import com.sun.xml.internal.bind.v2.schemagen.episode.Bindings;
+import com.sun.xml.internal.org.jvnet.staxex.NamespaceContextEx.Binding;
 
 public class TileActionMenu extends ContextMenu {
 	
@@ -28,12 +33,9 @@ public class TileActionMenu extends ContextMenu {
 		menuItems.put("selectThings", MenuItemBuilder.create().visible(false).text("Select things").build());
 		
 		getItems().addAll(menuItems.values());
-
-		NotificationDispatcher.getInstance().addListener(StartingKingdomsPhase.class, Notification.BEGIN, this, "onStartingKingdomsPhaseBegin");
-		NotificationDispatcher.getInstance().addListener(StartingKingdomsPhase.class, Notification.END, this, "onStartingKingdomsPhaseEnd");
 		
-		NotificationDispatcher.getInstance().addListener(MovementPhase.class, Notification.BEGIN, this, "onMovementPhaseBegin");
-		NotificationDispatcher.getInstance().addListener(MovementPhase.class, Notification.END, this, "onMovementPhaseBegin");
+		get("selectThings").visibleProperty().bind(MovementPhase.active);
+		get("placeControlMarker").visibleProperty().bind(StartingKingdomsPhase.active);
 		
 	}
 	
@@ -55,26 +57,6 @@ public class TileActionMenu extends ContextMenu {
 		
 		return false;
 		
-	}
-	
-	@SuppressWarnings("unused")
-	private void onMovementPhaseBegin() {
-		get("selectThings").setVisible(true);
-	}
-	
-	@SuppressWarnings("unused")
-	private void onMovementPhaseEnd() {
-		get("selectThings").setVisible(false);
-	}
-	
-	@SuppressWarnings("unused")
-	private void onStartingKingdomsPhaseBegin() {
-		get("placeControlMarker").setVisible(true);
-	}
-	
-	@SuppressWarnings("unused")
-	private void onStartingKingdomsPhaseEnd() {
-		get("placeControlMarker").setVisible(false);
 	}
 
 }

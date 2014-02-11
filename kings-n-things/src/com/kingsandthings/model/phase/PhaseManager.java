@@ -21,10 +21,12 @@ public class PhaseManager {
 		phases = new ArrayList<Phase>();
 		
 		// Add the phases (in order)
-//		phases.add(new StartingKingdomsPhase());
-//		phases.add(new TowerPlacementPhase());
-//		phases.add(new GoldCollectionPhase());
+		phases.add(new StartingKingdomsPhase());
+		phases.add(new TowerPlacementPhase());
 		phases.add(new InitialPlacementPhase());
+		
+		phases.add(new GoldCollectionPhase());
+		phases.add(new ThingRecruitmentPhase());
 		phases.add(new MovementPhase());
 		
 	}
@@ -41,6 +43,7 @@ public class PhaseManager {
 	
 	public void beginPhases() {
 		phases.get(0).begin();
+		PropertyChangeDispatcher.getInstance().notify(this, "currentPhase", null, getCurrentPhase());
 	}
 	
 	public void endPlayerTurn() {
@@ -58,6 +61,11 @@ public class PhaseManager {
 		currentPhaseNumber = (currentPhaseNumber + 1) % phases.size();
 		
 		Phase newPhase = phases.get(currentPhaseNumber);
+		
+		if (oldPhase.isInitial()) {
+			phases.remove(oldPhase);
+			currentPhaseNumber--;
+		}
 		
 		notifyPhaseChange(oldPhase, newPhase);
 		

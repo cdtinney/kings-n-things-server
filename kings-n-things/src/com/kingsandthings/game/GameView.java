@@ -35,7 +35,7 @@ public class GameView extends Scene implements InitializableView {
 		addMenuBar();
 		addStatusText();
 		
-		PropertyChangeDispatcher.getInstance().addListener(PlayerManager.class, "activePlayer", this, "activePlayerChanged");
+		//PropertyChangeDispatcher.getInstance().addListener(PlayerManager.class, "activePlayer", this, "activePlayerChanged");
 	}
 	
 	public static String getStatusText() {

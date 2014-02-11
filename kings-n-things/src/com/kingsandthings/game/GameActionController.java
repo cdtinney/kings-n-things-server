@@ -10,7 +10,9 @@ import javafx.scene.control.ComboBox;
 import com.kingsandthings.Controller;
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Game;
+import com.kingsandthings.model.Player;
 import com.kingsandthings.model.PlayerManager;
+import com.kingsandthings.model.phase.Phase;
 import com.kingsandthings.model.phase.PhaseManager;
 import com.kingsandthings.model.things.Thing;
 
@@ -61,13 +63,28 @@ public class GameActionController extends Controller {
 	@SuppressWarnings("unused")
 	private void handleDrawThingButton(Event event) {
 		
-		if (!PhaseManager.getInstance().getCurrentPhase().getStep().equals("Draw_Things")) {
+		Phase phase = PhaseManager.getInstance().getCurrentPhase();
+		Player player = PlayerManager.getInstance().getActivePlayer();
+		Game game = Game.getInstance();
+		
+		if (!phase.getStep().equals("Draw_Things")) {
+			return;
+		}
+		
+		if (phase.getName().equals("Thing Recruitment")) {
+			int numPaid = view.getNumPaidSelected();
+			boolean success = game.getCup().recruitThings(player, numPaid);
+			
+			if (success) {
+				PhaseManager.getInstance().endPlayerTurn();
+			}
+			
 			return;
 		}
 		
 		// TASK - Demo only (drawing 10 things). Modify this.
-		List<Thing> things = Game.getInstance().getCup().drawThings(10);
-		Game.getInstance().addInitialThingsToPlayer(things, PlayerManager.getInstance().getActivePlayer());
+		List<Thing> things = game.getCup().drawThings(10);
+		game.addInitialThingsToPlayer(things, player);
 		
 		//view.toggleThingList();
 	}

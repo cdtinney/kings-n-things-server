@@ -7,7 +7,7 @@ import com.kingsandthings.model.things.Fort;
 public class TowerPlacementPhase extends Phase {
 
 	public TowerPlacementPhase() {
-		super("Tower Placement", true, true, 1);
+		super("Tower Placement", true, true, 1, true);
 	}
 	
 	@Override

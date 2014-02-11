@@ -2,26 +2,28 @@ package com.kingsandthings.model.phase;
 
 import com.kingsandthings.game.board.BoardView;
 
-public class InitialPlacementPhase extends Phase {
+public class ThingRecruitmentPhase extends Phase {
 
-	public InitialPlacementPhase() {
-		super("Thing Placement", false, true, 2, true);
+	public ThingRecruitmentPhase() {
+		super("Thing Recruitment", true, true, 2, false);
 	}
 	
 	@Override
 	public void begin() {
 		super.begin();
 		
-		BoardView.setInstructionText("please draw 10 Things from the cup");
+		BoardView.setInstructionText("please recruit things");
 		currentStep = "Draw_Things";
 		
 	}
 	
 	@Override
-	protected void nextStep() {
+	public void nextStep() {
+		notify(Notification.STEP);
+		
 		BoardView.setInstructionText("please place your Things");
 		currentStep = "Thing_Placement";
 		
 	}
-
+	
 }

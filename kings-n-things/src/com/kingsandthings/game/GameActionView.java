@@ -27,6 +27,7 @@ import com.kingsandthings.model.Game;
 import com.kingsandthings.model.phase.InitialPlacementPhase;
 import com.kingsandthings.model.phase.Phase;
 import com.kingsandthings.model.phase.PhaseManager;
+import com.kingsandthings.model.phase.ThingRecruitmentPhase;
 
 public class GameActionView extends VBox implements InitializableView {
 
@@ -40,6 +41,8 @@ public class GameActionView extends VBox implements InitializableView {
 		setSpacing(10);
 		
 		addCup();
+		addDraw();
+		addRecruitmentActions();
 		addDice();
 		addPhaseActions();
 		
@@ -81,11 +84,35 @@ public class GameActionView extends VBox implements InitializableView {
 		return list.getSelectionModel().getSelectedIndices();
 	}
 	
+	@SuppressWarnings("unchecked")
+	public Integer getNumPaidSelected() {
+		ComboBox<Integer>  list = (ComboBox<Integer>) lookup("#numPaidRecruits");
+		return list.getSelectionModel().getSelectedItem();
+	}
+	
 	private void addListeners() {
 		PropertyChangeDispatcher.getInstance().addListener(PhaseManager.class, "currentPhase", this, "phaseChanged");
 		
 		NotificationDispatcher.getInstance().addListener(InitialPlacementPhase.class, Phase.Notification.BEGIN, this, "onInitialPlacementPhaseBegin");
 		NotificationDispatcher.getInstance().addListener(InitialPlacementPhase.class, Phase.Notification.END, this, "onInitialPlacementPhaseEnd");
+		
+		NotificationDispatcher.getInstance().addListener(ThingRecruitmentPhase.class, Phase.Notification.BEGIN, this, "onRecruitmentPhaseBegin");
+		NotificationDispatcher.getInstance().addListener(ThingRecruitmentPhase.class, Phase.Notification.NEXT, this, "onRecruitmentPhaseNext");
+		NotificationDispatcher.getInstance().addListener(ThingRecruitmentPhase.class, Phase.Notification.STEP, this, "onRecruitmentPhaseStep");
+	}
+	
+	@SuppressWarnings("unused")
+	private void onRecruitmentPhaseBegin() {
+		lookup("#drawThing").setDisable(false);
+		lookup("#numPaidRecruits").setDisable(false);
+		((Button) lookup("#drawThing")).setText("Recruit Things");
+	}
+	
+	@SuppressWarnings("unused")
+	private void onRecruitmentPhaseStep() {
+		lookup("#drawThing").setDisable(true);
+		lookup("#numPaidRecruits").setDisable(true);
+		lookup("#endTurn").setDisable(false);
 	}
 	
 	@SuppressWarnings("unused")
@@ -109,7 +136,9 @@ public class GameActionView extends VBox implements InitializableView {
 			return;
 		}
 		
-		lookup("#endTurn").setDisable(newPhase.isMandatory() && newPhase.playerInteractionRequired());
+		if (!newPhase.getStep().equals("Draw_Things")) {
+			lookup("#endTurn").setDisable(newPhase.isMandatory() && newPhase.playerInteractionRequired());
+		}
 		
 		setPhaseName(newPhase.getName());
 		
@@ -126,9 +155,16 @@ public class GameActionView extends VBox implements InitializableView {
 		imgView.setPreserveRatio(true);
 		imgView.setFitWidth(200);
 		
+		getChildren().addAll(imgView);
+		
+	}
+
+	private void addDraw() {
+		
 		Button drawThingButton = new Button("Draw Thing");
 		drawThingButton.setId("drawThing");
 		drawThingButton.getStyleClass().addAll("nofocus");
+		drawThingButton.setDisable(true);
 		
 		ListView<String> list = new ListView<String>();
 		list.setId("thingList");
@@ -146,7 +182,29 @@ public class GameActionView extends VBox implements InitializableView {
 		selectThings.managedProperty().bind(selectThings.visibleProperty());
 		selectThings.setVisible(false);
 		
-		getChildren().addAll(imgView, drawThingButton, list, selectThings);		
+		getChildren().addAll(drawThingButton, list, selectThings);
+		
+	}
+	
+	private void addRecruitmentActions() {
+		
+		HBox thingRecruitmentBox = new HBox(5);
+		thingRecruitmentBox.setAlignment(Pos.CENTER);
+
+		Label numPaid = new Label("Paid Recruits (5g ea): ");
+		numPaid.setFont(Font.font("Lucida Sans", 12));
+		numPaid.setTextFill(Color.WHITE);
+		
+		ObservableList<Integer> numPaidRecruits = FXCollections.observableArrayList(0, 1, 2, 3, 4, 5);
+		ComboBox<Integer> comboBox = new ComboBox<Integer>(numPaidRecruits);
+		comboBox.setId("numPaidRecruits");
+		comboBox.getStyleClass().addAll("nofocus");
+		comboBox.getSelectionModel().select(0);
+		comboBox.setDisable(true);
+		
+		thingRecruitmentBox.getChildren().addAll(numPaid, comboBox);
+		
+		getChildren().add(thingRecruitmentBox);
 		
 	}
 	

@@ -7,13 +7,14 @@ import com.kingsandthings.model.PlayerManager;
 
 public abstract class Phase {
 	
+	private static Logger LOGGER = Logger.getLogger(Phase.class.getName());
+	
 	public enum Notification {
 		BEGIN,
 		NEXT,
-		END
+		END,
+		STEP
 	}
-	
-	private static Logger LOGGER = Logger.getLogger(Phase.class.getName());
 	
 	protected PlayerManager playerManager = PlayerManager.getInstance();
 	protected String currentStep = "none";
@@ -22,15 +23,17 @@ public abstract class Phase {
 	
 	private boolean mandatory;
 	private boolean playerInteraction;
+	private boolean initial;
 	
 	private int numPlayerTurns;
 	private int currentNumberTurns = 0;
 	
-	public Phase(String name, boolean mandatory, boolean playerInteraction, int numPlayerTurns) {
+	public Phase(String name, boolean mandatory, boolean playerInteraction, int numPlayerTurns, boolean initial) {
 		this.name = name;
 		this.mandatory = mandatory;
 		this.numPlayerTurns = numPlayerTurns;
 		this.playerInteraction = playerInteraction;
+		this.initial = initial;
 	}
 	
 	public String getName() {
@@ -45,9 +48,13 @@ public abstract class Phase {
 		return mandatory;
 	}
 	
+	public boolean isInitial() {
+		return initial;
+	}
+	
 	public void begin() {
-		notify(Notification.BEGIN);
 		currentNumberTurns = 0;
+		notify(Notification.BEGIN);
 	}
 	
 	public void next() {
@@ -92,7 +99,6 @@ public abstract class Phase {
 	}
 	
 	protected void notify(Notification type) {
-		LOGGER.info("Phase notification - " + getClass().getSimpleName() + " " + type);
 		NotificationDispatcher.getInstance().notify(getClass(), type);
 	}
 	

@@ -13,7 +13,7 @@ public class GoldCollectionPhase extends Phase {
 	private static Logger LOGGER = Logger.getLogger(GoldCollectionPhase.class.getName());
 
 	public GoldCollectionPhase() {
-		super("Gold Collection", true, false, 1);
+		super("Gold Collection", true, false, 1, false);
 	}
 
 	@Override
@@ -25,6 +25,7 @@ public class GoldCollectionPhase extends Phase {
 	
 	@Override
 	public void next() {
+		super.next();
 
 		BoardView.setInstructionText("please collect gold");
 		
