@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 
 import com.kingsandthings.game.GameController;
 import com.kingsandthings.model.PlayerManager;
-import com.kingsandthings.util.Dialog;
 
 public class MainMenuController extends Controller {
 	
@@ -34,8 +33,6 @@ public class MainMenuController extends Controller {
 		
 		stage.setScene(view);
 		stage.centerOnScreen();
-		
-		Dialog.setStage(stage);
 		
 		setupHandlers();
 		

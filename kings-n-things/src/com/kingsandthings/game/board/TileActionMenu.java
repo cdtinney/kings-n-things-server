@@ -3,19 +3,12 @@ package com.kingsandthings.game.board;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuItemBuilder;
 
-import com.kingsandthings.game.events.NotificationDispatcher;
 import com.kingsandthings.model.phase.MovementPhase;
-import com.kingsandthings.model.phase.Phase.Notification;
 import com.kingsandthings.model.phase.StartingKingdomsPhase;
-import com.sun.xml.internal.bind.v2.schemagen.episode.Bindings;
-import com.sun.xml.internal.org.jvnet.staxex.NamespaceContextEx.Binding;
 
 public class TileActionMenu extends ContextMenu {
 	
