@@ -9,6 +9,7 @@ public abstract class Phase {
 	
 	public enum Notification {
 		BEGIN,
+		NEXT,
 		END
 	}
 	
@@ -45,15 +46,16 @@ public abstract class Phase {
 	}
 	
 	public void begin() {
-		notifyBegin();
+		notify(Notification.BEGIN);
+		currentNumberTurns = 0;
 	}
 	
 	public void next() {
-		// TODO
+		notify(Notification.NEXT);
 	}
 	
 	public void end() {
-		notifyEnd();
+		notify(Notification.END);
 	}
 	
 	public void nextTurn() {
@@ -85,17 +87,13 @@ public abstract class Phase {
 		return currentStep;
 	}
 	
-	protected void notifyBegin() {
-		NotificationDispatcher.getInstance().notify(getClass(), Notification.BEGIN);
-	}
-	
-	protected void notifyEnd() {
-		LOGGER.info("All players completed phase '" + name + "'");
-		NotificationDispatcher.getInstance().notify(getClass(), Notification.END);		
-	}
-	
 	protected void nextStep() {
 		next();
+	}
+	
+	protected void notify(Notification type) {
+		LOGGER.info("Phase notification - " + getClass().getSimpleName() + " " + type);
+		NotificationDispatcher.getInstance().notify(getClass(), type);
 	}
 	
 	private boolean allPlayersCompletedTurn() {

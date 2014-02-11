@@ -18,9 +18,9 @@ public class GoldCollectionPhase extends Phase {
 
 	@Override
 	public void begin() {
-		next();		
+		super.begin();
 		
-		notifyBegin();
+		next();
 	}
 	
 	@Override

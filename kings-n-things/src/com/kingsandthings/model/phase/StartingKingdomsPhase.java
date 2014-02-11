@@ -2,7 +2,6 @@ package com.kingsandthings.model.phase;
 
 import com.kingsandthings.game.board.BoardView;
 import com.kingsandthings.model.Player;
-import com.kingsandthings.model.things.Fort;
 
 public class StartingKingdomsPhase extends Phase {
 	
@@ -14,7 +13,7 @@ public class StartingKingdomsPhase extends Phase {
 	
 	@Override
 	public void begin() {
-		notifyBegin();
+		super.begin();
 		
 		BoardView.setInstructionText("please place a control marker");
 		
@@ -22,9 +21,6 @@ public class StartingKingdomsPhase extends Phase {
 			
 			// Give each player 10 gold 
 			player.addGold(initialNumGold);
-			
-			// Give each player a tower
-			player.addFort(Fort.getTower());
 			
 		}
 		

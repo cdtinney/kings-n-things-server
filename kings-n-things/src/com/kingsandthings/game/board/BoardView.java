@@ -13,9 +13,9 @@ public class BoardView extends Pane implements InitializableView {
 	
 	private static Logger LOGGER = Logger.getLogger(BoardView.class.getName());
 	
-	private TileView[][] tiles = new TileView[10][10];
-	
 	private static Label instructions;
+	
+	private TileView[][] tiles = new TileView[10][10];
 	
 	@Override
 	public void initialize() {
@@ -23,11 +23,9 @@ public class BoardView extends Pane implements InitializableView {
 		getStyleClass().addAll("pane", "board");
 		
 		int initialX = 70;
-		int initialY = 225;
-		
+		int initialY = 190;
 		int xOffset = 79;
 		int yOffset = 91;
-		
 		int columnOffset = 45;
 		
 		tiles = generateTiles(initialX, initialY, xOffset, yOffset, columnOffset, 10);
@@ -44,13 +42,6 @@ public class BoardView extends Pane implements InitializableView {
 		}
 		
 		instructions.setText(message == null? "" : message);		
-	}
-	
-	private void addInstructionText() {
-		instructions = new Label("instructions go here");
-		instructions.getStyleClass().add("instructionsText");
-		instructions.setPrefWidth(getBoundsInParent().getWidth() + 75);
-		getChildren().add(instructions);
 	}
 	
 	public TileView[][] getTiles() {
@@ -72,11 +63,12 @@ public class BoardView extends Pane implements InitializableView {
 						continue;
 					}
 					
-					view.setTile(tile);
+					view.initialize(tile);
 					
 					// TODO - change this, too many listeners (or move to TileView)
 					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "owner", this, view, TileView.class, "handleTileOwnerChanged");
 					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "fort", this, view, TileView.class, "handleTileFortChanged");
+					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "things", this, view, TileView.class, "handleTileThingsChanged");
 					
 				} catch (IndexOutOfBoundsException e) {
 					LOGGER.warning("Model and view tile array size mismatch - " + e.getMessage());
@@ -88,19 +80,19 @@ public class BoardView extends Pane implements InitializableView {
 	}
 	
 	@SuppressWarnings("unused")
+	private void handleTileThingsChanged(TileView tileView) {
+		tileView.updateThingsStackView();
+	}
+	
+	@SuppressWarnings("unused")
 	private void handleTileFortChanged(TileView tileView) {
 		tileView.updateFortView();		
 	}
 
 	@SuppressWarnings("unused")
 	private void handleTileOwnerChanged(TileView tileView) {
-		
-		// Update the control marker
 		tileView.updateControlMarkerView();
-		
-		// Set the image of the tile
 		tileView.setImage(tileView.getTile().getImage());
-		
 	}
 	
 	private void addTilesToView(TileView[][] tiles) {
@@ -117,7 +109,13 @@ public class BoardView extends Pane implements InitializableView {
 		
 	}
 	
-	// TODO - move this into factory(?) class
+	private void addInstructionText() {
+		instructions = new Label("instructions go here");
+		instructions.getStyleClass().add("instructionsText");
+		instructions.setPrefWidth(getBoundsInParent().getWidth() + 75);
+		getChildren().add(instructions);
+	}
+	
 	private TileView[][] generateTiles(int initialX, int initialY, int xOffset, int yOffset, int columnOffset, int size) {
 
 		TileView[][] tiles = new TileView[size][size];

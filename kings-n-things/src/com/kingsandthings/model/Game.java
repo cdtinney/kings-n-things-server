@@ -52,8 +52,7 @@ public class Game {
 		return cup;
 	}
 	
-	// TASK - Demo only. Remove/move.
-	public void addThingsToPlayer(List<Thing> things, Player player) {
+	public void addInitialThingsToPlayer(List<Thing> things, Player player) {
 
 		boolean success = player.getRack().addThings(things);
 		

@@ -2,23 +2,27 @@ package com.kingsandthings.game.board;
 
 import java.util.logging.Logger;
 
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.effect.InnerShadowBuilder;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.ImageViewBuilder;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import com.kingsandthings.model.board.Tile;
+import com.kingsandthings.model.things.Thing;
 
 public class TileView extends ImageView {
 	
 	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(TileView.class.getName());
 	
-	private static final int TILE_WIDTH = 100;
 	private static Image defaultImg = new Image("/images/tiles/back.png");
+	private static final int TILE_WIDTH = 100;
 	
 	// Model
 	private Tile tile;		
@@ -27,6 +31,7 @@ public class TileView extends ImageView {
 	private TileActionMenu actionMenu;
 	private ImageView controlMarkerImageView;
 	private ImageView fortImageView;
+	private ImageView thingStackImageView;
 	
 	public TileView (String id, int x, int y) {
 		
@@ -35,15 +40,32 @@ public class TileView extends ImageView {
 		}
 		
 		setImage(defaultImg);
-
 		setPreserveRatio(true);
 		setCache(true);
-		
 		setFitWidth(TILE_WIDTH);
 		setX(x);
 		setY(y);
 		
 		actionMenu = new TileActionMenu(this);
+		
+	}
+	
+	public void initialize(Tile tile) {
+		
+		this.tile = tile;
+		setImage(tile.getImage());
+		
+		addControlMarkerView();
+		addFortView();
+		addThingStackView();
+		
+		addPropagationHandler(controlMarkerImageView);
+		addPropagationHandler(fortImageView);
+		addPropagationHandler(thingStackImageView);
+		
+		updateFortView();
+		updateControlMarkerView();
+		updateThingsStackView();
 		
 	}
 	
@@ -83,6 +105,24 @@ public class TileView extends ImageView {
 		}
 		
 	}
+
+	public Tile getTile() {
+		return tile;
+	}
+	
+	public void updateControlMarkerView() {
+		boolean hasOwner = tile.getOwner() != null;
+		controlMarkerImageView.setImage(hasOwner ? tile.getOwner().getControlMarker() : null);
+	}
+	
+	public void updateFortView() {
+		boolean hasFort = tile.getFort() != null;
+		fortImageView.setImage(hasFort ? tile.getFort().getImage() : null);
+	}
+	
+	public void updateThingsStackView() {
+		thingStackImageView.setImage(tile.hasThings() ? Thing.getStackImage() : null);
+	}
 	
 	public void addHighlight(boolean valid) {
 	
@@ -102,82 +142,41 @@ public class TileView extends ImageView {
 		this.setEffect(null);
 	}
 	
-	public void setTile(Tile tile) {
+	private void addPropagationHandler(ImageView imageView) {
 		
-		this.tile = tile;
-		
-		if (tile != null && tile.getImage() != null) {
-			setImage(tile.getImage());
-		}
-		
-	}
-
-	public Tile getTile() {
-		return tile;
-	}
-	
-	public void updateControlMarkerView() {
-		
-		if (tile.getOwner() == null) {
-			removeControlMarkerView();
-		} else {
-			addControlMarkerView();
-		}
-		
-	}
-	
-	public void updateFortView() {
-		
-		if (tile.getFort() == null) {
-			
-			if (fortImageView != null) {
-				Pane parent = (Pane) fortImageView.getParent();
-				parent.getChildren().remove(fortImageView);
-				fortImageView = null;
+		final TileView instance = this;
+		imageView.addEventHandler(Event.ANY, new EventHandler<Event>() {
+			@Override
+			public void handle(Event event) {
+				instance.fireEvent(event);
 			}
-			
-			return;
-			
-		}
+		});
 		
-		if (fortImageView == null) {
-			fortImageView = new ImageView();
-			fortImageView.setPreserveRatio(true);
-			fortImageView.setFitWidth(30);
-			fortImageView.setX(getX() + 18);
-			fortImageView.setY(getY() + 3);
-			
-			((Pane) getParent()).getChildren().add(fortImageView);	
-		}
-			
-		fortImageView.setImage(tile.getFort().getImage());
+	}
+	
+	private void addThingStackView() {
+
+		double stackWidth = 35;
+		double x = getX() + TILE_WIDTH/2 - stackWidth/2;
+		double y = getY() + 35;
+
+		thingStackImageView = ImageViewBuilder.create().fitWidth(stackWidth).x(x).y(y).preserveRatio(true).cache(true).build();
+		((Pane) getParent()).getChildren().add(thingStackImageView);	
+		
+	}
+	
+	private void addFortView() {
+
+		fortImageView = ImageViewBuilder.create().fitWidth(30).x(getX() + 18).y(getY() + 3).preserveRatio(true).cache(true).build();
+		((Pane) getParent()).getChildren().add(fortImageView);	
 		
 	}
 	
 	private void addControlMarkerView() {
 		
-		ImageView imgView = new ImageView(tile.getOwner().getControlMarker());
-		imgView.setPreserveRatio(true);
-		imgView.setFitWidth(30);
-		imgView.setX(getX() + 47);
-		imgView.setY(getY() + 3);
+		controlMarkerImageView = ImageViewBuilder.create().fitWidth(30).x(getX() + 47).y(getY() + 3).preserveRatio(true).cache(true).build();
+		((Pane) getParent()).getChildren().add(controlMarkerImageView);	
 		
-		controlMarkerImageView = imgView;
-		
-		((Pane) getParent()).getChildren().add(imgView);	
-		
-	}
-	
-	private void removeControlMarkerView() {
-		
-		if (controlMarkerImageView == null) {
-			return;
-		}
-		
-		Pane parent = (Pane) controlMarkerImageView.getParent();
-		parent.getChildren().remove(controlMarkerImageView);
-		
-		controlMarkerImageView = null;
 	}
 	
 }

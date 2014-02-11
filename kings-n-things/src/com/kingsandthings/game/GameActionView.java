@@ -104,13 +104,11 @@ public class GameActionView extends VBox implements InitializableView {
 		Phase newPhase = (Phase) event.getNewValue();
 		
 		if (newPhase == null) {
-			lookup("#skipTurn").setDisable(true);
 			lookup("#endTurn").setDisable(true);
 			setPhaseName("None");
 			return;
 		}
 		
-		lookup("#skipTurn").setDisable(newPhase.isMandatory());
 		lookup("#endTurn").setDisable(newPhase.isMandatory() && newPhase.playerInteractionRequired());
 		
 		setPhaseName(newPhase.getName());
@@ -200,18 +198,13 @@ public class GameActionView extends VBox implements InitializableView {
 		HBox buttons = new HBox(5);
 		buttons.setAlignment(Pos.CENTER);
 		
-		Button skipTurnButton = new Button("Skip Turn");
-		skipTurnButton.setId("skipTurn");
-		skipTurnButton.getStyleClass().add("nofocus");
-		skipTurnButton.setDisable(true);
-		
 		Button endTurnButton = new Button("End Turn");
 		endTurnButton.setId("endTurn");
 		endTurnButton.getStyleClass().add("nofocus");
 		
 		endTurnButton.setDisable(PhaseManager.getInstance().getCurrentPhase().isMandatory());
 		
-		buttons.getChildren().addAll(skipTurnButton, endTurnButton);
+		buttons.getChildren().addAll(endTurnButton);
 		
 		getChildren().addAll(phaseName, buttons);
 		

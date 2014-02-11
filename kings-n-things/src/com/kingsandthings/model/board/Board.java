@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
+import com.kingsandthings.model.PlayerManager;
 import com.kingsandthings.model.enums.Terrain;
 import com.kingsandthings.model.phase.PhaseManager;
 import com.kingsandthings.model.things.Fort;
@@ -28,9 +29,27 @@ public class Board {
 		return tiles;
 	}
 	
+	public boolean moveThings(Tile beginTile, Tile endTile, List<Thing> things) {
+		
+		boolean success = addThingsToTile(endTile, things);
+
+		Player player = PlayerManager.getInstance().getActivePlayer();
+		
+		if (success) {
+			success = beginTile.removeThings(player, things);
+		}
+		
+		return success;		
+		
+	}
+	
 	public boolean addThingsToTile(Tile tile, List<Thing> things) {
 		
-		Player owner = tile.getOwner();
+		Player player = PlayerManager.getInstance().getActivePlayer();
+		
+		if (tile.getOwner() != player) {
+			LOGGER.info("Adding Things to a tile the player does not own.");
+		}
 		
 		boolean success = false;
 		
@@ -39,29 +58,24 @@ public class Board {
 			// TASK - Demo only. Need to fix.
 			if (thing instanceof Fort) {
 				
-				success = owner.placeFort((Fort) thing, tile);
-				
+				success = player.placeFort((Fort) thing, tile);
 				if (success) {
 					PhaseManager.getInstance().endPlayerTurn();
 				}
-				
 				return success;
-				
 			}
 			
 		}
 		
-		success = tile.addThings(things);
+		success = tile.addThings(player, things);
 		
 		if (success) {
+			player.getRack().removeThings(things);
 			
-			owner.getRack().removeThings(things);
-			
-			// TASK - Demo only. Need to fix.
-			if (owner.getRack().getThings().isEmpty()) {
-				PhaseManager.getInstance().endPlayerTurn();
+			if (tile.getOwner() == null) {
+				LOGGER.info("Player is entering an uncontrolled tile. Setting control marker.");
+				tile.setOwner(player);
 			}
-			
 		}
 		
 		return success;	

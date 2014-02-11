@@ -17,29 +17,38 @@ public class DataImageView extends ImageView {
 	private Object data;
 	
 	private DataImageView hoverImageView;
+	private boolean hover = false;
 	
 	private boolean selected = false;
 	
-	public DataImageView() {
+	public DataImageView(boolean hover) {
 		setPreserveRatio(true);
 		setCache(true);
 		
-		this.setOnMouseEntered(hoverHandler);
-		this.setOnMouseExited(hoverHandler);
+		this.hover = hover;
+		
+		if (hover) {
+			this.setOnMouseEntered(hoverHandler);
+			this.setOnMouseExited(hoverHandler);
+		}
+		
 	}
 	
-	public DataImageView(double width) {
-		this();
+	public DataImageView(boolean hover, double width) {
+		this(hover);
 		
 		setFitWidth(width);
 	}
 	
-	public static void clear(List<DataImageView> imageViews) {
+	public static void clear(List<DataImageView> imageViews, boolean removeSelection) {
 		
 		for (DataImageView imageView : imageViews) {
 			imageView.setData(null);
 			imageView.setImage(null);
-			imageView.setSelected(false);
+			
+			if (removeSelection) {
+				imageView.setSelected(false);
+			}
 		}
 		
 	}
@@ -63,6 +72,10 @@ public class DataImageView extends ImageView {
 	
 	private void showHoverImage(boolean show) {
 		
+		if (!hover) {
+			return;
+		}
+		
 		if (!show && hoverImageView != null) {
 			hoverImageView.setVisible(false);
 			return;
@@ -73,7 +86,7 @@ public class DataImageView extends ImageView {
 		double imageWidth = this.getBoundsInParent().getWidth();
 		
 		if (hoverImageView == null) {
-			hoverImageView = new DataImageView();
+			hoverImageView = new DataImageView(false);
 			hoverImageView.setOpacity(0.95);
 			hoverImageView.setPreserveRatio(true);
 			hoverImageView.setFitWidth(imageWidth * hoverRatio);

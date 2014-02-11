@@ -7,6 +7,9 @@ import javafx.scene.image.Image;
 @SuppressWarnings("serial")
 public abstract class Thing implements Serializable {
 	
+	private static Image backImg = new Image("/images/other/thing_back.png");
+	private static Image stackImg = new Image("/images/other/thing_stack.png");
+	
 	public int id;
 	
 	protected String name;
@@ -42,6 +45,14 @@ public abstract class Thing implements Serializable {
     @Override
     public String toString() {
     	return name;   	
+    }
+    
+    public static Image getBackImage() {
+    	return backImg;
+    }
+    
+    public static Image getStackImage() {
+    	return stackImg;
     }
 
 }

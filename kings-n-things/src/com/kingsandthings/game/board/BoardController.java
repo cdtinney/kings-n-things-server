@@ -1,5 +1,6 @@
 package com.kingsandthings.game.board;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -25,36 +26,47 @@ public class BoardController extends Controller {
 	private static Logger LOGGER = Logger.getLogger(BoardController.class.getName());
 
 	// Model
-	private Board board;		
+	private Board board;
+	private List<Thing> selectedThings;
 	
-	// View
-	private BoardView view;	
+	private Tile initialMovementTile;
+	private boolean selectedForMovement = false;
 	
-	/**
-	 * Initialization of the controller should initialize the necessary
-	 * model(s) and view(s), and set up event handling.
-	 * 
-	 * @param numPlayers
-	 */
+	// Views
+	private BoardView boardView;	
+	
+	// Sub-controller
+	private ExpandedTileController expandedTileController;
+	
 	public void initialize(List<Player> players) {
 		
 		int numPlayers = players.size();
 
 		board = new Board(numPlayers);
-		view = new BoardView();
 		
-		// Initialize view and set the tiles
-		view.initialize();
-		view.setTileImages(board.getTiles());
+		// Initialize views and set the tiles
+		boardView = new BoardView();
+		boardView.initialize();
+		boardView.setTileImages(board.getTiles());
+		
+		// Initialize the expand tile controller
+		expandedTileController = new ExpandedTileController();
+		expandedTileController.initialize(players);
+		
+		// Add the expanded tile view to the board view (initially not visible)
+		boardView.getChildren().add(expandedTileController.getView());
 		
 		// Set up starting tiles (TODO - move this to the initial phase)
-		for (Player player : PlayerManager.getInstance().getPlayers()) {
+		for (Player player : players) {
 			int pos = PlayerManager.getInstance().getPosition(player);
 			board.setStartingTile(player, pos);
 		}
 		
 		// Set up event handlers for clicking tiles
 		setupTileClickHandlers();
+		
+		selectedThings = new ArrayList<Thing>();
+		addEventHandler(expandedTileController.getView(), "finishSelection", "setOnAction", "handleThingSelection");
 		
 	}
 	
@@ -64,7 +76,7 @@ public class BoardController extends Controller {
 	 * @return 
 	 */
 	public Node getView() {
-		return view;
+		return boardView;
 	}
 	
 	/**
@@ -72,7 +84,7 @@ public class BoardController extends Controller {
 	 */
 	private void setupTileClickHandlers() {
 		
-		TileView[][] tileViews = view.getTiles();
+		TileView[][] tileViews = boardView.getTiles();
 	
 		for (int i=0; i<tileViews.length; ++i) {
 			for (int j=0; j<tileViews[i].length; ++j) {
@@ -91,11 +103,31 @@ public class BoardController extends Controller {
 				addEventHandler(tileView, "setOnDragDropped", "handleTileDragDropped");
 				addEventHandler(tileView, "setOnDragExited", "handleTileDragExit");
 				
-				// Action menu
+				// Action menu (TODO - Refactor. Too many event handlers..
 				addEventHandler(tileView.getActionMenu().get("placeControlMarker"), "setOnAction", "handlePlaceControlMarkerMenuItem");
+				addEventHandler(tileView.getActionMenu().get("selectThings"), "setOnAction", "handleSelectThings");
 				
 			}
 		}
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleThingSelection(Event event) {
+		expandedTileController.hideView();
+		selectedThings = expandedTileController.getSelectedThings();
+		selectedForMovement = !selectedThings.isEmpty();
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleSelectThings(Event event) {
+
+		MenuItem item = (MenuItem) event.getSource();
+		TileActionMenu tileActionMenu = (TileActionMenu) item.getParentPopup();
+		TileView tileView = tileActionMenu.getOwner();
+		
+		initialMovementTile = tileView.getTile();
+		expandedTileController.show(tileView.getTile());
+		
 	}
 	
 	@SuppressWarnings("unused")
@@ -173,18 +205,38 @@ public class BoardController extends Controller {
 	@SuppressWarnings("unused")
 	private void handleTileClick(Event event) {
 		TileView tileView = (TileView) event.getSource();
+		
+		if (selectedForMovement) {
+			boolean success = board.moveThings(initialMovementTile, tileView.getTile(), selectedThings);
+			selectedForMovement = false;
+			tileView.removeHighlight();
+			return;
+		}
+		
 		tileView.toggleActionMenu();	
 	}
 	
 	@SuppressWarnings("unused")
 	private void handleTileMouseExit(Event event) {
 		TileView tileView = (TileView) event.getSource();
+		
+		if (selectedForMovement) {
+			tileView.removeHighlight();
+			return;
+		}
+		
 		tileView.setOpacity(1.0);
 	}
 	
 	@SuppressWarnings("unused")
 	private void handleTileMouseEnter(Event event) {
 		TileView tileView = (TileView) event.getSource();
+		
+		if (selectedForMovement) {
+			tileView.addHighlight(true);
+			return;
+		}
+		
 		tileView.setOpacity(0.8);
 	}
 

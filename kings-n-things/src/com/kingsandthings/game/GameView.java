@@ -17,7 +17,7 @@ import com.kingsandthings.model.PlayerManager;
 public class GameView extends Scene implements InitializableView {
 	
 	private final static int WIDTH = 1400;
-	private final static int HEIGHT = 840;
+	private final static int HEIGHT = 900;
 	
 	private static Label status;
 	
@@ -36,11 +36,6 @@ public class GameView extends Scene implements InitializableView {
 		addStatusText();
 		
 		PropertyChangeDispatcher.getInstance().addListener(PlayerManager.class, "activePlayer", this, "activePlayerChanged");
-	}
-	
-	@SuppressWarnings("unused")
-	private void activePlayerChanged(PropertyChangeEvent event) {
-		setStatusText(null);
 	}
 	
 	public static String getStatusText() {
@@ -75,6 +70,11 @@ public class GameView extends Scene implements InitializableView {
 			
 		}
 		
+	}
+	
+	@SuppressWarnings("unused")
+	private void activePlayerChanged(PropertyChangeEvent event) {
+		setStatusText(null);
 	}
 	
 	private void addMenuBar() {

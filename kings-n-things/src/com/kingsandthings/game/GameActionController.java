@@ -36,15 +36,11 @@ public class GameActionController extends Controller {
 	
 	private void setupHandlers() {
 		
-		// Skip and end turns within a phase
-		addEventHandler(view, "skipTurn", "setOnAction", "handleSkipTurnButton");
 		addEventHandler(view, "endTurn", "setOnAction", "handleEndTurnButton");
 		
-		// Draw and select Things
 		addEventHandler(view, "drawThing", "setOnAction", "handleDrawThingButton");
 		addEventHandler(view, "selectThings", "setOnAction", "handleSelectThingsButton");
 		
-		// Roll dice
 		addEventHandler(view, "rollDice", "setOnAction", "handleRollDiceButton");
 		
 	}
@@ -69,16 +65,11 @@ public class GameActionController extends Controller {
 			return;
 		}
 		
-		// TASK - Demo only. Modify this.
+		// TASK - Demo only (drawing 10 things). Modify this.
 		List<Thing> things = Game.getInstance().getCup().drawThings(10);
-		Game.getInstance().addThingsToPlayer(things, PlayerManager.getInstance().getActivePlayer());
+		Game.getInstance().addInitialThingsToPlayer(things, PlayerManager.getInstance().getActivePlayer());
 		
 		//view.toggleThingList();
-	}
-	
-	@SuppressWarnings("unused")
-	private void handleSkipTurnButton(Event event) {
-		PhaseManager.getInstance().skipPlayerTurn();
 	}
 	
 	@SuppressWarnings("unused")

@@ -17,7 +17,10 @@ import com.kingsandthings.model.things.Thing;
 
 public class PlayerPane extends VBox implements InitializableView {
 	
+	// View
 	private List<PlayerView> playerViews;
+	
+	// Model
 	private List<Player> players;
 	
 	public PlayerPane(List<Player> players) {
@@ -36,6 +39,14 @@ public class PlayerPane extends VBox implements InitializableView {
 	
 	public List<PlayerView> getPlayerViews() {
 		return playerViews;
+	}
+	
+	public void clearSelectedImages() {
+		
+		for (PlayerView playerView : playerViews) {
+			playerView.clearSelectedRackImages();
+		}
+		
 	}
 	
 	private void addListeners() {

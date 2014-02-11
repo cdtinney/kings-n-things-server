@@ -1,5 +1,6 @@
 package com.kingsandthings.game.player;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -13,6 +14,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
 import com.kingsandthings.Controller;
+import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.PlayerManager;
 import com.kingsandthings.model.phase.PhaseManager;
@@ -22,6 +24,7 @@ import com.kingsandthings.util.DataImageView;
 
 public class PlayerPaneController extends Controller {
 	
+	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(PlayerPaneController.class.getName());
 	
 	// Model
@@ -37,7 +40,8 @@ public class PlayerPaneController extends Controller {
 		
 		selectedThings = new ArrayList<Thing>();
 		
-		setupRackImageHandlers();
+		addHandlers();
+		addListeners();
 		
 	}
 	
@@ -45,7 +49,11 @@ public class PlayerPaneController extends Controller {
 		return view;
 	}
 	
-	private void setupRackImageHandlers() {
+	private void addListeners() {
+		PropertyChangeDispatcher.getInstance().addListener(PlayerManager.class, "activePlayer", this, "activePlayerChanged");
+	}
+	
+	private void addHandlers() {
 		
 		for (final PlayerView playerView : view.getPlayerViews()) {
 			
@@ -78,7 +86,7 @@ public class PlayerPaneController extends Controller {
 				addEventHandler(fortImage, "setOnDragDetected", "handleThingDragDetected");
 				addEventHandler(fortImage, "setOnDragDone", "handleThingDragDone");
 				
-				// TODO - abstract this
+				// TASK - Abstract this
 				fortImage.addEventFilter(Event.ANY, new EventHandler<Event>() {
 					@Override
 					public void handle(Event event) {
@@ -104,6 +112,12 @@ public class PlayerPaneController extends Controller {
 			}
 		}
 		
+	}
+	
+	@SuppressWarnings("unused")
+	private void activePlayerChanged(PropertyChangeEvent event) {
+		selectedThings.clear();
+		view.clearSelectedImages();
 	}
 	
 	@SuppressWarnings("unused")
@@ -155,11 +169,9 @@ public class PlayerPaneController extends Controller {
 		DragEvent dragEvent = (DragEvent) event;
 		
 		if (dragEvent.getTransferMode() == null) {
-			LOGGER.info("Unsuccessful drag and drop.");
 			return;
 		} 
 		
-		LOGGER.info("Successful drag and drop. Clearing selected Things.");
 		selectedThings.clear();
 		
 	}

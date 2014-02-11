@@ -15,7 +15,7 @@ public class Cup {
 	public Cup() {
 		things = new ArrayList<Thing>();
 		
-		// TODO - import all Things
+		// TODO - Import all Things
 		addThings(ThingImport.importCreatures());
 	}
 	
@@ -36,9 +36,6 @@ public class Cup {
 		return things;
 	}
 	
-	/*
-	 * TASK - Demo only. Remove.
-	 */
 	public List<String> getThingNames() {
 		
 		List<String> names = new ArrayList<String>();

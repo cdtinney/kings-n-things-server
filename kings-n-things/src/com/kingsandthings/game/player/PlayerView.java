@@ -88,7 +88,7 @@ public class PlayerView extends Pane implements InitializableView {
 	
 	public void setFortThings(List<Fort> forts) {
 
-		DataImageView.clear(fortImages);
+		DataImageView.clear(fortImages, true);
 		
 		// TASK - fix this 
 		if (forts.size() > fortImages.size()) {
@@ -112,7 +112,7 @@ public class PlayerView extends Pane implements InitializableView {
 	
 	public void setRackThings(List<Thing> things) {
 		
-		DataImageView.clear(rackImages);	
+		DataImageView.clear(rackImages, true);	
 		
 		for (int i=0; i<things.size(); ++i) {
 			
@@ -147,6 +147,14 @@ public class PlayerView extends Pane implements InitializableView {
 		
 	}
 	
+	public void clearSelectedRackImages() {
+		
+		for (DataImageView imgView : rackImages) {
+			imgView.setSelected(false);
+		}
+		
+	}
+	
 	private void update() {
 		
 		if (PlayerManager.getInstance().getActivePlayer() == player) {
@@ -156,6 +164,7 @@ public class PlayerView extends Pane implements InitializableView {
 		setNumGoldText(player.getNumGold());
 		setPlayerName(player.getName());
 		setControlMarkerImage(player.getControlMarker());
+		setRackThings(player.getRack().getThings());
 		setFortThings(player.getForts());
 		
 	}
@@ -165,7 +174,7 @@ public class PlayerView extends Pane implements InitializableView {
 		fortsVBox = VBoxBuilder.create().spacing(4).layoutX(FORTS_X).layoutY(FORTS_Y).build();	
 		
 		// TASK - figure out how to add event handlers dynamically		
-		DataImageView test = new DataImageView(RACK_ITEM_WIDTH);
+		DataImageView test = new DataImageView(true, RACK_ITEM_WIDTH);
 		fortImages.add(test);
 		fortsVBox.getChildren().add(test);
 		
@@ -184,7 +193,7 @@ public class PlayerView extends Pane implements InitializableView {
 		// Create placeholder images for the items on the rack
 		for (int i=0; i<10; ++i) {
 			
-			DataImageView imgView = new DataImageView(RACK_ITEM_WIDTH);
+			DataImageView imgView = new DataImageView(true, RACK_ITEM_WIDTH);
 			
 			// Compute the coordinates
 			final int x = INITIAL_RACK_ITEM_X + (i%5)*RACK_ITEM_WIDTH + (i%5)*RACK_ITEM_GAP;
