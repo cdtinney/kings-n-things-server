@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.kingsandthings.game.board.BoardView;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.model.Game;
 
@@ -30,9 +31,15 @@ public class PhaseManager {
 		phases.add(new TowerPlacementPhase());
 		phases.add(new InitialPlacementPhase());
 		
+		// Main sequence
 		phases.add(new GoldCollectionPhase());
+		phases.add(new RecruitCharactersPhase());
 		phases.add(new ThingRecruitmentPhase());
+		phases.add(new RandomEventsPhase());
 		phases.add(new MovementPhase(game));
+		phases.add(new ConstructionPhase());
+		phases.add(new SpecialPowersPhase());
+		phases.add(new ChangingPlayerOrderPhase());
 		
 		// TODO - fix
 		INSTANCE = this;
@@ -58,6 +65,8 @@ public class PhaseManager {
 	
 	public void nextPhase() {
 		
+		BoardView.setInstructionText("");
+		
 		Phase oldPhase = getCurrentPhase();
 		
 		currentPhaseNumber = (currentPhaseNumber + 1) % phases.size();
@@ -70,7 +79,6 @@ public class PhaseManager {
 		}
 		
 		newPhase.begin();
-		
 		notifyPhaseChange(oldPhase, newPhase);
 		
 	}

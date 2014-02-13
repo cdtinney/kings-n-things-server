@@ -226,8 +226,10 @@ public class GameActionView extends VBox implements InitializableView {
 		phaseName.setFont(Font.font("Lucida Sans", 12));
 		phaseName.setTextFill(Color.WHITE);
 		phaseName.setId("phaseName");
+		phaseName.setPrefWidth(235);
+		phaseName.setWrapText(true);
 		
-		VBox.setMargin(phaseName, new Insets(100, 0, 0, 0));
+		VBox.setMargin(phaseName, new Insets(100, 0, 0, 15));
 		
 		String currentPhaseName = game.getPhaseManager().getCurrentPhase().getName();
 		phaseName.setText("Current Phase: " + currentPhaseName);
