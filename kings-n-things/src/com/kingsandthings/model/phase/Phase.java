@@ -36,7 +36,7 @@ public abstract class Phase {
 		this.playerInteraction = playerInteraction;
 		this.initial = initial;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -51,19 +51,6 @@ public abstract class Phase {
 	
 	public boolean isInitial() {
 		return initial;
-	}
-	
-	public void begin() {
-		currentNumberTurns = 0;
-		notify(Notification.BEGIN);
-	}
-	
-	public void next() {
-		notify(Notification.NEXT);
-	}
-	
-	public void end() {
-		notify(Notification.END);
 	}
 	
 	public void nextTurn() {
@@ -95,8 +82,21 @@ public abstract class Phase {
 		return currentStep;
 	}
 	
+	protected void begin() {
+		currentNumberTurns = 0;
+		notify(Notification.BEGIN);
+	}
+	
+	protected void next() {
+		notify(Notification.NEXT);
+	}
+	
 	protected void nextStep() {
 		next();
+	}
+	
+	protected void end() {
+		notify(Notification.END);
 	}
 	
 	protected void notify(Notification type) {

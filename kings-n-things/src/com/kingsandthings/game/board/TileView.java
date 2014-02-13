@@ -66,6 +66,7 @@ public class TileView extends ImageView {
 		updateFortView();
 		updateControlMarkerView();
 		updateThingsStackView();
+		updateBattleHighlight();
 		
 	}
 	
@@ -108,6 +109,17 @@ public class TileView extends ImageView {
 
 	public Tile getTile() {
 		return tile;
+	}
+	
+	public void updateBattleHighlight() {
+		boolean hasBattle = tile.hasBattleToResolve();
+		
+		if (!hasBattle) {
+			setEffect(null);
+		} else {
+			setEffect(InnerShadowBuilder.create().radius(6).choke(5).color(Color.RED).build());
+		}
+		
 	}
 	
 	public void updateControlMarkerView() {

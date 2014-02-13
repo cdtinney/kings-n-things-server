@@ -32,9 +32,13 @@ public class GameController extends Controller {
 		view = new GameView();
 		view.initialize();
 		
-		// Initialize model
-		game = Game.getInstance();
+		// Instantiate model
+		game = new Game();
 		game.addPlayers(playerNames);
+		
+		boardController = new BoardController();
+		playerController = new PlayerPaneController();
+		gameActionController = new GameActionController();
 		
 		initializeSubControllers();
 		addSubViews();
@@ -49,17 +53,14 @@ public class GameController extends Controller {
 		
 	}
 	
+	public GameActionController getGameActionController() {
+		return gameActionController;
+	}
+	
 	private void initializeSubControllers() {
-
-		boardController = new BoardController();
-		boardController.initialize(game.getPlayers());
-		
-		playerController = new PlayerPaneController();
-		playerController.initialize(game.getPlayers());
-		
-		gameActionController = new GameActionController();
-		gameActionController.initialize();
-		
+		boardController.initialize(game);
+		playerController.initialize(game.getPlayerManager().getPlayers());
+		gameActionController.initialize(game);
 	}
 	
 	private void addSubViews() {

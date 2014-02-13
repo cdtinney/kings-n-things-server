@@ -90,7 +90,7 @@ public class PlayerView extends Pane implements InitializableView {
 
 		DataImageView.clear(fortImages, true);
 		
-		// TASK - fix this 
+		// TASK - fix this (by removing Fort from the view)
 		if (forts.size() > fortImages.size()) {
 			return;
 		}

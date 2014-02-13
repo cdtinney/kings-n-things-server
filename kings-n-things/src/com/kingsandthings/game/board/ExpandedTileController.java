@@ -2,16 +2,21 @@ package com.kingsandthings.game.board;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javafx.event.Event;
 
 import com.kingsandthings.Controller;
+import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.board.Tile;
+import com.kingsandthings.model.things.Creature;
 import com.kingsandthings.model.things.Thing;
 import com.kingsandthings.util.DataImageView;
 
 public class ExpandedTileController extends Controller {
+	
+	private static Logger LOGGER = Logger.getLogger(ExpandedTileController.class.getName());
 
 	// Model
 	private List<Thing> selectedThings;
@@ -71,6 +76,15 @@ public class ExpandedTileController extends Controller {
 			imageView.setSelected(false);
 			
 		} else {
+			
+			Creature c = (Creature) thing;
+			if (c.getMovementEnded()) {
+				LOGGER.log(LogLevel.STATUS, "Creature can no longer move.");
+				return;
+			} else {
+				LOGGER.log(LogLevel.STATUS, "Creature has " + c.getMovesLeft() + " moves left.");
+			}
+			
 			selectedThings.add(thing);
 			imageView.setSelected(true);
 			

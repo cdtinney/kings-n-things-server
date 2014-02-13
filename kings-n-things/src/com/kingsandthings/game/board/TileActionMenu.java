@@ -27,8 +27,8 @@ public class TileActionMenu extends ContextMenu {
 		
 		getItems().addAll(menuItems.values());
 		
-		get("selectThings").visibleProperty().bind(MovementPhase.active);
-		get("placeControlMarker").visibleProperty().bind(StartingKingdomsPhase.active);
+		get("selectThings").visibleProperty().bind(MovementPhase.getActive());
+		get("placeControlMarker").visibleProperty().bind(StartingKingdomsPhase.getActive());
 		
 	}
 	

@@ -3,6 +3,7 @@ package com.kingsandthings.game;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -15,7 +16,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -31,6 +31,13 @@ import com.kingsandthings.model.phase.ThingRecruitmentPhase;
 
 public class GameActionView extends VBox implements InitializableView {
 
+	// Model
+	private Game game;
+	
+	public GameActionView(Game game) {
+		this.game = game;
+	}
+	
 	@Override
 	public void initialize() {
 		
@@ -43,10 +50,11 @@ public class GameActionView extends VBox implements InitializableView {
 		addCup();
 		addDraw();
 		addRecruitmentActions();
-		addDice();
 		addPhaseActions();
 		
 		addListeners();
+		
+		bindElements();
 		
 	}
 	
@@ -67,9 +75,9 @@ public class GameActionView extends VBox implements InitializableView {
 		} else {
 			
 			// Update list of Things
-			list.setItems(FXCollections.observableArrayList(Game.getInstance().getCup().getThingNames()));
+			list.setItems(FXCollections.observableArrayList(game.getCup().getThingNames()));
 			
-			// TASK - Demo only. Don't hard code.
+			// TASK - Demo only (selectable list of things)
 			if (PhaseManager.getInstance().getCurrentPhase().getStep().equals("Draw_Things")) {
 				list.setVisible(true);
 				selectButton.setVisible(true);
@@ -90,46 +98,48 @@ public class GameActionView extends VBox implements InitializableView {
 		return list.getSelectionModel().getSelectedItem();
 	}
 	
+	@SuppressWarnings("unchecked")
+	public void resetNumPaidList() {
+		ComboBox<Integer>  list = (ComboBox<Integer>) lookup("#numPaidRecruits");
+		list.getSelectionModel().select(0);
+	}
+	
+	public void enableDiceButton(boolean enable) {
+		lookup("#rollDice").setDisable(enable);
+	}
+	
 	private void addListeners() {
-		PropertyChangeDispatcher.getInstance().addListener(PhaseManager.class, "currentPhase", this, "phaseChanged");
+		PropertyChangeDispatcher.getInstance().addListener(PhaseManager.class, "currentPhase", this, "onPhaseChanged");
 		
-		NotificationDispatcher.getInstance().addListener(InitialPlacementPhase.class, Phase.Notification.BEGIN, this, "onInitialPlacementPhaseBegin");
-		NotificationDispatcher.getInstance().addListener(InitialPlacementPhase.class, Phase.Notification.END, this, "onInitialPlacementPhaseEnd");
-		
-		NotificationDispatcher.getInstance().addListener(ThingRecruitmentPhase.class, Phase.Notification.BEGIN, this, "onRecruitmentPhaseBegin");
-		NotificationDispatcher.getInstance().addListener(ThingRecruitmentPhase.class, Phase.Notification.NEXT, this, "onRecruitmentPhaseNext");
 		NotificationDispatcher.getInstance().addListener(ThingRecruitmentPhase.class, Phase.Notification.STEP, this, "onRecruitmentPhaseStep");
+		NotificationDispatcher.getInstance().addListener(InitialPlacementPhase.class, Phase.Notification.STEP, this, "onInitialPlacementStep");
+	}
+	
+	private void bindElements() {
+		
+		// Disable draw thing button if active phase is not Thing Recruitment or Initial Placement
+		BooleanBinding binding = (ThingRecruitmentPhase.getActive().or(InitialPlacementPhase.getActive())).not();
+		lookup("#drawThing").disableProperty().bind(binding);
+		
+		// Disable num paid combobox if active phase is not Thing Recruitment
+		lookup("#numPaidRecruits").disableProperty().bind(ThingRecruitmentPhase.getActive().not());
+		
 	}
 	
 	@SuppressWarnings("unused")
-	private void onRecruitmentPhaseBegin() {
-		lookup("#drawThing").setDisable(false);
-		lookup("#numPaidRecruits").setDisable(false);
-		((Button) lookup("#drawThing")).setText("Recruit Things");
-	}
-	
-	@SuppressWarnings("unused")
-	private void onRecruitmentPhaseStep() {
-		lookup("#drawThing").setDisable(true);
-		lookup("#numPaidRecruits").setDisable(true);
+	private void onInitialPlacementStep() {
 		lookup("#endTurn").setDisable(false);
 	}
 	
 	@SuppressWarnings("unused")
-	private void onInitialPlacementPhaseBegin() {
-		lookup("#drawThing").setDisable(false);
+	private void onRecruitmentPhaseStep() {
+		lookup("#endTurn").setDisable(false);
 	}
 	
 	@SuppressWarnings("unused")
-	private void onInitialPlacementPhaseEnd() {
-		lookup("#drawThing").setDisable(true);
-	}
-	
-	@SuppressWarnings("unused")
-	private void phaseChanged(PropertyChangeEvent event) {
+	private void onPhaseChanged(PropertyChangeEvent event) {
 		
 		Phase newPhase = (Phase) event.getNewValue();
-		
 		if (newPhase == null) {
 			lookup("#endTurn").setDisable(true);
 			setPhaseName("None");
@@ -138,6 +148,8 @@ public class GameActionView extends VBox implements InitializableView {
 		
 		if (!newPhase.getStep().equals("Draw_Things")) {
 			lookup("#endTurn").setDisable(newPhase.isMandatory() && newPhase.playerInteractionRequired());
+		} else {
+			lookup("#endTurn").setDisable(true);
 		}
 		
 		setPhaseName(newPhase.getName());
@@ -161,7 +173,7 @@ public class GameActionView extends VBox implements InitializableView {
 
 	private void addDraw() {
 		
-		Button drawThingButton = new Button("Draw Thing");
+		Button drawThingButton = new Button("Draw Things");
 		drawThingButton.setId("drawThing");
 		drawThingButton.getStyleClass().addAll("nofocus");
 		drawThingButton.setDisable(true);
@@ -208,39 +220,6 @@ public class GameActionView extends VBox implements InitializableView {
 		
 	}
 	
-	private void addDice() {
-		
-		GridPane grid = new GridPane();
-		grid.setHgap(10);
-		grid.setAlignment(Pos.CENTER);
-		
-		ImageView imgView = new ImageView(new Image("/images/extra/dice.png"));
-		imgView.setPreserveRatio(true);
-		imgView.setFitWidth(30);
-		
-		Button rollDiceButton = new Button("Roll Dice", imgView);
-		rollDiceButton.setId("rollDice");
-		rollDiceButton.getStyleClass().addAll("diceButton", "nofocus");
-		rollDiceButton.setPrefHeight(40);
-		rollDiceButton.setPrefWidth(130);
-		rollDiceButton.setDisable(true);
-		
-		ObservableList<String> diceRolls = FXCollections.observableArrayList("1 or 6", "1-6");
-		ComboBox<String> comboBox = new ComboBox<String>(diceRolls);
-		comboBox.setId("diceRollType");
-		comboBox.getStyleClass().addAll("nofocus");
-		comboBox.getSelectionModel().select(0);
-		comboBox.setDisable(true);
-		
-		grid.add(rollDiceButton, 0, 0);
-		grid.add(comboBox, 1, 0);
-		
-		VBox.setMargin(grid, new Insets(10, 0, 0, 0));
-		
-		getChildren().add(grid);		
-		
-	}
-	
 	private void addPhaseActions() {
 		
 		Label phaseName = new Label();
@@ -250,7 +229,7 @@ public class GameActionView extends VBox implements InitializableView {
 		
 		VBox.setMargin(phaseName, new Insets(100, 0, 0, 0));
 		
-		String currentPhaseName = PhaseManager.getInstance().getCurrentPhase().getName();
+		String currentPhaseName = game.getPhaseManager().getCurrentPhase().getName();
 		phaseName.setText("Current Phase: " + currentPhaseName);
 		
 		HBox buttons = new HBox(5);
@@ -260,7 +239,7 @@ public class GameActionView extends VBox implements InitializableView {
 		endTurnButton.setId("endTurn");
 		endTurnButton.getStyleClass().add("nofocus");
 		
-		endTurnButton.setDisable(PhaseManager.getInstance().getCurrentPhase().isMandatory());
+		endTurnButton.setDisable(game.getPhaseManager().getCurrentPhase().isMandatory());
 		
 		buttons.getChildren().addAll(endTurnButton);
 		

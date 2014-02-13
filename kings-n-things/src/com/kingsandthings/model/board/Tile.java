@@ -34,6 +34,8 @@ public class Tile {
 	private Fort fort;
 	private Map<Player, List<Thing>> things;
 	
+	private boolean battleToResolve = false;
+	
 	public Tile(Terrain type) {
 		
 		this.type = type;
@@ -47,6 +49,14 @@ public class Tile {
 	
 	public Player getOwner() {
 		return owner;
+	}
+	
+	public boolean hasBattleToResolve() {
+		return battleToResolve;
+	}
+	
+	public void setBattleToResolve(boolean battleToResolve) {
+		PropertyChangeDispatcher.getInstance().notify(this, "battleToResolve", this.battleToResolve, this.battleToResolve = battleToResolve);
 	}
 	
 	public void setOwner(Player player) {
@@ -131,6 +141,11 @@ public class Tile {
 		}
 		
 		List<Thing> oldPlayerThings = new ArrayList<Thing>(things.get(player));
+		
+		// Remove the player from the map if they have no Things on the tile
+		if (oldPlayerThings.isEmpty()) {
+			things.remove(player);
+		}
 
 		PropertyChangeDispatcher.getInstance().notify(this, "things", oldPlayerThings, things.get(player));
 		return true;

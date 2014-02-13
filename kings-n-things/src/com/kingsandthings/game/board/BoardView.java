@@ -2,8 +2,20 @@ package com.kingsandthings.game.board;
 
 import java.util.logging.Logger;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBoxBuilder;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import com.kingsandthings.game.InitializableView;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
@@ -16,6 +28,8 @@ public class BoardView extends Pane implements InitializableView {
 	private static Label instructions;
 	
 	private TileView[][] tiles = new TileView[10][10];
+	
+	private Stage diceStage;
 	
 	@Override
 	public void initialize() {
@@ -32,6 +46,7 @@ public class BoardView extends Pane implements InitializableView {
 		
 		addTilesToView(tiles);
 		addInstructionText();
+		addDiceStage();
 		
 	}
 
@@ -42,6 +57,19 @@ public class BoardView extends Pane implements InitializableView {
 		}
 		
 		instructions.setText(message == null? "" : message);		
+	}
+	
+	public void showDice() {		
+		
+		if (diceStage.getOwner() == null) {
+			diceStage.initOwner(getScene().getWindow());
+		}
+		
+		Stage parent = (Stage) getScene().getWindow();
+		diceStage.setX(parent.getX() + parent.getWidth() / 2 - 175);
+		diceStage.setY(parent.getY() + parent.getHeight() / 2 + 350);
+		
+        diceStage.showAndWait();
 	}
 	
 	public TileView[][] getTiles() {
@@ -69,6 +97,7 @@ public class BoardView extends Pane implements InitializableView {
 					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "owner", this, view, TileView.class, "handleTileOwnerChanged");
 					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "fort", this, view, TileView.class, "handleTileFortChanged");
 					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "things", this, view, TileView.class, "handleTileThingsChanged");
+					PropertyChangeDispatcher.getInstance().addListener(Tile.class, "battleToResolve", this, view, TileView.class, "handleBattleChanged");
 					
 				} catch (IndexOutOfBoundsException e) {
 					LOGGER.warning("Model and view tile array size mismatch - " + e.getMessage());
@@ -77,6 +106,11 @@ public class BoardView extends Pane implements InitializableView {
 			}
 		}
 		
+	}
+	
+	@SuppressWarnings("unused")
+	private void handleBattleChanged(TileView tileView) {
+		tileView.updateBattleHighlight();
 	}
 	
 	@SuppressWarnings("unused")
@@ -106,6 +140,34 @@ public class BoardView extends Pane implements InitializableView {
 				
 			}
 		}
+		
+	}
+	
+	private void addDiceStage() {
+		
+	 	diceStage = new Stage();
+	    diceStage.initStyle(StageStyle.TRANSPARENT);
+	    diceStage.initModality(Modality.APPLICATION_MODAL);
+		
+		ImageView imgView = new ImageView(new Image("/images/extra/dice.png"));
+		imgView.setPreserveRatio(true);
+		imgView.setFitWidth(30);
+		
+		Button rollDiceButton = new Button("Roll Dice", imgView);
+		rollDiceButton.getStyleClass().addAll("diceButton", "nofocus");
+		rollDiceButton.setPrefHeight(40);
+		rollDiceButton.setPrefWidth(130);
+		
+		Scene myDialogScene = new Scene(VBoxBuilder.create().children(rollDiceButton).alignment(Pos.CENTER).padding(new Insets(0)).build());
+        diceStage.setScene(myDialogScene);
+        
+       
+        rollDiceButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				diceStage.close();
+			}
+        });
 		
 	}
 	

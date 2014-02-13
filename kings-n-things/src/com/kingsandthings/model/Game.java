@@ -4,38 +4,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.kingsandthings.model.board.Board;
 import com.kingsandthings.model.phase.PhaseManager;
 import com.kingsandthings.model.things.Thing;
 
 public class Game {
 
 	private static Logger LOGGER = Logger.getLogger(Game.class.getName());
-	private static Game INSTANCE = null;
 	
-	private PhaseManager phaseManager = PhaseManager.getInstance();
+	private PhaseManager phaseManager;
 	private PlayerManager playerManager = PlayerManager.getInstance();
 	
 	private final int NUM_INITIAL_THINGS = 10;
 	
 	private Cup cup;
+	private Board board;
 	
-	public static Game getInstance() {
+	public Game() {
+		cup = new Cup();
+		board = new Board();
 		
-		if (INSTANCE == null) {
-			INSTANCE = new Game();
-		}
-		
-		return INSTANCE;
-		
+		phaseManager = new PhaseManager(this);
 	}
 	
-	public void addPlayers(List<String> playerNames) {
-		playerManager.setNumPlayers(playerNames.size());
-		playerManager.addAllPlayers(playerNames);
+	public PhaseManager getPhaseManager() {
+		return phaseManager;
 	}
 	
-	public List<Player> getPlayers() {
-		return playerManager.getPlayers();
+	public PlayerManager getPlayerManager() {
+		return playerManager;
+	}
+	
+	public Board getBoard() {
+		return board;
+	}
+	
+	public Cup getCup() {
+		return cup;
 	}
 	
 	public void begin() {
@@ -43,14 +48,12 @@ public class Game {
 		phaseManager.beginPhases();
 	}
 	
-	public Cup getCup() {
+	public void addPlayers(List<String> playerNames) {
+		playerManager.setNumPlayers(playerNames.size());
+		playerManager.addAllPlayers(playerNames);
 		
-		if (cup == null) {
-			cup = new Cup();
-		}
-		
-		return cup;
-	}
+		board.generateBoard(playerNames.size());
+	}	
 	
 	public void addInitialThingsToPlayer(List<Thing> things, Player player) {
 
@@ -67,7 +70,6 @@ public class Game {
 		
 	}
 	
-	// TASK - Demo only. Remove/move.
 	public void addThingIndicesToPlayer(List<Integer> indices, Player player) {
 		
 		if (player == null) {
@@ -80,6 +82,8 @@ public class Game {
 		for (Integer i : indices) {
 			things.add(cup.getThings().get(i));
 		}
+		
+		addInitialThingsToPlayer(things, player);
 	}
 
 }

@@ -7,6 +7,8 @@ import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.SpecialIncome;
+import com.kingsandthings.util.Dialog;
+import com.kingsandthings.util.Dialog.Type;
 
 public class GoldCollectionPhase extends Phase {
 	
@@ -72,7 +74,7 @@ public class GoldCollectionPhase extends Phase {
 		message += "\n\tSpecial Income: " + specialIncomeValue;
 		message += "\n\tSpecial Characters: " + specialCharacterValue;
 		message += "\n\nTotal: " + total;
-		//Dialog.show(Type.NOTIFY, message);
+		Dialog.show(Type.NOTIFY, message);
 		
 		return total;
 		

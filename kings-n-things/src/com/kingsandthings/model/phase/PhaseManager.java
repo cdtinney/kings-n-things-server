@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
+import com.kingsandthings.model.Game;
 
 public class PhaseManager {
 	
@@ -13,11 +14,15 @@ public class PhaseManager {
 	
 	private static PhaseManager INSTANCE = null;
 	
+	protected Game game;
+	
 	private List<Phase> phases;
 	private int currentPhaseNumber = 0;
 	
-	private PhaseManager() {
+	public PhaseManager(Game game) {
 		
+		this.game = game;
+
 		phases = new ArrayList<Phase>();
 		
 		// Add the phases (in order)
@@ -27,18 +32,15 @@ public class PhaseManager {
 		
 		phases.add(new GoldCollectionPhase());
 		phases.add(new ThingRecruitmentPhase());
-		phases.add(new MovementPhase());
+		phases.add(new MovementPhase(game));
+		
+		// TODO - fix
+		INSTANCE = this;
 		
 	}
 	
 	public static PhaseManager getInstance() {
-		
-		if (INSTANCE == null) {
-			INSTANCE = new PhaseManager();
-		}
-		
 		return INSTANCE;
-		
 	}
 	
 	public void beginPhases() {
@@ -67,9 +69,9 @@ public class PhaseManager {
 			currentPhaseNumber--;
 		}
 		
-		notifyPhaseChange(oldPhase, newPhase);
-		
 		newPhase.begin();
+		
+		notifyPhaseChange(oldPhase, newPhase);
 		
 	}
 	

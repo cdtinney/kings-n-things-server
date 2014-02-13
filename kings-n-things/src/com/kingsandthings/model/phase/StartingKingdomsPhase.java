@@ -8,7 +8,7 @@ import com.kingsandthings.model.Player;
 
 public class StartingKingdomsPhase extends Phase {
 	
-	public static BooleanProperty active = new SimpleBooleanProperty(false);
+	private final static BooleanProperty active = new SimpleBooleanProperty(false);
 	
 	private int initialNumGold = 10;
 	
@@ -16,10 +16,13 @@ public class StartingKingdomsPhase extends Phase {
 		super("Starting Kingdoms", true, true, 2, true);
 	}
 	
+	public static BooleanProperty getActive() {
+		return active;
+	}
+	
 	@Override
 	public void begin() {
 		super.begin();
-		
 		active.set(true);
 		
 		BoardView.setInstructionText("please place a control marker");
@@ -36,7 +39,6 @@ public class StartingKingdomsPhase extends Phase {
 	@Override 
 	public void end() {
 		super.end();
-		
 		active.set(false);
 	}
 

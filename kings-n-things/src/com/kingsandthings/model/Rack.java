@@ -10,9 +10,9 @@ import com.kingsandthings.model.things.Thing;
 
 public class Rack {
 	
-	private static Logger LOGGER = Logger.getLogger(Rack.class.getName());
+	public static final int MAX_THINGS = 10;
 	
-	private final int MAX_THINGS = 10;
+	private static Logger LOGGER = Logger.getLogger(Rack.class.getName());
 	
 	private ArrayList<Thing> things;
 	

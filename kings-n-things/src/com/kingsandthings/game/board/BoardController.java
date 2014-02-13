@@ -1,5 +1,6 @@
 package com.kingsandthings.game.board;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -12,6 +13,9 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 
 import com.kingsandthings.Controller;
+import com.kingsandthings.game.events.PropertyChangeDispatcher;
+import com.kingsandthings.logging.LogLevel;
+import com.kingsandthings.model.Game;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.PlayerManager;
 import com.kingsandthings.model.board.Board;
@@ -22,10 +26,10 @@ import com.kingsandthings.util.CustomDataFormat;
 
 public class BoardController extends Controller {
 	
-	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(BoardController.class.getName());
 
 	// Model
+	private Game game;
 	private Board board;
 	private List<Thing> selectedThings;
 	
@@ -35,14 +39,15 @@ public class BoardController extends Controller {
 	// Views
 	private BoardView boardView;	
 	
-	// Sub-controller
+	// Sub-controllers
 	private ExpandedTileController expandedTileController;
 	
-	public void initialize(List<Player> players) {
-		
-		int numPlayers = players.size();
+	public void initialize(Game game) {
 
-		board = new Board(numPlayers);
+		this.game = game;
+		board = game.getBoard();
+		
+		List<Player> players = game.getPlayerManager().getPlayers();
 		
 		// Initialize views and set the tiles
 		boardView = new BoardView();
@@ -56,7 +61,7 @@ public class BoardController extends Controller {
 		// Add the expanded tile view to the board view (initially not visible)
 		boardView.getChildren().add(expandedTileController.getView());
 		
-		// Set up starting tiles (TODO - move this to the initial phase)
+		// Set up starting tiles (TASK - this should be done based on player dice rolls)
 		for (Player player : players) {
 			int pos = PlayerManager.getInstance().getPosition(player);
 			board.setStartingTile(player, pos);
@@ -67,6 +72,8 @@ public class BoardController extends Controller {
 		
 		selectedThings = new ArrayList<Thing>();
 		addEventHandler(expandedTileController.getView(), "finishSelection", "setOnAction", "handleThingSelection");
+		
+		PropertyChangeDispatcher.getInstance().addListener(PlayerManager.class, "activePlayer", this, "handlePlayerChanged");
 		
 	}
 	
@@ -109,6 +116,13 @@ public class BoardController extends Controller {
 				
 			}
 		}
+	}
+	
+	@SuppressWarnings("unused")
+	private void handlePlayerChanged(PropertyChangeEvent event) {
+		selectedThings.clear();
+		selectedForMovement = false;
+		initialMovementTile = null;		
 	}
 	
 	@SuppressWarnings("unused")
@@ -205,12 +219,44 @@ public class BoardController extends Controller {
 	@SuppressWarnings("unused")
 	private void handleTileClick(Event event) {
 		TileView tileView = (TileView) event.getSource();
+		Tile tile = tileView.getTile();
 		
 		if (selectedForMovement) {
-			boolean success = board.moveThings(initialMovementTile, tileView.getTile(), selectedThings);
-			selectedForMovement = false;
+			
+			if (!initialMovementTile.getNeighbours().contains(tile)) {
+				LOGGER.log(LogLevel.STATUS, "Cannot move Things more than one tile at a time.");
+				return;
+				
+			} else if (!tile.isDiscovered()) {
+
+				BoardView.setInstructionText("you are attempting to move to an unexplored hex. please roll the dice.");
+				
+				// Blocks until the user rolls
+				boardView.showDice();
+				
+				// TASK - Demo only (hardcoded dice roll for movement)
+				int roll = 1;
+				//int roll = board.rollDice(1);
+				
+				board.moveThingsToUnexploredTile(roll, initialMovementTile, tile, selectedThings);
+				
+			} else {
+				board.moveThings(initialMovementTile, tile, selectedThings);
+				
+			}
+			
+			Player player = game.getPlayerManager().getActivePlayer();
+			if (!board.movementPossible(player)) {
+				BoardView.setInstructionText("no more movement possible! please end turn");
+			}
+
 			tileView.removeHighlight();
+			
+			selectedThings.clear();
+			initialMovementTile = null;
+			selectedForMovement = false;
 			return;
+			
 		}
 		
 		tileView.toggleActionMenu();	
@@ -233,7 +279,7 @@ public class BoardController extends Controller {
 		TileView tileView = (TileView) event.getSource();
 		
 		if (selectedForMovement) {
-			tileView.addHighlight(true);
+			tileView.addHighlight(initialMovementTile.getNeighbours().contains(tileView.getTile()));
 			return;
 		}
 		

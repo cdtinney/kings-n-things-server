@@ -24,6 +24,10 @@ public class Creature extends Thing {
 		NONE	
 	}
 	
+	private static final int MAX_MOVES = 4;
+	private boolean movementEnded = false;
+	private int numMovesLeft = MAX_MOVES;
+	
 	private List<Ability> abilities;
 	private Terrain terrainType;
 	private int combatValue;
@@ -71,6 +75,23 @@ public class Creature extends Thing {
 	
 	public int getCombatValue() {
 		return combatValue;
+	}
+	
+	public int getMovesLeft() {
+		return numMovesLeft;
+	}
+	
+	public void setMovesLeft(int moves) {
+		numMovesLeft = moves;
+	}
+	
+	public void setMovementEnded(boolean ended) {
+		movementEnded = ended;
+		setMovesLeft(0);
+	}
+	
+	public boolean getMovementEnded() {
+		return movementEnded;
 	}
 	
 	@Override

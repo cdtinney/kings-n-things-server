@@ -10,6 +10,7 @@ import com.kingsandthings.model.Player;
 import com.kingsandthings.model.PlayerManager;
 import com.kingsandthings.model.enums.Terrain;
 import com.kingsandthings.model.phase.PhaseManager;
+import com.kingsandthings.model.things.Creature;
 import com.kingsandthings.model.things.Fort;
 import com.kingsandthings.model.things.Thing;
 
@@ -21,22 +22,80 @@ public class Board {
 	
 	private Tile[][] tiles;
 	
-	public Board(int numPlayers) {
-		tiles = generateTiles(10);
+	public void generateBoard(int numPlayers) {
+		
+		if (numPlayers == 4) {
+			tiles = generateTiles(10);
+		}
+		
 	}
 	
 	public Tile[][] getTiles() {
 		return tiles;
 	}
 	
-	public boolean moveThings(Tile beginTile, Tile endTile, List<Thing> things) {
+	// TODO - store creatures in Player object (not sure why this isn't done already)
+	public boolean movementPossible(Player player) {
 		
-		boolean success = addThingsToTile(endTile, things);
+		for (Tile[] row : tiles) {
+			for (Tile tile : row) {
+				
+				if (tile == null) {
+					continue;
+				}
+				
+				List<Thing> playerThings = tile.getThings().get(player);
+				
+				if (playerThings == null) {
+					continue;
+				}
+					
+				for (Thing t : playerThings) {
+					if (!((Creature) t).getMovementEnded()) {
+						return true;
+					}
+				}
+				
+			}
+		}
+		
+		return false;
+		
+	}
+	
+	public void moveThingsToUnexploredTile(int roll, Tile beginTile, Tile endTile, List<Thing> things) {
+		
+		if (roll != 1 && roll != 6) {
+			// TASK - Exploring tiles.
+			return;
+		}
+		
+		Player player = PlayerManager.getInstance().getActivePlayer();
+		boolean success = moveThings(beginTile, endTile, things);
+		
+		if (success) {
+			LOGGER.log(LogLevel.STATUS, player.getName() + " has rolled a 1 or 6 and captured an unexplored hex without combat.");
+			endTile.setOwner(player);
+			
+			// End movement for all the things
+			endMovement(things);
+		}
+		
+	}
+	
+	public boolean moveThings(Tile beginTile, Tile endTile, List<Thing> things) {
 
 		Player player = PlayerManager.getInstance().getActivePlayer();
 		
+		boolean success =  endTile.addThings(player, things);
 		if (success) {
-			success = beginTile.removeThings(player, things);
+			
+			// Remove them from the initial tile
+			beginTile.removeThings(player, things);
+			
+			// Increment movement for each thing
+			decrementMovement(things);
+			
 		}
 		
 		return success;		
@@ -47,15 +106,11 @@ public class Board {
 		
 		Player player = PlayerManager.getInstance().getActivePlayer();
 		
-		if (tile.getOwner() != player) {
-			LOGGER.info("Adding Things to a tile the player does not own.");
-		}
-		
 		boolean success = false;
 		
 		for (Thing thing : things) {
 			
-			// TASK - Demo only. Need to fix.
+			// TASK - Forts are always placed.
 			if (thing instanceof Fort) {
 				
 				success = player.placeFort((Fort) thing, tile);
@@ -71,11 +126,6 @@ public class Board {
 		
 		if (success) {
 			player.getRack().removeThings(things);
-			
-			if (tile.getOwner() == null) {
-				LOGGER.info("Player is entering an uncontrolled tile. Setting control marker.");
-				tile.setOwner(player);
-			}
 		}
 		
 		return success;	
@@ -113,6 +163,24 @@ public class Board {
 				player.setStartingTile(tiles[0][1]);
 				break;
 				
+		}
+		
+	}
+	
+	private void decrementMovement(List<Thing> things) {
+		
+		for (Thing thing : things) {
+			Creature c = (Creature) thing;
+			c.setMovesLeft(c.getMovesLeft() - 1);
+		}
+		
+	}
+	
+	private void endMovement(List<Thing> things) {
+		
+		for (Thing thing : things) {
+			Creature c = (Creature) thing;
+			c .setMovementEnded(true);
 		}
 		
 	}

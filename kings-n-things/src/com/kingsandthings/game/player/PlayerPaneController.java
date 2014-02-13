@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 
 import com.kingsandthings.Controller;
@@ -62,11 +63,15 @@ public class PlayerPaneController extends Controller {
 				addEventHandler(rackImage, "setOnDragDetected", "handleThingDragDetected");
 				addEventHandler(rackImage, "setOnDragDone", "handleThingDragDone");
 				
-				// TASK - Demo only. Abstract this
+				// TASK - Abstract this
 				rackImage.addEventFilter(Event.ANY, new EventHandler<Event> (){
 
 					@Override
 					public void handle(Event event) {
+						
+						if (event.getEventType() == MouseEvent.MOUSE_ENTERED || event.getEventType() == MouseEvent.MOUSE_EXITED) {
+							return;
+						}
 						
 						Player player = playerView.getPlayer();
 						if (PlayerManager.getInstance().getActivePlayer() != player) {
@@ -86,7 +91,6 @@ public class PlayerPaneController extends Controller {
 				addEventHandler(fortImage, "setOnDragDetected", "handleThingDragDetected");
 				addEventHandler(fortImage, "setOnDragDone", "handleThingDragDone");
 				
-				// TASK - Abstract this
 				fortImage.addEventFilter(Event.ANY, new EventHandler<Event>() {
 					@Override
 					public void handle(Event event) {
