@@ -172,6 +172,10 @@ public class Board {
 		for (Thing thing : things) {
 			Creature c = (Creature) thing;
 			c.setMovesLeft(c.getMovesLeft() - 1);
+			
+			if (c.getMovesLeft() == 0) {
+				c.setMovementEnded(true);
+			}
 		}
 		
 	}
