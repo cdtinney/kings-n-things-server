@@ -115,7 +115,7 @@ public class MainMenuView extends Scene implements InitializableView {
 		
 		ImageView logoImg = new ImageView(new Image("/images/logo.png"));
 		
-		Button newGameButton = new Button("New Game");
+		Button newGameButton = new Button("Start Game");
 		newGameButton.setId("newGameButton");
 		newGameButton.setPrefWidth(125);
 		
@@ -175,30 +175,25 @@ public class MainMenuView extends Scene implements InitializableView {
 		// Add the settings grid to the VBox
 		gameSettings.getChildren().addAll(grid);
 		
-		// Add player fields
-		setPlayerFields(4);
+		// Add port field
+		addPortField();
 	}
 	
-	private void setPlayerFields(int num) {
+	private void addPortField() {
 		
 		GridPane grid = (GridPane) gameSettings.lookup("#settingsGrid");
 		
-		for (int i=0; i<num; ++i) {
-			
-			Label playerNameLabel = new Label("Name: ");
-			TextField playerNameField = new TextField();
-			
-			GridPane.setConstraints(playerNameLabel, 0, 1+i);
-			GridPane.setConstraints(playerNameField, 1, 1+i);
-			
-			playerNameFields.add(playerNameField);
-			
-			grid.getChildren().addAll(playerNameLabel, playerNameField);
-			
-		}
+		Label portLabel = new Label("Port: ");
+		TextField portField = new TextField();
+		portField.setId("port");
+		
+		GridPane.setConstraints(portLabel, 0, 1);
+		GridPane.setConstraints(portField, 1, 1);
+		
+		grid.getChildren().addAll(portLabel, portField);
 
-		GridPane.setConstraints(gameSettings.lookup("#startButton"), 0, 2+num, 2, 1, HPos.CENTER, VPos.CENTER);
-		GridPane.setConstraints(gameSettings.lookup("#backButton"), 0, 3+num, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(gameSettings.lookup("#startButton"), 0, 2+1, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(gameSettings.lookup("#backButton"), 0, 3+1, 2, 1, HPos.CENTER, VPos.CENTER);
 		
 	}
 	
