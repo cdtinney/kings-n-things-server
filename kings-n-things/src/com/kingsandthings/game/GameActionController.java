@@ -9,7 +9,6 @@ import com.kingsandthings.Controller;
 import com.kingsandthings.model.Game;
 import com.kingsandthings.model.Player;
 import com.kingsandthings.model.phase.Phase;
-import com.kingsandthings.model.things.Thing;
 
 public class GameActionController extends Controller {
 
@@ -52,7 +51,7 @@ public class GameActionController extends Controller {
 		List<Integer> selected = view.getSelectedThings();
 		
 		// Add the selected things to the player's list of Things
-		game.addThingIndicesToPlayer(selected, game.getPlayerManager().getActivePlayer());
+		game.addThingIndicesToPlayer(selected, game.getActivePlayer());
 		
 		// Hide the list of Things
 		view.toggleThingList();
@@ -63,7 +62,7 @@ public class GameActionController extends Controller {
 	private void handleDrawThingButton(Event event) {
 		
 		Phase phase = game.getPhaseManager().getCurrentPhase();
-		Player player = game.getPlayerManager().getActivePlayer();
+		Player player = game.getActivePlayer();
 		
 		if (!phase.getStep().equals("Draw_Things")) {
 			return;
