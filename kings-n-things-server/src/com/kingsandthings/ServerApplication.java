@@ -20,7 +20,7 @@ public class ServerApplication extends Application {
 	public void start(Stage primaryStage) {
 		
 		primaryStage.setResizable(false);
-		primaryStage.setTitle("Kings & Things - Game Server -  v" + VERSION);
+		primaryStage.setTitle("Kings & Things - Server -  v" + VERSION);
 		primaryStage.getIcons().add(new Image("/images/icon.png"));
 		
 		mainMenuController.initialize(primaryStage);
