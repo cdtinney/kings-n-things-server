@@ -1,8 +1,5 @@
 package com.kingsandthings;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,21 +18,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import com.kingsandthings.game.InitializableView;
-
-public class MainMenuView extends Scene implements InitializableView {
+public class ServerMenuView extends Scene {
 	
 	private final static int WIDTH = 600;
 	private final static int HEIGHT = 400;
 	
 	private BorderPane root;
-	
-	private VBox mainMenu; 
 	private VBox gameSettings;
 	
-	private List<TextField> playerNameFields;
-	
-	public MainMenuView() {
+	public ServerMenuView() {
 		super(new BorderPane(), WIDTH, HEIGHT);
 		
 		root = (BorderPane) getRoot();
@@ -43,50 +34,26 @@ public class MainMenuView extends Scene implements InitializableView {
 		getStylesheets().add(getClass().getResource("/css/MainMenu.css").toExternalForm());
 	}
 	
-	@Override
 	public void initialize() {
 		
-		playerNameFields = new ArrayList<TextField>();
-		
-		initializeMainMenu();	
 		initializeGameSettings();	
-		
 		initializeStatusText();
 		
-		displayMainMenu();
+		displayGameSettings();
 		
 	}
 	
-	public void setDefaultPlayerNames() {
-		
-		int i = 1;
-		for (TextField textField : playerNameFields) {
-			textField.setText("Player " + i++);
-		}
-		
+	public Integer getPort() {
+		TextField textField = (TextField) gameSettings.lookup("#port");
+		return Integer.parseInt(textField.getText());
 	}
-
-	public List<String> getPlayerNames() {
-		
-		if (playerNameFields == null) {
-			return null;
-		}
-		
-		List<String> names = new ArrayList<String>();
-		for (TextField textField : playerNameFields) {
-			names.add(textField.getText());
-		}
-		
-		return names;
-		
+	
+	public Integer getNumPlayers() {
+		return (int) ((Slider) root.lookup("#numPlayers")).getValue();
 	}
 	
 	public void setStatusText(String text) {
 		((Text) root.lookup("#statusText")).setText(text);
-	}
-	
-	public void displayMainMenu() { 
-		root.setCenter(mainMenu); 
 	}
 	
 	public void displayGameSettings() { 
@@ -107,27 +74,9 @@ public class MainMenuView extends Scene implements InitializableView {
 		
 	}
 	
-	private void initializeMainMenu() {
-		
-		mainMenu = new VBox(20);
-		mainMenu.setStyle("-fx-background-color: #FFFFFF");
-		mainMenu.setAlignment(Pos.CENTER);
+	private void initializeGameSettings() {
 		
 		ImageView logoImg = new ImageView(new Image("/images/logo.png"));
-		
-		Button newGameButton = new Button("Start Game");
-		newGameButton.setId("newGameButton");
-		newGameButton.setPrefWidth(125);
-		
-		Button exitButton = new Button("Exit");
-		exitButton.setId("exitButton");
-		exitButton.setMinWidth(125);
-		
-		mainMenu.getChildren().addAll(logoImg, newGameButton, exitButton);
-		
-	}
-	
-	private void initializeGameSettings() {
 		
 		gameSettings = new VBox(20);
 		gameSettings.setStyle("-fx-background-color: #FFFFFF");
@@ -140,10 +89,12 @@ public class MainMenuView extends Scene implements InitializableView {
 		grid.setHgap(10);
 		grid.setVgap(20);
 		
+		GridPane.setConstraints(logoImg, 0, 0, 1, 1, HPos.CENTER, VPos.TOP);
+		
 		// Player number label and slider
 		Label playerNumLabel = new Label("Number of Players:");
 		Slider playerNumSlider = new Slider(2, 4, 0);
-		playerNumSlider.setId("playerNum");
+		playerNumSlider.setId("numPlayers");
 		playerNumSlider.setMinorTickCount(0);
 		playerNumSlider.setMajorTickUnit(1);
 		playerNumSlider.setSnapToTicks(true);
@@ -158,22 +109,22 @@ public class MainMenuView extends Scene implements InitializableView {
 		GridPane.setConstraints(playerNumSlider, 1, 0);
 			
 		// Start button
-		Button startButton = new Button("Start");
+		Button startButton = new Button("Start Server");
 		startButton.setId("startButton");
 		startButton.setPrefWidth(150);
 		GridPane.setConstraints(startButton, 0, 2, 2, 1, HPos.CENTER, VPos.CENTER);
 		
-		// Back button
-		Button backButton = new Button("Back");
-		backButton.setId("backButton");
-		backButton.setPrefWidth(150);
-		GridPane.setConstraints(backButton, 0, 3, 2, 1, HPos.CENTER, VPos.CENTER);
+		// Exit button
+		Button exitButton = new Button("Exit");
+		exitButton.setId("exitButton");
+		exitButton.setPrefWidth(150);
+		GridPane.setConstraints(exitButton, 0, 3, 2, 1, HPos.CENTER, VPos.CENTER);
 		
 		// Add labels and controls to grid
-		grid.getChildren().addAll(playerNumLabel, playerNumSlider, startButton, backButton);	
+		grid.getChildren().addAll(playerNumLabel, playerNumSlider, startButton, exitButton);	
 		
 		// Add the settings grid to the VBox
-		gameSettings.getChildren().addAll(grid);
+		gameSettings.getChildren().addAll(logoImg, grid);
 		
 		// Add port field
 		addPortField();
@@ -184,7 +135,7 @@ public class MainMenuView extends Scene implements InitializableView {
 		GridPane grid = (GridPane) gameSettings.lookup("#settingsGrid");
 		
 		Label portLabel = new Label("Port: ");
-		TextField portField = new TextField();
+		TextField portField = new TextField("9000");
 		portField.setId("port");
 		
 		GridPane.setConstraints(portLabel, 0, 1);
@@ -193,7 +144,7 @@ public class MainMenuView extends Scene implements InitializableView {
 		grid.getChildren().addAll(portLabel, portField);
 
 		GridPane.setConstraints(gameSettings.lookup("#startButton"), 0, 2+1, 2, 1, HPos.CENTER, VPos.CENTER);
-		GridPane.setConstraints(gameSettings.lookup("#backButton"), 0, 3+1, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(gameSettings.lookup("#exitButton"), 0, 3+1, 2, 1, HPos.CENTER, VPos.CENTER);
 		
 	}
 	
