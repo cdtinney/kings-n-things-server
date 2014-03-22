@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 import com.kingsandthings.common.controller.Controller;
-import com.kingsandthings.common.network.GameServerImpl;
+import com.kingsandthings.common.network.GameServer;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.util.Dialog;
 
@@ -21,10 +21,10 @@ public class ServerController extends Controller {
 	private Stage stage;
 	
 	// View
-	private ServerMenuView view;
+	private ServerView view;
 	
 	// Networking
-	private GameServerImpl gameServer;
+	private GameServer gameServer;
 	
 	public void initialize(Stage stage) {
 		
@@ -32,7 +32,7 @@ public class ServerController extends Controller {
 		
 		Dialog.setStage(stage);
 		
-		view = new ServerMenuView();
+		view = new ServerView();
 		view.initialize();
 		
 		stage.setScene(view);
@@ -50,13 +50,13 @@ public class ServerController extends Controller {
 			int numPlayers = view.getNumPlayers();
 			int port = view.getPort();
 			
-			gameServer = new GameServerImpl(numPlayers);
+			gameServer = new GameServer(numPlayers);
 			gameServer.start(port);
 			
 			view.showLog();
 			
 			view.setStatusText("game server running on port " + port);
-			view.addLogText("Server started! Waiting for " + numPlayers + " players to connect.");
+			view.appendLogText("Server started! Waiting for " + numPlayers + " players to connect.");
 			
 		}
 		
@@ -78,13 +78,13 @@ public class ServerController extends Controller {
 		int connected = gameServer.numPlayersConnected();
 		int remaining = gameServer.numPlayersRemaining();
 		
-		view.addLogText(connected + " player(s) connected. Waiting for " + remaining + " more player(s).");
+		view.appendLogText(connected + " player(s) connected. Waiting for " + remaining + " more player(s).");
 		view.setConnectedPlayersText(gameServer.connectedPlayerNames());
 		
 	}
 	
 	private void addListeners() {
-		PropertyChangeDispatcher.getInstance().addListener(GameServerImpl.class, "connectedPlayers", this, "onPlayerConnected");
+		PropertyChangeDispatcher.getInstance().addListener(GameServer.class, "connectedPlayers", this, "onPlayerConnected");
 	}
 	
 	private void addEventHandlers() {

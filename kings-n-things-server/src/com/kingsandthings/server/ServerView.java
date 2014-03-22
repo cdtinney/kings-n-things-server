@@ -24,7 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class ServerMenuView extends Scene {
+public class ServerView extends Scene {
 	
 	private final static int WIDTH = 600;
 	private final static int HEIGHT = 420;
@@ -37,7 +37,7 @@ public class ServerMenuView extends Scene {
 	private TextArea textLog;
 	private Text connectedPlayersText;
 	
-	public ServerMenuView() {
+	public ServerView() {
 		super(new BorderPane(), WIDTH, HEIGHT);
 		
 		root = (BorderPane) getRoot();
@@ -85,7 +85,7 @@ public class ServerMenuView extends Scene {
 		
 	}
 	
-	public void addLogText(String text) {
+	public void appendLogText(String text) {
 		textLog.appendText(text + "\n");
 	}
 	
