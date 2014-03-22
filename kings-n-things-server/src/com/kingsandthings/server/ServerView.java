@@ -2,6 +2,7 @@ package com.kingsandthings.server;
 
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -71,7 +72,7 @@ public class ServerView extends Scene {
 	public void setConnectedPlayersText(List<String> playerNames) {
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("Connected players: " );
+		sb.append("Connected players (" + playerNames.size() + "): ");
 		
 		for (String name : playerNames) {
 			sb.append(name);
@@ -84,9 +85,18 @@ public class ServerView extends Scene {
 		connectedPlayersText.setText(sb.toString());
 		
 	}
-	
-	public void appendLogText(String text) {
-		textLog.appendText(text + "\n");
+
+	public void appendToLog(final String text) {
+		
+		// Run on the JavaFX thread
+		Platform.runLater(new Runnable() {
+			
+			@Override public void run() {
+				textLog.appendText(text + "\n");
+			}
+			
+		});
+		
 	}
 	
 	public void showSettings() {

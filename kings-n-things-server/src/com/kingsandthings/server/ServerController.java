@@ -10,11 +10,11 @@ import javafx.stage.Stage;
 import com.kingsandthings.common.controller.Controller;
 import com.kingsandthings.common.network.GameServer;
 import com.kingsandthings.game.events.PropertyChangeDispatcher;
+import com.kingsandthings.server.logging.ServerLogHandler;
 import com.kingsandthings.util.Dialog;
 
 public class ServerController extends Controller {
 	
-	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger.getLogger(ServerController.class.getName());
 	
 	// Primary stage
@@ -41,6 +41,8 @@ public class ServerController extends Controller {
 		addEventHandlers();
 		addListeners();
 		
+		ServerLogHandler.setHandler(LOGGER, view);
+		
 	}
 	
 	protected void handleStartButtonAction(Event event) {
@@ -56,7 +58,6 @@ public class ServerController extends Controller {
 			view.showLog();
 			
 			view.setStatusText("game server running on port " + port);
-			view.appendLogText("Server started! Waiting for " + numPlayers + " players to connect.");
 			
 		}
 		
@@ -78,7 +79,6 @@ public class ServerController extends Controller {
 		int connected = gameServer.numPlayersConnected();
 		int remaining = gameServer.numPlayersRemaining();
 		
-		view.appendLogText(connected + " player(s) connected. Waiting for " + remaining + " more player(s).");
 		view.setConnectedPlayersText(gameServer.connectedPlayerNames());
 		
 	}

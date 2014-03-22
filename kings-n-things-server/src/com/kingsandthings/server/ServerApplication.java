@@ -36,7 +36,7 @@ public class ServerApplication extends Application {
 	
 	public static void main(String[] args) {
 		
-		LogHandler.setup(LOGGER);
+		LogHandler.setHandler(LOGGER);
 		
 		launch(args);
 	}
