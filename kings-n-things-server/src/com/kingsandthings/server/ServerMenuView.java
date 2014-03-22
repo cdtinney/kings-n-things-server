@@ -1,18 +1,24 @@
-package com.kingsandthings;
+package com.kingsandthings.server;
+
+import java.util.List;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextAreaBuilder;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -21,10 +27,15 @@ import javafx.scene.text.Text;
 public class ServerMenuView extends Scene {
 	
 	private final static int WIDTH = 600;
-	private final static int HEIGHT = 400;
+	private final static int HEIGHT = 420;
 	
 	private BorderPane root;
-	private VBox gameSettings;
+	
+	private VBox settingsVBox;
+	private VBox logVBox;
+	
+	private TextArea textLog;
+	private Text connectedPlayersText;
 	
 	public ServerMenuView() {
 		super(new BorderPane(), WIDTH, HEIGHT);
@@ -37,15 +48,16 @@ public class ServerMenuView extends Scene {
 	public void initialize() {
 		
 		initializeGameSettings();	
+		initializeGameLog();
+		
 		initializeStatusText();
 		
-		displayGameSettings();
+		showSettings();
 		
 	}
 	
 	public Integer getPort() {
-		TextField textField = (TextField) gameSettings.lookup("#port");
-		return Integer.parseInt(textField.getText());
+		return Integer.parseInt(((TextField) settingsVBox.lookup("#port")).getText());
 	}
 	
 	public Integer getNumPlayers() {
@@ -56,8 +68,48 @@ public class ServerMenuView extends Scene {
 		((Text) root.lookup("#statusText")).setText(text);
 	}
 	
-	public void displayGameSettings() { 
-		root.setCenter(gameSettings); 
+	public void setConnectedPlayersText(List<String> playerNames) {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("Connected players: " );
+		
+		for (String name : playerNames) {
+			sb.append(name);
+			
+			if (playerNames.indexOf(name) != playerNames.size()-1) {
+				sb.append(", ");
+			}
+		}
+		
+		connectedPlayersText.setText(sb.toString());
+		
+	}
+	
+	public void addLogText(String text) {
+		textLog.appendText(text + "\n");
+	}
+	
+	public void showSettings() {
+		root.setCenter(settingsVBox); 
+	}
+	
+	public void showLog() {
+		root.setCenter(logVBox);
+	}
+	
+	private void initializeGameLog() {
+		
+		logVBox = new VBox(10);
+		logVBox.setStyle("-fx-background-color: #FFFFFF");
+		
+		textLog = TextAreaBuilder.create().cursor(Cursor.DEFAULT).editable(false).build();
+		VBox.setVgrow(textLog, Priority.ALWAYS);
+		
+		connectedPlayersText = new Text("Connected players: ");
+		VBox.setMargin(connectedPlayersText, new Insets(0, 0, 5, 5));
+		
+		logVBox.getChildren().addAll(textLog, connectedPlayersText);
+		
 	}
 
 	private void initializeStatusText() {
@@ -78,9 +130,9 @@ public class ServerMenuView extends Scene {
 		
 		ImageView logoImg = new ImageView(new Image("/images/logo.png"));
 		
-		gameSettings = new VBox(20);
-		gameSettings.setStyle("-fx-background-color: #FFFFFF");
-		gameSettings.setAlignment(Pos.CENTER);
+		settingsVBox = new VBox(20);
+		settingsVBox.setStyle("-fx-background-color: #FFFFFF");
+		settingsVBox.setAlignment(Pos.CENTER);
 	
 		// Initialize grid for settings
 		GridPane grid = new GridPane();
@@ -102,7 +154,7 @@ public class ServerMenuView extends Scene {
 		playerNumSlider.setShowTickLabels(true);
 		
 		// Set to 4 and disable for now
-		playerNumSlider.setValue(4);
+		playerNumSlider.setValue(2);
 		playerNumSlider.setDisable(true);
 		
 		GridPane.setConstraints(playerNumLabel, 0, 0, 1, 1, HPos.CENTER, VPos.TOP);
@@ -124,7 +176,7 @@ public class ServerMenuView extends Scene {
 		grid.getChildren().addAll(playerNumLabel, playerNumSlider, startButton, exitButton);	
 		
 		// Add the settings grid to the VBox
-		gameSettings.getChildren().addAll(logoImg, grid);
+		settingsVBox.getChildren().addAll(logoImg, grid);
 		
 		// Add port field
 		addPortField();
@@ -132,7 +184,7 @@ public class ServerMenuView extends Scene {
 	
 	private void addPortField() {
 		
-		GridPane grid = (GridPane) gameSettings.lookup("#settingsGrid");
+		GridPane grid = (GridPane) settingsVBox.lookup("#settingsGrid");
 		
 		Label portLabel = new Label("Port: ");
 		TextField portField = new TextField("9000");
@@ -143,8 +195,8 @@ public class ServerMenuView extends Scene {
 		
 		grid.getChildren().addAll(portLabel, portField);
 
-		GridPane.setConstraints(gameSettings.lookup("#startButton"), 0, 2+1, 2, 1, HPos.CENTER, VPos.CENTER);
-		GridPane.setConstraints(gameSettings.lookup("#exitButton"), 0, 3+1, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(settingsVBox.lookup("#startButton"), 0, 2+1, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(settingsVBox.lookup("#exitButton"), 0, 3+1, 2, 1, HPos.CENTER, VPos.CENTER);
 		
 	}
 	

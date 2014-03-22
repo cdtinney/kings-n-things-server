@@ -1,4 +1,4 @@
-package com.kingsandthings;
+package com.kingsandthings.server;
 	
 import java.util.logging.Logger;
 
