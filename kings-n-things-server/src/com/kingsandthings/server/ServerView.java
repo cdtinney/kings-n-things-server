@@ -112,10 +112,12 @@ public class ServerView extends Scene {
 		logVBox = new VBox(10);
 		logVBox.setStyle("-fx-background-color: #FFFFFF");
 		
-		textLog = TextAreaBuilder.create().cursor(Cursor.DEFAULT).editable(false).build();
+		textLog = TextAreaBuilder.create().cursor(Cursor.DEFAULT).editable(false).wrapText(true).build();
 		VBox.setVgrow(textLog, Priority.ALWAYS);
 		
-		connectedPlayersText = new Text("Connected players: ");
+		connectedPlayersText = new Text("connected players: ");
+		connectedPlayersText.setFont(Font.font("Lucida Sans", 12));
+		connectedPlayersText.setFill(Color.GREEN);
 		VBox.setMargin(connectedPlayersText, new Insets(0, 0, 5, 5));
 		
 		logVBox.getChildren().addAll(textLog, connectedPlayersText);

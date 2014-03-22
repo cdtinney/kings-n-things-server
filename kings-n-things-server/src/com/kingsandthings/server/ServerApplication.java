@@ -14,7 +14,7 @@ public class ServerApplication extends Application {
 	
 	private final float VERSION = 0.1f;
 	
-	private ServerController mainMenuController = new ServerController();
+	private ServerController serverController = new ServerController();
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -23,7 +23,7 @@ public class ServerApplication extends Application {
 		primaryStage.setTitle("Kings & Things - Server -  v" + VERSION);
 		primaryStage.getIcons().add(new Image("/images/icon.png"));
 		
-		mainMenuController.initialize(primaryStage);
+		serverController.initialize(primaryStage);
 		
 		primaryStage.show();
 		
@@ -31,6 +31,9 @@ public class ServerApplication extends Application {
 	
 	@Override
 	public void stop() {
+		
+		serverController.stop();
+		
 		LOGGER.info("Application has stopped.");
 	}
 	

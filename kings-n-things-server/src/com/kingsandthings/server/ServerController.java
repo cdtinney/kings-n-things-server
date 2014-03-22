@@ -45,6 +45,14 @@ public class ServerController extends Controller {
 		
 	}
 	
+	public void stop() {
+		
+		if (gameServer != null) {
+			gameServer.end();
+		}
+		
+	}
+	
 	protected void handleStartButtonAction(Event event) {
 	
 		if (gameServer == null) {
@@ -56,7 +64,6 @@ public class ServerController extends Controller {
 			gameServer.start(port);
 			
 			view.showLog();
-			
 			view.setStatusText("game server running on port " + port);
 			
 		}
@@ -73,13 +80,12 @@ public class ServerController extends Controller {
 	
 	}
 	
-	@SuppressWarnings("unused")
-	private void onPlayerConnected(PropertyChangeEvent event) {
+	private void addEventHandlers() {
 		
-		int connected = gameServer.numPlayersConnected();
-		int remaining = gameServer.numPlayersRemaining();
+		Parent root = view.getRoot();
 		
-		view.setConnectedPlayersText(gameServer.connectedPlayerNames());
+		addEventHandler(root, "startButton", "setOnAction", "handleStartButtonAction");
+		addEventHandler(root, "exitButton", "setOnAction", "handleExitButtonAction");
 		
 	}
 	
@@ -87,12 +93,13 @@ public class ServerController extends Controller {
 		PropertyChangeDispatcher.getInstance().addListener(GameServer.class, "connectedPlayers", this, "onPlayerConnected");
 	}
 	
-	private void addEventHandlers() {
+	@SuppressWarnings("unused")
+	private void onPlayerConnected(PropertyChangeEvent event) {
 		
-		Parent root = view.getRoot();
+		int connected = gameServer.numPlayersConnected();
+		int remaining = gameServer.numPlayersRemaining();
 		
-		addEventHandler(root, "startButton", "setOnAction", "handleStartButtonAction");
-		addEventHandler(root, "exitButton", "setOnAction", "handleExitButtonAction");
+		view.setConnectedPlayersText(gameServer.connectedPlayerNames());
 		
 	}
 	
