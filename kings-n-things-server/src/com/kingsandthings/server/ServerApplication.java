@@ -12,15 +12,13 @@ public class ServerApplication extends Application {
 	
 	private static Logger LOGGER = Logger.getLogger(ServerApplication.class.getName());
 	
-	private final float VERSION = 0.1f;
-	
 	private ServerController serverController = new ServerController();
 	
 	@Override
 	public void start(Stage primaryStage) {
 		
 		primaryStage.setResizable(false);
-		primaryStage.setTitle("Kings & Things - Server -  v" + VERSION);
+		primaryStage.setTitle("SERVER");
 		primaryStage.getIcons().add(new Image("/images/icon.png"));
 		
 		serverController.initialize(primaryStage);
