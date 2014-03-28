@@ -17,6 +17,8 @@ public class ServerApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		
+		LogHandler.setHandler(LOGGER);
+		
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("SERVER");
 		primaryStage.getIcons().add(new Image("/images/icon.png"));
@@ -31,14 +33,11 @@ public class ServerApplication extends Application {
 	public void stop() {
 		
 		serverController.stop();
-		
 		LOGGER.info("Application has stopped.");
+		
 	}
 	
 	public static void main(String[] args) {
-		
-		LogHandler.setHandler(LOGGER);
-		
 		launch(args);
 	}
 }

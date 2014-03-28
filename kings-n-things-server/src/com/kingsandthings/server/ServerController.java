@@ -29,7 +29,6 @@ public class ServerController extends Controller {
 	public void initialize(Stage stage) {
 		
 		this.stage = stage;
-		
 		Dialog.setStage(stage);
 		
 		view = new ServerView();
@@ -80,6 +79,16 @@ public class ServerController extends Controller {
 	
 	}
 	
+	@SuppressWarnings("unused")
+	private void onPlayerConnected(PropertyChangeEvent event) {
+		
+		int connected = gameServer.getNumConnected();
+		int remaining = gameServer.getNumRemaining();
+		
+		view.setConnectedPlayersText(gameServer.getConnectedPlayerNames());
+		
+	}
+	
 	private void addEventHandlers() {
 		
 		Parent root = view.getRoot();
@@ -90,16 +99,8 @@ public class ServerController extends Controller {
 	}
 	
 	private void addListeners() {
+		
 		PropertyChangeDispatcher.getInstance().addListener(GameServer.class, "connectedPlayers", this, "onPlayerConnected");
-	}
-	
-	@SuppressWarnings("unused")
-	private void onPlayerConnected(PropertyChangeEvent event) {
-		
-		int connected = gameServer.numPlayersConnected();
-		int remaining = gameServer.numPlayersRemaining();
-		
-		view.setConnectedPlayersText(gameServer.connectedPlayerNames());
 		
 	}
 	
