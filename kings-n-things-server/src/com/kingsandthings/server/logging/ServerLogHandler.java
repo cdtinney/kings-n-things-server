@@ -4,13 +4,15 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import com.kingsandthings.common.network.GameServer;
 import com.kingsandthings.logging.LogFormatter;
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.server.ServerView;
 
 public class ServerLogHandler extends Handler {
 
-	private LogFormatter regularFormatter = new LogFormatter();
+	private LogFormatter stdFormatter = new LogFormatter();
+	
 	private ServerView view;
 	
 	public static void setHandler(Logger logger, ServerView view) {
@@ -41,7 +43,7 @@ public class ServerLogHandler extends Handler {
 		String log = getFormatter().format(r);
 		
 		if (r.getLevel() == LogLevel.DEBUG || view == null) {
-			System.out.println(regularFormatter.format(r));
+			System.out.println(stdFormatter.format(r));
 			
 		} else {
 			view.appendToLog(log);

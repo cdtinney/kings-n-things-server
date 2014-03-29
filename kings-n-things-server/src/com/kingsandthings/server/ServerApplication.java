@@ -20,7 +20,7 @@ public class ServerApplication extends Application {
 		LogHandler.setHandler(LOGGER);
 		
 		primaryStage.setResizable(false);
-		primaryStage.setTitle("SERVER");
+		primaryStage.setTitle("K&T - Server");
 		primaryStage.getIcons().add(new Image("/images/icon.png"));
 		
 		serverController.initialize(primaryStage);
