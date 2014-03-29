@@ -4,7 +4,6 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import com.kingsandthings.common.network.GameServer;
 import com.kingsandthings.logging.LogFormatter;
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.server.ServerView;
