@@ -46,17 +46,17 @@ public class ServerLogHandler extends Handler {
 		if (view == null) {
 			System.out.println(stdFormatter.format(r));
 			
-		} else if (r.getLevel() == LogLevel.DEBUG || r.getLevel() == LogLevel.TRACE) {
-			System.out.println(log);
-			
-		} else {
-			
+		} else if (r.getLevel() == LogLevel.INFO) {
+
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
 					view.appendToLog(log);
 				}
 			});
+			
+		} else {
+			System.out.println(stdFormatter.format(r));
 			
 		}
 		
