@@ -26,7 +26,7 @@ public class ServerLogHandler extends Handler {
 		
 		ServerLogHandler customHandler = new ServerLogHandler();
 		customHandler.setFormatter(new ServerLogFormatter());
-		customHandler.setLevel(LogLevel.DEBUG);	
+		customHandler.setLevel(LogLevel.TRACE);	
 		customHandler.setView(view);
 		
 		parent.setLevel(LogLevel.DEBUG);
@@ -43,8 +43,11 @@ public class ServerLogHandler extends Handler {
 		
 		final String log = getFormatter().format(r);
 		
-		if (r.getLevel() == LogLevel.DEBUG || view == null) {
+		if (view == null) {
 			System.out.println(stdFormatter.format(r));
+			
+		} else if (r.getLevel() == LogLevel.DEBUG || r.getLevel() == LogLevel.TRACE) {
+			System.out.println(log);
 			
 		} else {
 			

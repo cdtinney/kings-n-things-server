@@ -29,6 +29,8 @@ public class ServerView extends Scene {
 	private final static int WIDTH = 600;
 	private final static int HEIGHT = 420;
 	
+	private final static int DEFAULT_NUM_PLAYERS = 2;
+	
 	private BorderPane root;
 	
 	private VBox settingsVBox;
@@ -154,10 +156,7 @@ public class ServerView extends Scene {
 		playerNumSlider.setSnapToTicks(true);
 		playerNumSlider.setShowTickMarks(true);
 		playerNumSlider.setShowTickLabels(true);
-		
-		// Set to 4 and disable for now
-		playerNumSlider.setValue(2);
-		playerNumSlider.setDisable(true);
+		playerNumSlider.setValue(DEFAULT_NUM_PLAYERS);
 		
 		GridPane.setConstraints(playerNumLabel, 0, 0, 1, 1, HPos.CENTER, VPos.TOP);
 		GridPane.setConstraints(playerNumSlider, 1, 0);
