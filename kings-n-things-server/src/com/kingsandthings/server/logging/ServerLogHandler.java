@@ -4,6 +4,8 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javafx.application.Platform;
+
 import com.kingsandthings.logging.LogFormatter;
 import com.kingsandthings.logging.LogLevel;
 import com.kingsandthings.server.ServerView;
@@ -39,13 +41,19 @@ public class ServerLogHandler extends Handler {
 	@Override
 	public void publish(LogRecord r) {
 		
-		String log = getFormatter().format(r);
+		final String log = getFormatter().format(r);
 		
 		if (r.getLevel() == LogLevel.DEBUG || view == null) {
 			System.out.println(stdFormatter.format(r));
 			
 		} else {
-			view.appendToLog(log);
+			
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					view.appendToLog(log);
+				}
+			});
 			
 		}
 		

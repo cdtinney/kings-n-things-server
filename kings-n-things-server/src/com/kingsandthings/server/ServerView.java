@@ -2,7 +2,6 @@ package com.kingsandthings.server;
 
 import java.util.List;
 
-import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -87,16 +86,7 @@ public class ServerView extends Scene {
 	}
 
 	public void appendToLog(final String text) {
-		
-		// Run on the JavaFX thread
-		Platform.runLater(new Runnable() {
-			
-			@Override public void run() {
-				textLog.appendText(text + "\n");
-			}
-			
-		});
-		
+		textLog.appendText(text + "\n");
 	}
 	
 	public void showSettings() {
