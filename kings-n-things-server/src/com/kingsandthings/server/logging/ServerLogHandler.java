@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 
 import javafx.application.Platform;
 
-import com.kingsandthings.logging.LogFormatter;
-import com.kingsandthings.logging.LogLevel;
+import com.kingsandthings.common.logging.LogFormatter;
+import com.kingsandthings.common.logging.LogLevel;
 import com.kingsandthings.server.ServerView;
 
 public class ServerLogHandler extends Handler {

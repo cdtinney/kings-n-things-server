@@ -3,7 +3,7 @@ package com.kingsandthings.server.logging;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-import com.kingsandthings.logging.LogLevel;
+import com.kingsandthings.common.logging.LogLevel;
 
 public class ServerLogFormatter extends Formatter {
 	

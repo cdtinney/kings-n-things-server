@@ -8,10 +8,9 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 import com.kingsandthings.common.controller.Controller;
+import com.kingsandthings.common.events.PropertyChangeDispatcher;
 import com.kingsandthings.common.network.GameServer;
-import com.kingsandthings.game.events.PropertyChangeDispatcher;
 import com.kingsandthings.server.logging.ServerLogHandler;
-import com.kingsandthings.util.Dialog;
 
 public class ServerController extends Controller {
 	
@@ -29,7 +28,6 @@ public class ServerController extends Controller {
 	public void initialize(Stage stage) {
 		
 		this.stage = stage;
-		Dialog.setStage(stage);
 		
 		view = new ServerView();
 		view.initialize();
