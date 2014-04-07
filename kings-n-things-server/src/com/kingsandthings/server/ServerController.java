@@ -56,8 +56,9 @@ public class ServerController extends Controller {
 			
 			int numPlayers = view.getNumPlayers();
 			int port = view.getPort();
+			String state = view.getGameState();
 			
-			gameServer = new GameServer(numPlayers);
+			gameServer = new GameServer(numPlayers, state);
 			gameServer.start(port);
 			
 			view.showLog();

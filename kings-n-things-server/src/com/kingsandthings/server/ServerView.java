@@ -2,6 +2,8 @@ package com.kingsandthings.server;
 
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,6 +11,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
@@ -64,6 +67,11 @@ public class ServerView extends Scene {
 	
 	public Integer getNumPlayers() {
 		return (int) ((Slider) root.lookup("#numPlayers")).getValue();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String getGameState() {
+		return ((ComboBox<String>) root.lookup("#boardState")).getValue();
 	}
 	
 	public void setStatusText(String text) {
@@ -160,6 +168,20 @@ public class ServerView extends Scene {
 		
 		GridPane.setConstraints(playerNumLabel, 0, 0, 1, 1, HPos.CENTER, VPos.TOP);
 		GridPane.setConstraints(playerNumSlider, 1, 0);
+
+		Label boardStateLabel = new Label("Board State:");
+		ObservableList<String> options = FXCollections.observableArrayList(
+			        "Minimal",
+			        "Average",
+			        "Superior",
+			        "None"
+			    );
+		ComboBox<String> comboBox = new ComboBox<String>(options);
+		comboBox.setValue("None");
+		comboBox.setId("boardState");
+		
+		GridPane.setConstraints(boardStateLabel, 0, 1, 1, 1, HPos.LEFT, VPos.TOP);
+		GridPane.setConstraints(comboBox, 1, 1);
 			
 		// Start button
 		Button startButton = new Button("Start Server");
@@ -174,7 +196,7 @@ public class ServerView extends Scene {
 		GridPane.setConstraints(exitButton, 0, 3, 2, 1, HPos.CENTER, VPos.CENTER);
 		
 		// Add labels and controls to grid
-		grid.getChildren().addAll(playerNumLabel, playerNumSlider, startButton, exitButton);	
+		grid.getChildren().addAll(playerNumLabel, playerNumSlider, boardStateLabel, comboBox, startButton, exitButton);	
 		
 		// Add the settings grid to the VBox
 		settingsVBox.getChildren().addAll(logoImg, grid);
@@ -191,13 +213,13 @@ public class ServerView extends Scene {
 		TextField portField = new TextField("9000");
 		portField.setId("port");
 		
-		GridPane.setConstraints(portLabel, 0, 1);
-		GridPane.setConstraints(portField, 1, 1);
+		GridPane.setConstraints(portLabel, 0, 2);
+		GridPane.setConstraints(portField, 1, 2);
 		
 		grid.getChildren().addAll(portLabel, portField);
 
-		GridPane.setConstraints(settingsVBox.lookup("#startButton"), 0, 2+1, 2, 1, HPos.CENTER, VPos.CENTER);
-		GridPane.setConstraints(settingsVBox.lookup("#exitButton"), 0, 3+1, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(settingsVBox.lookup("#startButton"), 0, 3+1, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(settingsVBox.lookup("#exitButton"), 0, 4+1, 2, 1, HPos.CENTER, VPos.CENTER);
 		
 	}
 	
