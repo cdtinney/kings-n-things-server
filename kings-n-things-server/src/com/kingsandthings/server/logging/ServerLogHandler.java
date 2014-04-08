@@ -8,13 +8,16 @@ import javafx.application.Platform;
 
 import com.kingsandthings.common.logging.LogFormatter;
 import com.kingsandthings.common.logging.LogLevel;
+import com.kingsandthings.common.network.GameServer;
 import com.kingsandthings.server.ServerView;
 
 public class ServerLogHandler extends Handler {
 
 	private LogFormatter stdFormatter = new LogFormatter();
-	
-	private ServerView view;
+
+	// Networking
+	private static GameServer server;
+	private static ServerView view;
 	
 	public static void setHandler(Logger logger, ServerView view) {
 	
@@ -27,19 +30,29 @@ public class ServerLogHandler extends Handler {
 		ServerLogHandler customHandler = new ServerLogHandler();
 		customHandler.setFormatter(new ServerLogFormatter());
 		customHandler.setLevel(LogLevel.TRACE);	
-		customHandler.setView(view);
+		ServerLogHandler.view = view;
 		
 		parent.setLevel(LogLevel.DEBUG);
 		parent.addHandler(customHandler);
 		
 	}
 	
-	public void setView(ServerView view) {
-		this.view = view;
+	public static void setView(ServerView view) {
+		ServerLogHandler.view = view;
+	}
+	
+	public static void setServer(GameServer server) {
+		ServerLogHandler.server = server;
 	}
 
 	@Override
 	public void publish(LogRecord r) {
+		
+		// Send status messages to players
+		if (r.getLevel() == LogLevel.STATUS && server != null) {
+			server.sendStatus(r.getMessage());
+			return;
+		}
 		
 		final String log = getFormatter().format(r);
 		

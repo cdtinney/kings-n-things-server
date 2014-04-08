@@ -61,6 +61,8 @@ public class ServerController extends Controller {
 			gameServer = new GameServer(numPlayers, state);
 			gameServer.start(port);
 			
+			ServerLogHandler.setServer(gameServer);
+			
 			view.showLog();
 			view.setStatusText("game server running on port " + port);
 			
