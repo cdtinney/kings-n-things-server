@@ -1,23 +1,15 @@
 package com.kingsandthings.server;
 	
-import java.util.logging.Logger;
-
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import com.kingsandthings.common.logging.LogHandler;
-
 public class ServerApplication extends Application {
-	
-	private static Logger LOGGER = Logger.getLogger(ServerApplication.class.getName());
 	
 	private ServerController serverController = new ServerController();
 	
 	@Override
 	public void start(Stage primaryStage) {
-		
-		LogHandler.setHandler(LOGGER);
 		
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("K&T - Server");
@@ -33,7 +25,7 @@ public class ServerApplication extends Application {
 	public void stop() {
 		
 		serverController.stop();
-		LOGGER.info("Application has stopped.");
+		System.out.println("Application has stopped.");
 		
 	}
 	
